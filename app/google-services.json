@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1065227976643",
+    "project_id": "spotifywrappedapp-819f6",
+    "storage_bucket": "spotifywrappedapp-819f6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1065227976643:android:fc14f61daaae5a21828776",
+        "android_client_info": {
+          "package_name": "com.example.spotifywrapped"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdX0i8L9dB9mMzl5yTFt4ofA0iFQpEyYI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
