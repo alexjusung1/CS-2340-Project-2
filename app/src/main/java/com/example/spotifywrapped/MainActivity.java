@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // Returning from Spotify login
             Uri uri = intent.getData();
-            Authorization.parseAuthorizationResponse(intent.getData());
+            Authorization.parseAuthorizationResponse(uri);
             // TODO: Reroute to previous layout/fragment
         }
     }
