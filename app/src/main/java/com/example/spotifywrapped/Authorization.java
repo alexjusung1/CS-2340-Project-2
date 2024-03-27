@@ -13,7 +13,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
 public class Authorization {
-    private static String accessToken;
+    private static String authorizationCode;
     @NonNull
     public static Intent getAuthorizationIntent() throws NoSuchAlgorithmException, MalformedURLException {
         String response_type = "code";
@@ -38,16 +38,12 @@ public class Authorization {
     public static void parseAuthorizationResponse(Uri response) {
         String[] params = response.toString().split("&");
         for (int i = 1; i < params.length; i++) {
-            if (params[i].contains("access_token")) {
-                accessToken = params[i].substring(params[i].indexOf("=") + 1);
+            if (params[i].contains("code")) {
+                authorizationCode = params[i].substring(params[i].indexOf("=") + 1);
             } else if (params[i].contains("error")) {
                 throw new RuntimeException("Auth Failed");
             }
         }
-    }
-
-    public static void setAccessToken(String accessToken) {
-        Authorization.accessToken = accessToken;
     }
 
     private static byte[] genHash() throws NoSuchAlgorithmException {
