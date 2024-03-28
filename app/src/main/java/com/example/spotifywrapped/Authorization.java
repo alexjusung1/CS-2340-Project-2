@@ -14,6 +14,8 @@ import java.util.Random;
 
 public class Authorization {
     private static String authorizationCode;
+    private static String accessToken;
+
     @NonNull
     public static Intent getAuthorizationIntent() throws NoSuchAlgorithmException, MalformedURLException {
         String response_type = "code";
@@ -44,6 +46,11 @@ public class Authorization {
                 throw new RuntimeException("Auth Failed");
             }
         }
+    }
+
+    public static void requestAccessToken() throws MalformedURLException {
+        URL url = new URL("https://accounts.spotify.com/api/token");
+        // Implement connection using "https://developer.spotify.com/documentation/web-api/tutorials/code-pkce-flow"
     }
 
     private static byte[] genHash() throws NoSuchAlgorithmException {
