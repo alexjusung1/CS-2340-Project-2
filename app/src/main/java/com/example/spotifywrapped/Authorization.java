@@ -18,7 +18,7 @@ public class Authorization {
     public static Intent getAuthorizationIntent() throws NoSuchAlgorithmException, MalformedURLException {
         String response_type = "code";
         String client_ID = "5f164b1b815e411298a2df84bae6ddbb";
-        String redirect_uri = "SPOTIFY-SDK://auth";
+        String redirect_uri = "https://spotifywrappedapp-819f6.firebaseapp.com/app-data";
         String scope = "user-top-read";
         String code_challenge_method = "S256";
         String code_challenge = bytesToHex(genHash());
