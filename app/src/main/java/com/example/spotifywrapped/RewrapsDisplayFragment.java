@@ -37,8 +37,6 @@ public class RewrapsDisplayFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(adapter);
 
-
-
         return view;
     }
 
