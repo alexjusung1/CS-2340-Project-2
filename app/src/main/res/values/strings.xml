@@ -3,4 +3,11 @@
     <string name="cur_rewrap">Current ReWrap</string>
     <string name="past_rewrap">Past ReWrap</string>
     <string name="recommendation">Recommendation</string>
+    <string name="change_username">Change Username</string>
+    <string name="change_username_hint">New Username</string>
+    <string name="change_password">Change Password</string>
+    <string name="change_password_hint">New Password</string>
+    <string name="linked_spotify_account">Linked Spotify Account</string>
+    <string name="sample_username">Sample Username</string>
+    <string name="remove_account">Remove Account</string>
 </resources>
