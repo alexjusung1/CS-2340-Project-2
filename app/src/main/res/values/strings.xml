@@ -10,4 +10,7 @@
     <string name="linked_spotify_account">Linked Spotify Account</string>
     <string name="sample_username">Sample Username</string>
     <string name="remove_account">Remove Account</string>
+    <string name="log_out_firebase">Log Out</string>
+    <string name="log_out_spotify">Log out Spotify</string>
+    <string name="spotify_account_image_description">Spotify Account Image</string>
 </resources>
