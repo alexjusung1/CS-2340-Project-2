@@ -32,6 +32,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
+<!--change font size and font style during editing process-->
         <TextView
             android:id="@+id/number"
             android:layout_width="wrap_content"
@@ -68,8 +69,8 @@
 
         <ImageView
             android:id="@+id/music_album_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="216dp"
+            android:layout_height="226dp"
             android:contentDescription="@string/description"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
