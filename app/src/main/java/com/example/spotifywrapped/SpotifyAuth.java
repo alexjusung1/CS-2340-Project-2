@@ -55,6 +55,10 @@ public class SpotifyAuth {
         // Implement connection using "https://developer.spotify.com/documentation/web-api/tutorials/code-pkce-flow"
     }
 
+    public static String getAccessToken() {
+        return accessToken;
+    }
+
     private static byte[] genHash() throws NoSuchAlgorithmException {
         Random random = new Random();
         codeVerifier = random.ints(48, 123)
