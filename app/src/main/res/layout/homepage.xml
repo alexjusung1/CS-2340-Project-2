@@ -6,10 +6,10 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/cur_rewrap"
+        android:id="@+id/rewrapinfo"
         android:layout_width="322dp"
         android:layout_height="218dp"
-        android:layout_gravity="center"
+        android:padding="3dp"
         android:text="@string/cur_rewrap"
         app:layout_constraintBottom_toTopOf="@+id/past_rewrap"
         app:layout_constraintEnd_toEndOf="parent"

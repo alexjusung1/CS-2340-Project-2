@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Spotify Wrapped</string>
-    <string name="cur_rewrap">Current ReWrap</string>
+    <string name="cur_rewrap">ReWrap Information</string>
     <string name="past_rewrap">Past ReWrap</string>
-    <string name="recommendation">Recommendation</string>
+    <string name="recommendation">Song Recommendation</string>
     <string name="change_username">Change Username</string>
     <string name="change_username_hint">New Username</string>
     <string name="change_password">Change Password</string>
