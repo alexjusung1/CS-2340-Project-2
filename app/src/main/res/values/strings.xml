@@ -19,4 +19,6 @@
     <string name="artist">Artist Name</string>
     <string name="album">Album Name</string>
     <string name="description">Description</string>
+    <color name="button_color_start">#69db21</color>
+    <color name="button_color_end">#8da139</color>
 </resources>
