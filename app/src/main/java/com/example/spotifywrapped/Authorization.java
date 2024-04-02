@@ -2,6 +2,7 @@ package com.example.spotifywrapped;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -42,6 +43,7 @@ public class Authorization {
         for (int i = 1; i < params.length; i++) {
             if (params[i].contains("code")) {
                 authorizationCode = params[i].substring(params[i].indexOf("=") + 1);
+                Log.i("Test", "")
             } else if (params[i].contains("error")) {
                 throw new RuntimeException("Auth Failed");
             }

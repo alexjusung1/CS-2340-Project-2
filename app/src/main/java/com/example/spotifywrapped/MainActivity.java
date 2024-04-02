@@ -13,13 +13,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         Intent intent = getIntent();
         String action = intent.getAction();
         if (action == null || action.equals(Intent.ACTION_MAIN)) {
             // Normal app launch
             if (action == null) Log.w(TAG, "Null action");
-            setContentView(R.layout.activity_main);
         } else {
             // Returning from Spotify login
             Uri uri = intent.getData();
