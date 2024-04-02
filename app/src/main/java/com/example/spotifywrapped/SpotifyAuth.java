@@ -2,7 +2,6 @@ package com.example.spotifywrapped;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -13,9 +12,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
-public class Authorization {
+public class SpotifyAuth {
     private static String authorizationCode;
+    private static String codeVerifier;
     private static String accessToken;
+    private static int expiresIn;
 
     @NonNull
     public static Intent getAuthorizationIntent() throws NoSuchAlgorithmException, MalformedURLException {
@@ -43,7 +44,6 @@ public class Authorization {
         for (int i = 1; i < params.length; i++) {
             if (params[i].contains("code")) {
                 authorizationCode = params[i].substring(params[i].indexOf("=") + 1);
-                Log.i("Test", "")
             } else if (params[i].contains("error")) {
                 throw new RuntimeException("Auth Failed");
             }
@@ -57,14 +57,14 @@ public class Authorization {
 
     private static byte[] genHash() throws NoSuchAlgorithmException {
         Random random = new Random();
-        String generatedString = random.ints(48, 123)
+        codeVerifier = random.ints(48, 123)
                 .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
                 .limit(64)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] encodedhash = digest.digest(
-                generatedString.getBytes(StandardCharsets.UTF_8));
+                codeVerifier.getBytes(StandardCharsets.UTF_8));
         return encodedhash;
     }
     private static String bytesToHex(byte[] hash) {
