@@ -14,25 +14,23 @@ public class Homepage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homepage);
 
-        Button rewrap_info = findViewById(R.id.rewrapinfo);
-        Button past_rewrap = findViewById(R.id.past_rewrap);
+        Button rewrapInfo = findViewById(R.id.rewrapinfo);
+        Button pastRewrap = findViewById(R.id.past_rewrap);
 //        change later
 
-        rewrap_info.setOnClickListener(new View.OnClickListener() {
+        rewrapInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 pastPage = 0;
-                Intent intent = new Intent(Homepage.this, RewrapInfoPage.class);
-                startActivity(intent);
+                startActivity(new Intent(Homepage.this, RewrapInfoPage.class));
             }
         });
 
-        past_rewrap.setOnClickListener(new View.OnClickListener() {
+        pastRewrap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 pastPage = 0;
-                Intent intent = new Intent(Homepage.this, RewrapPage.class);
-                startActivity(intent);
+                startActivity(new Intent(Homepage.this, RewrapPage.class));
             }
         });
     }
