@@ -35,6 +35,7 @@ public class SpotifyAuth {
     private static String codeVerifier;
     private static String accessToken;
     private static int expiresIn;
+    private static Map<String, Object> accessTokenResponseJSON;
     
     private static final String code_challenge_method = "S256";
     private static final String redirect_uri = "https://spotifywrappedapp-819f6.firebaseapp.com/app-data";
@@ -113,6 +114,7 @@ public class SpotifyAuth {
             if (respEntity != null) {
                 // EntityUtils to get the response content
                 String content =  EntityUtils.toString(respEntity);
+                parseAccessTokenResponse(content);
             }
 
             
@@ -135,7 +137,7 @@ public class SpotifyAuth {
         Map<String, Object> jsonMap = gson.fromJson(content, type);
 
         accessToken = (String) jsonMap.get("access_token");
-
+        accessTokenResponseJSON = jsonMap;
     }
 
     public static String getAccessToken() {
