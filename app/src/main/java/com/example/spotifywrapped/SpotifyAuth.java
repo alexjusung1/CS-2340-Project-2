@@ -5,30 +5,28 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Random;
-
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
 import java.util.Map;
+import java.util.Random;
 
 public class SpotifyAuth {
     private static String authorizationCode;
@@ -75,9 +73,6 @@ public class SpotifyAuth {
 
     public static void requestAccessToken() throws MalformedURLException {
         URL url = new URL("https://accounts.spotify.com/api/token");
-
-        Intent authIntent = getAuthorizationIntent();
-        startActivity(authIntent);
         // Implement connection using "https://developer.spotify.com/documentation/web-api/tutorials/code-pkce-flow"
 
         String grant_type = "authorization_code";

@@ -51,10 +51,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
 
     // sending HTTP POST requests (access token)
-    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.14'
 
     // parsing JSON data
-    implementation 'com.google.code.gson:gson:2.8.8'
+    implementation 'com.google.code.gson:gson:2.10'
 
 
     // TODO: add more firebase dependencies as needed
