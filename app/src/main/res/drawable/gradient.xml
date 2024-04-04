@@ -4,5 +4,6 @@
     <gradient
         android:startColor="@color/button_color_start"
         android:endColor="@color/button_color_end"
-        android:angle="270" />
+        android:angle="45"
+        android:type="linear"/>
 </shape>
