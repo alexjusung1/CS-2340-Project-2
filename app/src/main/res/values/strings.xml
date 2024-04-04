@@ -29,4 +29,6 @@
     <string name="moveSignUp">Don\'t have an account? Sign Up Here</string>
     <string name="moveLogin">Already have an account? Login Here</string>
     <string name="email">Email</string>
+    <string name="setting">Setting</string>
+    <string name="notification">Notification</string>
 </resources>
