@@ -35,7 +35,7 @@
         android:layout_width="316dp"
         android:layout_height="190dp"
         app:backgroundTint="@null"
-        android:background="@drawable/gradient"
+        android:background="@drawable/gradient_button_2"
         android:gravity="start|bottom"
         android:text="@string/cur_rewrap"
         android:textSize="22sp"
@@ -48,11 +48,11 @@
 
     <Button
         android:id="@+id/past_rewrap"
-        style="@style/Widget.MaterialComponents.Button.Icon"
+        app:backgroundTint="@null"
+        android:background="@drawable/gradient_button_1"
         android:layout_width="316dp"
         android:layout_height="190dp"
         android:layout_gravity="center"
-        android:layout_marginTop="12dp"
         android:gravity="start|bottom"
         android:text="@string/past_rewrap"
         android:textSize="22sp"
@@ -65,7 +65,8 @@
 
     <Button
         android:id="@+id/recommendation"
-        style="@style/Widget.MaterialComponents.Button.Icon"
+        app:backgroundTint="@null"
+        android:background="@drawable/gradient_button_3"
         android:layout_width="316dp"
         android:layout_height="190dp"
         android:layout_gravity="center"
