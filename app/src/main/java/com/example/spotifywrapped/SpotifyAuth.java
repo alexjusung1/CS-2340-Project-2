@@ -8,8 +8,10 @@ import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -17,9 +19,9 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -35,29 +37,28 @@ public class SpotifyAuth {
     private static int expiresIn;
     private static Map<String, Object> accessTokenResponseJSON;
     
-    private static final String code_challenge_method = "S256";
-    private static final String redirect_uri = "https://spotifywrappedapp-819f6.firebaseapp.com/app-data";
-    private static final String client_id = "5f164b1b815e411298a2df84bae6ddbb";
+    private static final String codeChallengeMethod = "S256";
+    private static final String redirectURI = "https://spotifywrappedapp-819f6.firebaseapp.com/app-data";
+    private static final String clientID = "5f164b1b815e411298a2df84bae6ddbb";
+
+    private static final String authCodeURL = "https://accounts.spotify.com/authorize";
+    private static final String accessTokenURL = "https://accounts.spotify.com/api/token";
 
     @NonNull
-    public static Intent getAuthorizationIntent() throws NoSuchAlgorithmException, MalformedURLException {
-        String response_type = "code";
-        String client_ID = "5f164b1b815e411298a2df84bae6ddbb";
-        String redirect_uri = "https://spotifywrappedapp-819f6.firebaseapp.com/app-data";
+    public static Intent getAuthorizationIntent() {
+        final String responseType = "code";
         String scope = "user-top-read";
-        String code_challenge_method = "S256";
-        String code_challenge = bytesToHex(genHash());
-        URL url = new URL("https://accounts.spotify.com/authorize");
+        String codeChallenge = bytesToHex(genHash());
 
-        String authURL = url.toString()
-                .concat("?response_type=" + response_type)
-                .concat("&client_id=" + client_ID)
-                .concat("&redirect_uri=" + redirect_uri)
+        String authCodeEncodedURL = authCodeURL
+                .concat("?response_type=" + responseType)
+                .concat("&client_id=" + clientID)
+                .concat("&redirect_uri=" + redirectURI)
                 .concat("&scope=" + scope)
-                .concat("&code_challenge_method=" + code_challenge_method)
-                .concat("&code_challenge=" + code_challenge);
+                .concat("&code_challenge_method=" + codeChallengeMethod)
+                .concat("&code_challenge=" + codeChallenge);
 
-        return new Intent(Intent.ACTION_VIEW, Uri.parse(authURL));
+        return new Intent(Intent.ACTION_VIEW, Uri.parse(authCodeEncodedURL));
     }
 
     public static void parseAuthorizationResponse(Uri response) {
@@ -69,41 +70,33 @@ public class SpotifyAuth {
                 throw new RuntimeException("Auth Failed");
             }
         }
+        requestAccessToken();
     }
 
-    public static void requestAccessToken() throws MalformedURLException {
-        URL url = new URL("https://accounts.spotify.com/api/token");
-        // Implement connection using "https://developer.spotify.com/documentation/web-api/tutorials/code-pkce-flow"
-
-        String grant_type = "authorization_code";
-        //code = autorization_code (field)
-        //redirect_uri in fields
-        //client_id in fields
-        //code_verifier in fields
+    private static void requestAccessToken() {
+        final String grantType = "authorization_code";
 
         HttpClient client = HttpClients.createDefault();
-        HttpPost post = new HttpPost(url.toString());
+        HttpPost post = new HttpPost(accessTokenURL);
 
         List<NameValuePair> params = new ArrayList<>();
 
-        //here we add all the parameters
-        params.add(new BasicNameValuePair("grant_type", "authorization_code"));
+        params.add(new BasicNameValuePair("grant_type", grantType));
         params.add(new BasicNameValuePair("code", authorizationCode));
-        params.add(new BasicNameValuePair("redirect_uri", redirectUri));
-        params.add(new BasicNameValuePair("client_id", clientId));
+        params.add(new BasicNameValuePair("redirect_uri", redirectURI));
+        params.add(new BasicNameValuePair("client_id", clientID));
         params.add(new BasicNameValuePair("code_verifier", codeVerifier));
 
         post.setHeader("Content-Type", "application/x-www-form-urlencoded");
 
         try {
             post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-        } catch (Exception e) {
-            Log.e("SpotifyAuth", "Error in requestAccessToken - setEntity for HTTP POST.");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("SpotifyAuth -- UTF-8 charset not supported");
         }
 
         try {
-            HttpResponse response = client.execute(httpPost);
-
+            HttpResponse response = client.execute(post);
             HttpEntity respEntity = response.getEntity();
 
             if (respEntity != null) {
@@ -112,18 +105,11 @@ public class SpotifyAuth {
                 parseAccessTokenResponse(content);
             }
 
-            
         } catch (ClientProtocolException e) {
-            Log.e("SpotifyAuth", "ClientProtocolException in http response.");
-            e.printStackTrace();
+            throw new RuntimeException("SpotifyAuth -- error in http protocol");
         } catch (IOException e) {
-            Log.e("Spotify Auth", "IOException in http response");
-            e.printStackTrace();
+            throw new RuntimeException("SpotifyAuth -- error in internet connection");
         }
-
-
-
-
     }
 
     private static void parseAccessTokenResponse(String content) {
@@ -139,17 +125,20 @@ public class SpotifyAuth {
         return accessToken;
     }
 
-    private static byte[] genHash() throws NoSuchAlgorithmException {
+    private static byte[] genHash() {
         Random random = new Random();
         codeVerifier = random.ints(48, 123)
                 .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
                 .limit(64)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] encodedhash = digest.digest(
-                codeVerifier.getBytes(StandardCharsets.UTF_8));
-        return encodedhash;
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            return digest.digest(
+                    codeVerifier.getBytes(StandardCharsets.UTF_8));
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("SpotifyAuth -- SHA-256 not available");
+        }
     }
     private static String bytesToHex(byte[] hash) {
         StringBuilder hexString = new StringBuilder(2 * hash.length);

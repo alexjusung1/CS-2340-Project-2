@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
             SpotifyAuth.parseAuthorizationResponse(uri);
             // TODO: Reroute to previous layout/fragment
 
-            binding.textView.setText("Account login");
+            binding.textView.setText(SpotifyAuth.getAccessToken());
         }
 
         binding.button.setOnClickListener(view -> {

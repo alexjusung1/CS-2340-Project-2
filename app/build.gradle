@@ -54,7 +54,7 @@ dependencies {
     implementation 'org.apache.httpcomponents:httpclient:4.5.14'
 
     // parsing JSON data
-    implementation 'com.google.code.gson:gson:2.10'
+    implementation 'com.google.code.gson:gson:2.10.1'
 
 
     // TODO: add more firebase dependencies as needed
