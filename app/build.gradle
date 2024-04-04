@@ -26,6 +26,10 @@ android {
         }
     }
 
+    packagingOptions {
+        pickFirst  'META-INF/*'
+    }
+
     buildFeatures {
         viewBinding true
     }
@@ -51,7 +55,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
 
     // sending HTTP POST requests (access token)
-    implementation 'org.apache.httpcomponents:httpclient:4.5.14'
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.3.1'
 
     // parsing JSON data
     implementation 'com.google.code.gson:gson:2.10.1'

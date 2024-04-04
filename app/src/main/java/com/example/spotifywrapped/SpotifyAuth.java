@@ -8,19 +8,16 @@ import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -76,39 +73,31 @@ public class SpotifyAuth {
     private static void requestAccessToken() {
         final String grantType = "authorization_code";
 
-        HttpClient client = HttpClients.createDefault();
-        HttpPost post = new HttpPost(accessTokenURL);
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpPost post = new HttpPost(accessTokenURL);
+            List<NameValuePair> params = new ArrayList<>();
 
-        List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair("grant_type", grantType));
+            params.add(new BasicNameValuePair("code", authorizationCode));
+            params.add(new BasicNameValuePair("redirect_uri", redirectURI));
+            params.add(new BasicNameValuePair("client_id", clientID));
+            params.add(new BasicNameValuePair("code_verifier", codeVerifier));
 
-        params.add(new BasicNameValuePair("grant_type", grantType));
-        params.add(new BasicNameValuePair("code", authorizationCode));
-        params.add(new BasicNameValuePair("redirect_uri", redirectURI));
-        params.add(new BasicNameValuePair("client_id", clientID));
-        params.add(new BasicNameValuePair("code_verifier", codeVerifier));
+            post.setHeader("Content-Type", "application/x-www-form-urlencoded");
 
-        post.setHeader("Content-Type", "application/x-www-form-urlencoded");
+            post.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
 
-        try {
-            post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("SpotifyAuth -- UTF-8 charset not supported");
-        }
+            client.execute(post, response -> {
+                HttpEntity respEntity = response.getEntity();
 
-        try {
-            HttpResponse response = client.execute(post);
-            HttpEntity respEntity = response.getEntity();
-
-            if (respEntity != null) {
-                // EntityUtils to get the response content
-                String content =  EntityUtils.toString(respEntity);
-                parseAccessTokenResponse(content);
-            }
-
-        } catch (ClientProtocolException e) {
-            throw new RuntimeException("SpotifyAuth -- error in http protocol");
+                if (respEntity != null) {
+                    String content = EntityUtils.toString(respEntity);
+                    parseAccessTokenResponse(content);
+                }
+                return null;
+            });
         } catch (IOException e) {
-            throw new RuntimeException("SpotifyAuth -- error in internet connection");
+            throw new RuntimeException("SpotifyAuth -- IOException during connection");
         }
     }
 
