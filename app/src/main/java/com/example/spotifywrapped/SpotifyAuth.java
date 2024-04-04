@@ -67,7 +67,7 @@ public class SpotifyAuth {
                 throw new RuntimeException("Auth Failed");
             }
         }
-        requestAccessToken();
+        // requestAccessToken();
     }
 
     private static void requestAccessToken() {
