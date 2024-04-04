@@ -2,6 +2,8 @@ package com.example.spotifywrapped;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Base64;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -17,6 +19,8 @@ import com.google.gson.reflect.TypeToken;
 // import org.apache.hc.core5.http.io.entity.EntityUtils;
 // import org.apache.hc.core5.http.message.BasicNameValuePair;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -66,49 +70,54 @@ public class SpotifyAuth {
     }
 
     public static void parseAuthorizationResponse(Uri response) {
-        String[] params = response.toString().split("&");
-        for (int i = 1; i < params.length; i++) {
-            if (params[i].contains("code")) {
-                authorizationCode = params[i].substring(params[i].indexOf("=") + 1);
-            } else if (params[i].contains("error")) {
-                throw new RuntimeException("Auth Failed");
+        String strUrl = response.toString();
+        int question = strUrl.indexOf("code");
+        authorizationCode = strUrl.substring(question + 5);
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(() -> {
+            try {
+                requestAccessTokenNew();
+            } catch (IOException e) {
+                throw new RuntimeException("asdf");
             }
-        }
-        // requestAccessToken();
+        });
     }
 
-    private static void requestAccessTokenOld() {
-        final String grantType = "authorization_code";
+//    private static void requestAccessTokenOld() {
+//        final String grantType = "authorization_code";
+//
+//        try (CloseableHttpClient client = HttpClients.createDefault()) {
+//            HttpPost post = new HttpPost(accessTokenURL);
+//            List<NameValuePair> params = new ArrayList<>();
+//
+//            params.add(new BasicNameValuePair("grant_type", grantType));
+//            params.add(new BasicNameValuePair("code", authorizationCode));
+//            params.add(new BasicNameValuePair("redirect_uri", redirectURI));
+//            params.add(new BasicNameValuePair("client_id", clientID));
+//            params.add(new BasicNameValuePair("code_verifier", codeVerifier));
+//
+//            post.setHeader("Content-Type", "application/x-www-form-urlencoded");
+//
+//            post.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
+//
+//            client.execute(post, response -> {
+//                HttpEntity respEntity = response.getEntity();
+//
+//                if (respEntity != null) {
+//                    String content = EntityUtils.toString(respEntity);
+//                    parseAccessTokenResponse(content);
+//                }
+//                return null;
+//            });
+//        } catch (IOException e) {
+//            throw new RuntimeException("SpotifyAuth -- IOException during connection");
+//        }
+//
+//
+//    }
 
-        try (CloseableHttpClient client = HttpClients.createDefault()) {
-            HttpPost post = new HttpPost(accessTokenURL);
-            List<NameValuePair> params = new ArrayList<>();
-
-            params.add(new BasicNameValuePair("grant_type", grantType));
-            params.add(new BasicNameValuePair("code", authorizationCode));
-            params.add(new BasicNameValuePair("redirect_uri", redirectURI));
-            params.add(new BasicNameValuePair("client_id", clientID));
-            params.add(new BasicNameValuePair("code_verifier", codeVerifier));
-
-            post.setHeader("Content-Type", "application/x-www-form-urlencoded");
-
-            post.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
-
-            client.execute(post, response -> {
-                HttpEntity respEntity = response.getEntity();
-
-                if (respEntity != null) {
-                    String content = EntityUtils.toString(respEntity);
-                    parseAccessTokenResponse(content);
-                }
-                return null;
-            });
-        } catch (IOException e) {
-            throw new RuntimeException("SpotifyAuth -- IOException during connection");
-        }
-    }
-
-    private static void requestAccessTokenNew() {
+    private static void requestAccessTokenNew() throws IOException {
 
         // https://scrapeops.io/java-web-scraping-playbook/java-okhttp-post-requests/
 
@@ -125,14 +134,14 @@ public class SpotifyAuth {
         MediaType contentType = MediaType.get("application/x-www-form-urlencoded");
         RequestBody body = RequestBody.create(formData, contentType);
 
-        Request request = new Request.builder()
+        Request request = new Request.Builder()
             .url(accessTokenURL)
             .post(body)
             .build();
 
         Response response = client.newCall(request).execute();
 
-        System.out.println(response.body().string());
+        System.out.println("XXXXXX" + response.body().string());
     }
 
     private static void parseAccessTokenResponse(String content) {
@@ -148,6 +157,8 @@ public class SpotifyAuth {
         return accessToken;
     }
 
+    public static String _debugGetAuthorizationCode() { return authorizationCode; }
+
     private static byte[] genHash() {
         Random random = new Random();
         codeVerifier = random.ints(48, 123)
@@ -155,6 +166,7 @@ public class SpotifyAuth {
                 .limit(64)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
+        Log.w("FFFFFF", codeVerifier);
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             return digest.digest(
@@ -172,6 +184,7 @@ public class SpotifyAuth {
             }
             hexString.append(hex);
         }
+        Log.w("asdflkasjdlfja", hexString.toString());
         return hexString.toString();
     }
 }
