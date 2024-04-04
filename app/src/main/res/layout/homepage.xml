@@ -31,7 +31,6 @@
 
     <Button
         android:id="@+id/rewrapinfo"
-        style="@style/Widget.MaterialComponents.Button.Icon"
         android:layout_width="316dp"
         android:layout_height="190dp"
         android:background="@drawable/gradient"
