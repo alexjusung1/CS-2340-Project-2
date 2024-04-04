@@ -8,14 +8,21 @@ import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.core5.http.HttpEntity;
-import org.apache.hc.core5.http.NameValuePair;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
-import org.apache.hc.core5.http.message.BasicNameValuePair;
+// import org.apache.hc.client5.http.classic.methods.HttpPost;
+// import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+// import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+// import org.apache.hc.client5.http.impl.classic.HttpClients;
+// import org.apache.hc.core5.http.HttpEntity;
+// import org.apache.hc.core5.http.NameValuePair;
+// import org.apache.hc.core5.http.io.entity.EntityUtils;
+// import org.apache.hc.core5.http.message.BasicNameValuePair;
+
+import java.util.concurrent.TimeUnit;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -70,7 +77,7 @@ public class SpotifyAuth {
         // requestAccessToken();
     }
 
-    private static void requestAccessToken() {
+    private static void requestAccessTokenOld() {
         final String grantType = "authorization_code";
 
         try (CloseableHttpClient client = HttpClients.createDefault()) {
@@ -99,6 +106,33 @@ public class SpotifyAuth {
         } catch (IOException e) {
             throw new RuntimeException("SpotifyAuth -- IOException during connection");
         }
+    }
+
+    private static void requestAccessTokenNew() {
+
+        // https://scrapeops.io/java-web-scraping-playbook/java-okhttp-post-requests/
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
+        
+        String formData = "grant_type=authorization_code"
+            .concat("&code=" + authorizationCode)
+            .concat("&redirect_uri=" + redirectURI)
+            .concat("&client_id=" + clientID)
+            .concat("&code_verifier=" + codeVerifier);
+
+        MediaType contentType = MediaType.get("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(formData, contentType);
+
+        Request request = new Request.builder()
+            .url(accessTokenURL)
+            .post(body)
+            .build();
+
+        Response response = client.newCall(request).execute();
+
+        System.out.println(response.body().string());
     }
 
     private static void parseAccessTokenResponse(String content) {
