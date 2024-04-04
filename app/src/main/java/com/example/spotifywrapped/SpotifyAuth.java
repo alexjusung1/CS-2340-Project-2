@@ -176,6 +176,9 @@ public class SpotifyAuth {
         }
     }
     private static String bytesToHex(byte[] hash) {
+        return Base64.encodeToString(hash, Base64.DEFAULT);
+        //Old
+        /*
         StringBuilder hexString = new StringBuilder(2 * hash.length);
         for (byte b : hash) {
             String hex = Integer.toHexString(0xff & b);
@@ -185,7 +188,7 @@ public class SpotifyAuth {
             hexString.append(hex);
         }
         Log.w("asdflkasjdlfja", hexString.toString());
-        return hexString.toString();
+        return hexString.toString();*/
     }
 }
 
