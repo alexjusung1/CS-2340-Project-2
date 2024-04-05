@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.spotifywrapped.databinding.ActivityMainBinding;
 
@@ -32,14 +33,22 @@ public class MainActivity extends AppCompatActivity {
             SpotifyAuth.parseAuthorizationResponse(uri);
             // TODO: Reroute to previous layout/fragment
 
-            binding.textView.setText(SpotifyAuth.getAccessToken());
+            SpotifyAuth.useAccessToken(accessToken -> {
+                if (isFinishing()) { return; }
+                runOnUiThread(() -> binding.textView.setText(accessToken));
+            });
+
+            SpotifyAuth.useAccessToken(accessToken -> {
+                if (isFinishing()) { return; }
+                runOnUiThread(() -> binding.textView2.setText("test"));
+            });
         }
 
         binding.button.setOnClickListener(view -> {
             try {
                 startActivity(SpotifyAuth.getAuthorizationIntent());
             } catch (Exception e) {
-                Log.e(TAG, "some error??");
+                Toast.makeText(this, "Error in SpotifyAuth", Toast.LENGTH_SHORT).show();
             }
         });
     }

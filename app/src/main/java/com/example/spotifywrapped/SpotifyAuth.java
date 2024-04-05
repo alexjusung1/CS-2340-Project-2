@@ -7,41 +7,45 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+@FunctionalInterface
+interface AccessTokenAction {
+    void performAction(String accessToken);
+}
+
 public class SpotifyAuth {
     private static String authorizationCode;
-    private static String accessToken;
-    private static int expiresIn;
-    private static Map<String, Object> accessTokenResponseJSON;
-    
-    private static final String codeChallengeMethod = "S256";
     private static String codeVerifier;
-    private static final String allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
+    private static String accessToken;
+    private static boolean accessTokenExpired;
+    private static String refreshToken;
 
     private static final String redirectURI = "https://spotifywrappedapp-819f6.firebaseapp.com/app-data";
     private static final String clientID = "5f164b1b815e411298a2df84bae6ddbb";
 
     private static final OkHttpClient authClient;
-
     static {
         // AuthClient setup
         authClient = new OkHttpClient.Builder()
@@ -50,7 +54,13 @@ public class SpotifyAuth {
     }
 
     private static final String authCodeURI = "https://accounts.spotify.com/authorize";
-    private static final String accessTokenURI = "https://accounts.spotify.com/api/token";
+    private static final String tokenURI = "https://accounts.spotify.com/api/token";
+
+    private static final String codeChallengeMethod = "S256";
+    private static final String allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
+
+    private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    private static CountDownLatch accessTokenLatch;
 
     private static final String TAG = "SpotifyAuth";
 
@@ -80,17 +90,34 @@ public class SpotifyAuth {
         authorizationCode = response.getQueryParameter("code");
         Log.d(TAG, "Authorization Code: " + authorizationCode);
 
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.submit(() -> {
-            try {
-                requestAccessTokenNew();
-            } catch (IOException e) {
-                throw new RuntimeException("SpotifyAuth -- auth token failed");
-            }
-        });
+        requestAccessToken();
     }
 
-    private static void requestAccessTokenNew() throws IOException {
+    public static void useAccessToken(AccessTokenAction action) {
+        if (authorizationCode == null) {
+            return;
+        }
+
+        if (accessTokenExpired) {
+            refreshAccessToken();
+        }
+
+        try {
+            accessTokenLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Perform action with the current access token
+        action.performAction(accessToken);
+    }
+
+    public static void debugForceRefresh() {
+        accessTokenExpired = true;
+    }
+
+    private static void requestAccessToken() {
+        accessTokenLatch = new CountDownLatch(1);
         // https://scrapeops.io/java-web-scraping-playbook/java-okhttp-post-requests/
         String formData = "grant_type=authorization_code"
             .concat("&code=" + authorizationCode)
@@ -102,29 +129,70 @@ public class SpotifyAuth {
         RequestBody body = RequestBody.create(formData, contentType);
 
         Request request = new Request.Builder()
-            .url(accessTokenURI)
+            .url(tokenURI)
             .post(body)
             .build();
 
-        Response response = authClient.newCall(request).execute();
+        authClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+            }
 
-        System.out.println("XXXXXX" + response.body().string());
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                parseTokenResponse(response.body().charStream());
+            }
+        });
     }
 
-    private static void parseAccessTokenResponse(String content) {
-        Gson gson = new Gson();
-        Type type = new TypeToken<Map<String, Object>>(){}.getType();
-        Map<String, Object> jsonMap = gson.fromJson(content, type);
+    private static synchronized void refreshAccessToken() {
+        scheduler.shutdownNow();
+        accessTokenLatch = new CountDownLatch(1);
+        RequestBody formBody = new FormBody.Builder()
+                .addEncoded("grant_type", "refresh_token")
+                .addEncoded("refresh_token", refreshToken)
+                .addEncoded("client_id", clientID)
+                .build();
 
-        accessToken = (String) jsonMap.get("access_token");
-        accessTokenResponseJSON = jsonMap;
+        Request request = new Request.Builder()
+                .url(tokenURI)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .post(formBody)
+                .build();
+
+        authClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.w("SDF", "asdfa");
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                parseTokenResponse(response.body().charStream());
+                response.body().close();
+            }
+        });
     }
 
-    public static String getAccessToken() {
-        // TODO: check if expired and start background thread to refresh token
-        return accessToken;
-    }
+    private static void parseTokenResponse(Reader jsonReader) {
+        JsonObject tokenBody = JsonParser.parseReader(jsonReader)
+                .getAsJsonObject();
 
+        accessToken = tokenBody.get("access_token").getAsString();
+        Log.d(TAG, "Access Token: " + accessToken);
+        accessTokenExpired = false;
+
+        refreshToken = tokenBody.get("refresh_token").getAsString();
+        int timeout = tokenBody.get("expires_in").getAsInt();
+
+        scheduler.schedule(() -> {
+            accessTokenExpired = true;
+        }, timeout, TimeUnit.SECONDS);
+
+        accessTokenLatch.countDown();
+    }
     private static String genCodeVerifier() {
         SecureRandom rng = new SecureRandom();
 
@@ -144,35 +212,4 @@ public class SpotifyAuth {
             throw new RuntimeException("SpotifyAuth -- SHA-256 not available");
         }
     }
-
-//    private static byte[] genHash() {
-//        Random random = new Random();
-//        codeVerifier = random.ints(48, 123)
-//                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
-//                .limit(64)
-//                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-//                .toString();
-//        Log.w("FFFFFF", codeVerifier);
-//        try {
-//            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-//            return digest.digest(
-//                    codeVerifier.getBytes(StandardCharsets.UTF_8));
-//        } catch (NoSuchAlgorithmException e) {
-//            throw new RuntimeException("SpotifyAuth -- SHA-256 not available");
-//        }
-//    }
-//    private static String bytesToHex(byte[] hash) {
-//        return Base64.encodeToString(hash, Base64.DEFAULT);
-//        StringBuilder hexString = new StringBuilder(2 * hash.length);
-//        for (byte b : hash) {
-//            String hex = Integer.toHexString(0xff & b);
-//            if (hex.length() == 1) {
-//                hexString.append('0');
-//            }
-//            hexString.append(hex);
-//        }
-//        Log.w("asdflkasjdlfja", hexString.toString());
-//        return hexString.toString();
-//    }
 }
-
