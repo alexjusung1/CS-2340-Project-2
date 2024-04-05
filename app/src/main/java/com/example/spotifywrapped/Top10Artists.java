@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager2.widget.ViewPager2;
+
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationBarItemView;
 
@@ -18,6 +20,9 @@ public class Top10Artists extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rewrapped_template_artist);
+
+        ViewPager2 vp = findViewById(R.id.viewPager);
+        vp.setAdapter(new PagerAdapterA(this));
 
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
 //        TextView numberTextView = findViewById(R.id.number);
