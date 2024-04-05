@@ -33,4 +33,8 @@
     <string name="notification">Notification</string>
     <string name="artist_name">Artist Name</string>
     <string name="genre">Genre</string>
+    <string name="stream_number">69420</string>
+    <string name="top_artists">Top 10 Artists</string>
+    <string name="top_songs">Top 10 Songs</string>
+
 </resources>
