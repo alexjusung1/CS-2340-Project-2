@@ -35,10 +35,11 @@ public class MainActivity extends AppCompatActivity {
 
             SpotifyAuth.useAccessToken(accessToken -> {
                 if (isFinishing()) { return; }
-                runOnUiThread(() -> {
-                    //binding.textView.setText(accessToken);
-                    binding.textView.setText(SpotifyAPI.getTopArtists(TimeRange.SHORT, 1, accessToken).get(0).name);
-                });
+                SpotifyAPI.runWhenReady(topArtists -> {
+                    runOnUiThread(() -> {
+                        binding.textView.setText(topArtists.get(0).name);
+                    });
+                }, TimeRange.SHORT, 1, accessToken);
             });
 
             SpotifyAuth.useAccessToken(accessToken -> {

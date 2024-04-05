@@ -59,8 +59,8 @@ public class SpotifyAuth {
     private static final String codeChallengeMethod = "S256";
     private static final String allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
 
-    private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-    private static CountDownLatch accessTokenLatch;
+    private static final PausableThreadPoolExecutor accessTokenExecutor = PausableThreadPoolExecutor.createDefaultInstance();
+    private static final ScheduledExecutorService timeoutScheduler = Executors.newSingleThreadScheduledExecutor();
 
     private static final String TAG = "SpotifyAuth";
 
@@ -98,18 +98,9 @@ public class SpotifyAuth {
             return;
         }
 
-        if (accessTokenExpired) {
-            refreshAccessToken();
-        }
-
-        try {
-            accessTokenLatch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        // Perform action with the current access token
-        action.performAction(accessToken);
+        accessTokenExecutor.submit(() -> {
+            action.performAction(accessToken);
+        });
     }
 
     public static void debugForceRefresh() {
@@ -117,7 +108,7 @@ public class SpotifyAuth {
     }
 
     private static void requestAccessToken() {
-        accessTokenLatch = new CountDownLatch(1);
+        accessTokenExecutor.pause();
         // https://scrapeops.io/java-web-scraping-playbook/java-okhttp-post-requests/
         String formData = "grant_type=authorization_code"
             .concat("&code=" + authorizationCode)
@@ -147,8 +138,7 @@ public class SpotifyAuth {
     }
 
     private static synchronized void refreshAccessToken() {
-        scheduler.shutdownNow();
-        accessTokenLatch = new CountDownLatch(1);
+        timeoutScheduler.shutdownNow();
         RequestBody formBody = new FormBody.Builder()
                 .addEncoded("grant_type", "refresh_token")
                 .addEncoded("refresh_token", refreshToken)
@@ -187,11 +177,13 @@ public class SpotifyAuth {
         refreshToken = tokenBody.get("refresh_token").getAsString();
         int timeout = tokenBody.get("expires_in").getAsInt();
 
-        scheduler.schedule(() -> {
+        timeoutScheduler.schedule(() -> {
             accessTokenExpired = true;
+            accessTokenExecutor.pause();
+            refreshAccessToken();
         }, timeout, TimeUnit.SECONDS);
 
-        accessTokenLatch.countDown();
+        accessTokenExecutor.resume();
     }
     private static String genCodeVerifier() {
         SecureRandom rng = new SecureRandom();

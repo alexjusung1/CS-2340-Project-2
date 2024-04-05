@@ -1,5 +1,6 @@
 package com.example.spotifywrapped;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 public class ArtistData {

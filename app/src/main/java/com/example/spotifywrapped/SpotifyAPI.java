@@ -10,6 +10,7 @@ import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -22,6 +23,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+@FunctionalInterface
+interface TopArtistsAction {
+    void performAction(List<ArtistData> topArtists);
+}
+
 public class SpotifyAPI {
     private static final OkHttpClient reqClient;
     static {
@@ -30,8 +36,14 @@ public class SpotifyAPI {
                 .readTimeout(30, TimeUnit.SECONDS)
                 .build();
     }
-    private static String topItemURL = "https://api.spotify.com/v1/me/top";
+    private static String topItemURL = "https://api.spotify.com/v1/me/top/artists";
+    private static Thread currentThread;
     private static List<ArtistData> topArtists;
+
+    public static void runWhenReady(TopArtistsAction action, TimeRange range, int count, String token) {
+        currentThread = new Thread(() -> action.performAction(topArtists));
+        getTopArtists(range, count, token);
+    }
 
     public static List<ArtistData> getTopArtists(TimeRange range, int count, String token) {
         String offset = "0";
@@ -47,6 +59,8 @@ public class SpotifyAPI {
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
 
+        Log.d("SpotifyAPI", request.toString());
+
         reqClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -56,7 +70,9 @@ public class SpotifyAPI {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                parseArtists(response.body().charStream());
+                String body = response.body().string();
+                Log.e("SpotifyAPI", body + "asdf");
+                parseArtists(new StringReader(body));
                 response.body().close();
             }
         });
@@ -72,7 +88,7 @@ public class SpotifyAPI {
         for (int i = 0; i < artistJsons.size(); i++) {
             topArtists.add(new ArtistData(artistJsons.get(i).getAsJsonObject()));
         }
-
+        currentThread.start();
     }
 
     public static List<TrackData> getTopTracks(TimeRange range, int count) {
