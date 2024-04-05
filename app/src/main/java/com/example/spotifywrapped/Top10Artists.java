@@ -20,10 +20,10 @@ public class Top10Artists extends AppCompatActivity {
         setContentView(R.layout.rewrapped_template_artist);
 
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
-        TextView numberTextView = findViewById(R.id.number);
-        TextView songNameTextView = findViewById(R.id.song_name);
-        TextView artistNameTextView = findViewById(R.id.artist_name);
-        TextView albumNameTextView = findViewById(R.id.album_name);
+//        TextView numberTextView = findViewById(R.id.number);
+//        TextView songNameTextView = findViewById(R.id.song_name);
+//        TextView artistNameTextView = findViewById(R.id.artist_name);
+//        TextView albumNameTextView = findViewById(R.id.album_name);
 
         Spinner dropdown = findViewById(R.id.dropdownMenu);
         String[] items = new String[]{"Short Term", "Medium Term", "Long Term"};
@@ -37,10 +37,10 @@ public class Top10Artists extends AppCompatActivity {
             String artistName = extras.getString("artistName");
             String albumName = extras.getString("albumName");
 
-            numberTextView.setText(number);
-            songNameTextView.setText(songName);
-            artistNameTextView.setText(artistName);
-            albumNameTextView.setText(albumName);
+//            numberTextView.setText(number);
+//            songNameTextView.setText(songName);
+//            artistNameTextView.setText(artistName);
+//            albumNameTextView.setText(albumName);
         }
 
         topAppBar.setOnClickListener(new View.OnClickListener() {
