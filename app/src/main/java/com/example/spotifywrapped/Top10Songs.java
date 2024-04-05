@@ -32,16 +32,16 @@ public class Top10Songs extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         dropdown.setAdapter(adapter);
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            String number = extras.getString("number");
-            String artistName = extras.getString("artistName");
-            String albumName = extras.getString("albumName");
-
+//        Bundle extras = getIntent().getExtras();
+//        if (extras != null) {
+//            String number = extras.getString("number");
+//            String artistName = extras.getString("artistName");
+//            String albumName = extras.getString("albumName");
+//
 //            numberTextView.setText(number);
 //            artistNameTextView.setText(artistName);
 //            albumNameTextView.setText(albumName);
-        }
+//        }
 
         topAppBar.setOnClickListener(new View.OnClickListener() {
             @Override
