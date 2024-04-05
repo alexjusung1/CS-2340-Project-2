@@ -3,6 +3,8 @@ package com.example.spotifywrapped;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.spotifywrapped.databinding.ActivityMainBinding;
 
+import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,6 +40,13 @@ public class MainActivity extends AppCompatActivity {
                 if (isFinishing()) { return; }
                 runOnUiThread(() -> {
                     binding.textView.setText(topArtists.get(0).name);
+                    try {
+                        URL url = new URL(topArtists.get(0).artistImageURI);
+                        Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                        binding.imageView.setImageBitmap(bmp);
+                    } catch (Exception e) {
+                        Log.e("URL", "Image URL failed");
+                    }
                 });
             }, TimeRange.SHORT, 1);
         }
