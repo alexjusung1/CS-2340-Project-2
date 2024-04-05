@@ -13,8 +13,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -36,51 +34,42 @@ public class SpotifyAPI {
                 .readTimeout(30, TimeUnit.SECONDS)
                 .build();
     }
-    private static String topItemURL = "https://api.spotify.com/v1/me/top/artists";
-    private static Thread currentThread;
-    private static List<ArtistData> topArtists;
+    private static final String topItemURL = "https://api.spotify.com/v1/me/top/artists";
 
-    public static void runWhenReady(TopArtistsAction action, TimeRange range, int count, String token) {
-        currentThread = new Thread(() -> action.performAction(topArtists));
-        getTopArtists(range, count, token);
+    public static void getTopArtists(TopArtistsAction action, TimeRange range, int count) {
+        new Thread(() -> SpotifyAuth.useAccessToken(accessToken -> {
+            String offset = "0";
+
+            String reqURL = topItemURL
+                    .concat("?time_range=" + range.getValue())
+                    .concat("&limit" + count)
+                    .concat("&offset=" + offset);
+
+            Request request = new Request.Builder()
+                    .url(reqURL)
+                    .addHeader("Authorization", "Bearer " + accessToken)
+                    .build();
+
+            reqClient.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    Log.w("API Error", "Top Artists Call Failed");
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    String body = response.body().string();
+                    Log.e("SpotifyAPI", body);
+                    parseArtistsAndRun(new StringReader(body), action);
+                    response.body().close();
+                }
+            });
+        })).start();
     }
 
-    public static List<ArtistData> getTopArtists(TimeRange range, int count, String token) {
-        String offset = "0";
-        topArtists = new ArrayList<>();
-
-        String reqURL = topItemURL
-                .concat("?time_range=" + range.getValue())
-                .concat("&limit" + count)
-                .concat("&offset=" + offset);
-
-        Request request = new Request.Builder()
-                .url(reqURL)
-                .addHeader("Authorization", "Bearer " + token)
-                .build();
-
-        Log.d("SpotifyAPI", request.toString());
-
-        reqClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.w("API Error", "Top Artists Call Failed");
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                String body = response.body().string();
-                Log.e("SpotifyAPI", body + "asdf");
-                parseArtists(new StringReader(body));
-                response.body().close();
-            }
-        });
-
-        return topArtists;
-    }
-
-    private static void parseArtists(Reader jsonReader) {
+    private static void parseArtistsAndRun(Reader jsonReader, TopArtistsAction action) {
+        List<ArtistData> topArtists = new ArrayList<>();
         JsonObject artistBody = JsonParser.parseReader(jsonReader)
                 .getAsJsonObject();
 
@@ -88,7 +77,7 @@ public class SpotifyAPI {
         for (int i = 0; i < artistJsons.size(); i++) {
             topArtists.add(new ArtistData(artistJsons.get(i).getAsJsonObject()));
         }
-        currentThread.start();
+        action.performAction(topArtists);
     }
 
     public static List<TrackData> getTopTracks(TimeRange range, int count) {

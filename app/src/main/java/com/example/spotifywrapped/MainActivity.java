@@ -33,19 +33,12 @@ public class MainActivity extends AppCompatActivity {
             SpotifyAuth.parseAuthorizationResponse(uri);
             // TODO: Reroute to previous layout/fragment
 
-            SpotifyAuth.useAccessToken(accessToken -> {
+            SpotifyAPI.getTopArtists(topArtists -> {
                 if (isFinishing()) { return; }
-                SpotifyAPI.runWhenReady(topArtists -> {
-                    runOnUiThread(() -> {
-                        binding.textView.setText(topArtists.get(0).name);
-                    });
-                }, TimeRange.SHORT, 1, accessToken);
-            });
-
-            SpotifyAuth.useAccessToken(accessToken -> {
-                if (isFinishing()) { return; }
-                runOnUiThread(() -> binding.textView2.setText("test"));
-            });
+                runOnUiThread(() -> {
+                    binding.textView.setText(topArtists.get(0).name);
+                });
+            }, TimeRange.SHORT, 1);
         }
 
         binding.button.setOnClickListener(view -> {
