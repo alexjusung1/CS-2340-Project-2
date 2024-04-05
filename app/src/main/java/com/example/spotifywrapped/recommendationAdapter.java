@@ -30,7 +30,7 @@ public class recommendationAdapter extends RecyclerView.Adapter<recommendationAd
         Artist artist = artistList.get(position);
         holder.artistNameTextView.setText(artist.getName());
         holder.genreTextView.setText(artist.getGenre());
-        new DownloadImageView(holder.artistImageView).execute(artist.getImageUrl());
+        //new DownloadImageView(holder.artistImageView).execute(artist.getImageUrl());
     }
 
     @Override
