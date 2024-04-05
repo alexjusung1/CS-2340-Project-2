@@ -1,6 +1,5 @@
 package com.example.spotifywrapped;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -21,7 +20,7 @@ public class Top10Songs extends AppCompatActivity {
         setContentView(R.layout.rewrapped_template_songs);
 
         ViewPager2 vp = findViewById(R.id.viewPager);
-        vp.setAdapter(new PagerAdapter(this));
+        vp.setAdapter(new PagerAdapterS(this));
 
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         TextView numberTextView = findViewById(R.id.number);
