@@ -26,6 +26,8 @@
         <activity android:name=".RewrapInfoPage" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".SettingsFragment" />
+        <activity android:name=".recommendations" />
+        <activity android:name=".Top10Artists" />
     </application>
 
 </manifest>
