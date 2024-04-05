@@ -36,5 +36,6 @@
     <string name="stream_number">69420</string>
     <string name="top_artists">Top 10 Artists</string>
     <string name="top_songs">Top 10 Songs</string>
+    <string name="username_display">USERNAME</string>
 
 </resources>

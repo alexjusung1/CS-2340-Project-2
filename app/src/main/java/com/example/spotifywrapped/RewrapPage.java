@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,7 +15,7 @@ public class RewrapPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rewrap_page);
 
-        Button backBtn = findViewById(R.id.back);
+        ImageView backBtn = findViewById(R.id.back);
         Button frontBtn = findViewById(R.id.forward);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
