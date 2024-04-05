@@ -15,6 +15,7 @@ public class RewrapInfoPage extends AppCompatActivity {
         setContentView(R.layout.rewrap_info_page);
 
         ImageView btnBack = findViewById(R.id.back);
+        Button topArtist = findViewById(R.id.top_artist);
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -24,6 +25,13 @@ public class RewrapInfoPage extends AppCompatActivity {
                 } else if (Homepage.pastPage == 1) {
                     startActivity(new Intent(RewrapInfoPage.this, RewrapPage.class));
                 }
+            }
+        });
+
+        topArtist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(RewrapInfoPage.this, Top10Artists.class));
             }
         });
     }
