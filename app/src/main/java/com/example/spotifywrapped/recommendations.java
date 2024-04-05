@@ -23,6 +23,7 @@ public class recommendations extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = RecommendationsDisplayBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
         recyclerView = binding.recommendationsRecycler;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 

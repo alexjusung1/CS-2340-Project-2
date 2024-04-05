@@ -21,6 +21,16 @@
             app:menu="@menu/artist_top_app_bar"
             app:navigationIcon="@drawable/baseline_arrow_back_24" />
 
+        <Spinner
+            android:id="@+id/dropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/btn_dropdown"
+            android:spinnerMode="dropdown"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="1dp" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,10 +39,12 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
-<!--change font size and font style during editing process-->
+        <!--change font size and font style during editing process-->
+
         <TextView
             android:id="@+id/number"
             android:layout_width="wrap_content"
@@ -90,6 +102,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/music_album_view"
             app:layout_constraintVertical_bias="0.205" />
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
