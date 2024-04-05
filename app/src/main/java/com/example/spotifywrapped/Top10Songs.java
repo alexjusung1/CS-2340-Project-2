@@ -16,11 +16,10 @@ public class Top10Songs extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.rewrapped_template_artist);
+        setContentView(R.layout.rewrapped_template_songs);
 
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         TextView numberTextView = findViewById(R.id.number);
-        TextView songNameTextView = findViewById(R.id.song_name);
         TextView artistNameTextView = findViewById(R.id.artist_name);
         TextView albumNameTextView = findViewById(R.id.album_name);
 
@@ -32,12 +31,10 @@ public class Top10Songs extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             String number = extras.getString("number");
-            String songName = extras.getString("songName");
             String artistName = extras.getString("artistName");
             String albumName = extras.getString("albumName");
 
             numberTextView.setText(number);
-            songNameTextView.setText(songName);
             artistNameTextView.setText(artistName);
             albumNameTextView.setText(albumName);
         }
