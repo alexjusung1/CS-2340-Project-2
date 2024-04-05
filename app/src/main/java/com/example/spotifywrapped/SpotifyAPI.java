@@ -74,4 +74,8 @@ public class SpotifyAPI {
         }
 
     }
+
+    public static List<TrackData> getTopTracks(TimeRange range, int count) {
+        return new ArrayList<>(count);
+    }
 }
