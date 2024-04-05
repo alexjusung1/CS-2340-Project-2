@@ -1,12 +1,16 @@
 package com.example.spotifywrapped;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.navigation.NavigationBarItemView;
 
 public class Top10Artists extends AppCompatActivity {
 
@@ -38,5 +42,12 @@ public class Top10Artists extends AppCompatActivity {
             artistNameTextView.setText(artistName);
             albumNameTextView.setText(albumName);
         }
+
+        topAppBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Top10Artists.this, RewrapInfoPage.class));
+            }
+        });
     }
 }
