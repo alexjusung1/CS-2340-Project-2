@@ -137,6 +137,7 @@ public class SpotifyAuth {
         });
     }
 
+    // TODO: refreshing is still kinda broken
     private static synchronized void refreshAccessToken() {
         timeoutScheduler.shutdownNow();
         RequestBody formBody = new FormBody.Builder()

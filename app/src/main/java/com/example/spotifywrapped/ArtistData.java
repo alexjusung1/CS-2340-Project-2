@@ -19,6 +19,6 @@ public class ArtistData {
                 .getAsInt();
 
         JsonArray pictures = jsonObject.get("images").getAsJsonArray();
-        artistImageURI = pictures.get(0).getAsJsonObject().get("url").toString();
+        artistImageURI = pictures.get(0).getAsJsonObject().get("url").getAsString();
     }
 }
