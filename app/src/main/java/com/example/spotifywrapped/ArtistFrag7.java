@@ -11,12 +11,12 @@ import androidx.fragment.app.Fragment;
 
 import com.example.spotifywrapped.R;
 
-public class SongFrag3 extends Fragment {
+public class ArtistFrag7 extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.song_frag_3, container, false);
+        return inflater.inflate(R.layout.artist_frag_7, container, false);
     }
 }
