@@ -19,6 +19,7 @@ public class Homepage extends AppCompatActivity {
         Button rewrapInfo = findViewById(R.id.rewrapinfo);
         Button pastRewrap = findViewById(R.id.past_rewrap);
         ImageView settings = findViewById(R.id.setting);
+        Button recommendations = findViewById(R.id.recommendation);
 //        change later
 
         rewrapInfo.setOnClickListener(new View.OnClickListener() {
@@ -42,6 +43,13 @@ public class Homepage extends AppCompatActivity {
             public void onClick(View v) {
                 pastPage = 0;
                 startActivity(new Intent(Homepage.this, SettingsFragment.class));
+            }
+        });
+
+        recommendations.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Homepage.this, recommendations.class));
             }
         });
     }
