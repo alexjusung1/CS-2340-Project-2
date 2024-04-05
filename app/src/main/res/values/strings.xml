@@ -31,4 +31,6 @@
     <string name="email">Email</string>
     <string name="setting">Setting</string>
     <string name="notification">Notification</string>
+    <string name="artist_name">Artist Name</string>
+    <string name="genre">Genre</string>
 </resources>
