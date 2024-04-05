@@ -18,6 +18,7 @@ import java.security.NoSuchAlgorithmException;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private ActivityMainBinding binding;
+    Bitmap bmp = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,15 +42,23 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     binding.textView.setText(topArtists.get(0).name);
                     try {
+                        Log.d("MainActivity", topArtists.get(0).artistImageURI);
                         URL url = new URL(topArtists.get(0).artistImageURI);
-                        Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                        bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
                         binding.imageView.setImageBitmap(bmp);
                     } catch (Exception e) {
-                        Log.e("URL", "Image URL failed");
+                        Log.e("URL", e.getMessage());
+                        e.printStackTrace();
                     }
                 });
             }, TimeRange.SHORT, 1);
         }
+
+        binding.button2.setOnClickListener(view -> {
+            if (bmp != null) {
+                binding.imageView.setImageBitmap(bmp);
+            }
+        });
 
         binding.button.setOnClickListener(view -> {
             try {
@@ -59,4 +68,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }
