@@ -28,6 +28,7 @@
         <activity android:name=".SettingsFragment" />
         <activity android:name=".recommendations" />
         <activity android:name=".Top10Artists" />
+        <activity android:name=".Top10Songs"/>
     </application>
 
 </manifest>
