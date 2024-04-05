@@ -9,4 +9,8 @@ public class SpotifyAPI {
     public static List<ArtistData> getTopArtists(TimeRange range, int count) {
         return new ArrayList<>(count);
     }
+
+    public static List<TrackData> getTopTracks(TimeRange range, int count) {
+        return new ArrayList<>(count);
+    }
 }
