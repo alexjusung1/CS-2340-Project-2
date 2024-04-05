@@ -21,6 +21,17 @@
             app:menu="@menu/artist_top_app_bar"
             app:navigationIcon="@drawable/baseline_arrow_back_24" />
 
+
+        <Spinner
+            android:id="@+id/dropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/btn_dropdown"
+            android:spinnerMode="dropdown"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="1dp" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -38,43 +49,47 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/number"
+        android:textSize="40sp"
         app:layout_constraintBottom_toTopOf="@+id/artist_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-    <TextView
-        android:id="@+id/artist_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="48dp"
-        android:text="@string/artist"
-        app:layout_constraintBottom_toTopOf="@+id/music_album_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/number"
-        app:layout_constraintVertical_bias="0.58" />
+        <TextView
+            android:id="@+id/artist_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="48dp"
+            android:text="@string/artist"
+            android:textSize="35sp"
+            app:layout_constraintBottom_toTopOf="@+id/music_album_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/number"
+            app:layout_constraintVertical_bias="0.58" />
+
 
         <ImageView
             android:id="@+id/music_album_view"
-            android:layout_width="216dp"
-            android:layout_height="226dp"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
             android:layout_gravity="center"
             android:contentDescription="@string/description"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintHorizontal_bias="0.495"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.579"
             tools:srcCompat="@tools:sample/avatars" />
 
-
-    <TextView
+        <TextView
         android:id="@+id/stream_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/stream_number"
+        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -86,6 +101,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/album"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
