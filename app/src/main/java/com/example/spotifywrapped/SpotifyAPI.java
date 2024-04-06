@@ -52,7 +52,7 @@ public class SpotifyAPI {
     private static final String topTracksURL = "https://api.spotify.com/v1/me/top/tracks";
 
     public static void getTopArtists(TopArtistsAction action, TimeRange range, int count) {
-        new Thread(() -> SpotifyAuth.useAccessToken(accessToken -> {
+        SpotifyAuth.useAccessToken(accessToken -> {
             String offset = "0";
 
             String reqURL = topArtistsURL
@@ -80,7 +80,7 @@ public class SpotifyAPI {
                     response.body().close();
                 }
             });
-        })).start();
+        });
     }
 
     private static void parseArtistsAndRun(Reader jsonReader, TopArtistsAction action) {
@@ -96,7 +96,7 @@ public class SpotifyAPI {
     }
 
     public static void getTopTracks(TopTracksAction action, TimeRange range, int count) {
-        new Thread (() -> SpotifyAuth.useAccessToken(accessToken -> {
+        SpotifyAuth.useAccessToken(accessToken -> {
             String query = topTracksURL
                 .concat("?time_range=" + range.getValue())
                 .concat("&limit" + count)
@@ -119,17 +119,14 @@ public class SpotifyAPI {
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                     String body = response.body().string();
                     // Log.e("SpotifyAPI", body) // in case of error
-                    parseTracksandRun(new StringReader(body), action);
+                    parseTracksAndRun(new StringReader(body), action);
                     response.body().close();
                 }
             });
-
-            
-        })).start();
-        
+        });
     }
 
-    public static void parseTracksandRun(Reader jsonReader, TopTracksAction action) {
+    public static void parseTracksAndRun(Reader jsonReader, TopTracksAction action) {
         List<TrackData> topTracks = new ArrayList<>();
 
         JsonObject body = JsonParser.parseReader(jsonReader).getAsJsonObject();
@@ -137,43 +134,29 @@ public class SpotifyAPI {
         JsonArray items = body.get("items").getAsJsonArray();
 
         for (int i = 0; i < items.size(); i++) {
-
-            JsonObject curr = items.get(i).getAsJsonObject();
-            JsonObject album = curr.get("album").getAsJsonObject();
-            JsonObject primaryArtist = curr.get("artists").getAsJsonArray().get(0).getAsJsonObject();
-
-            String name = curr.get("name").getAsString();
-            String albumName = album.get("name").getAsString();
-            String albumImageURL = album.get("images").getAsJsonArray().get(1).getAsJsonObject().get("url").getAsString();
-            // for this one, album images has 3 different resolutions. index 2 is 300x300
-
-            String artistName = primaryArtist.get("name").getAsString();
-            String audioURL = curr.get("preview_url").getAsString();
-            topTracks.add(new TrackData(name, albumName, albumImageURL, artistName, audioURL));
+            topTracks.add(new TrackData(items.get(i).getAsJsonObject()));
         }
 
         action.performAction(topTracks);
     }
 
-    public static void fetchImageFromUrl(FetchImageAction action, URL url) {
-        new Thread(() -> {
-            Request request = new Request.Builder()
+    public static void fetchImageFromURL(FetchImageAction action, URL url) {
+        Request request = new Request.Builder()
                     .url(url)
                     .build();
 
-            reqClient.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    Log.e("SpotifyAPI", "Failed to fetch image from URL");
-                    e.printStackTrace();
-                }
+        reqClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.e("SpotifyAPI", "Failed to fetch image from URL");
+                e.printStackTrace();
+            }
 
-                @Override
-                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                    InputStream imageStream = response.body().byteStream();
-                    action.performAction(BitmapFactory.decodeStream(imageStream));
-                }
-            });
-        }).start();
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                InputStream imageStream = response.body().byteStream();
+                action.performAction(BitmapFactory.decodeStream(imageStream));
+            }
+        });
     }
 }

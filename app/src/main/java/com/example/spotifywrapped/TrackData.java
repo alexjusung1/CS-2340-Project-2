@@ -10,15 +10,16 @@ public class TrackData {
     String artistName;
     String audioURL;
 
+    public TrackData(JsonObject jsonObject) {
+        JsonObject album = jsonObject.get("album").getAsJsonObject();
+        JsonObject primaryArtist = jsonObject.get("artists").getAsJsonArray().get(0).getAsJsonObject();
 
-    public TrackData(String name, 
-        String albumName, String albumImageURL, String artistName, 
-        String songPreviewURL) {
+        name = jsonObject.get("name").getAsString();
+        albumName = album.get("name").getAsString();
+        albumImageUrl = album.get("images").getAsJsonArray().get(1).getAsJsonObject().get("url").getAsString();
+        // for this one, album images has 3 different resolutions. index 2 is 300x300
 
-            this.name = name;
-            this.albumName = albumName;
-            this.albumImageUrl = albumImageURL;
-            this.artistName = artistName;
-            this.audioURL = songPreviewURL;
+        artistName = primaryArtist.get("name").getAsString();
+        audioURL = jsonObject.get("preview_url").getAsString();
     }
 }

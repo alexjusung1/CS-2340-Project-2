@@ -12,13 +12,13 @@ import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -60,7 +60,11 @@ public class SpotifyAuth {
     private static final String allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
 
     private static final PausableThreadPoolExecutor accessTokenExecutor = PausableThreadPoolExecutor.createDefaultInstance();
-    private static final ScheduledExecutorService timeoutScheduler = Executors.newSingleThreadScheduledExecutor();
+    private static final ScheduledThreadPoolExecutor timeoutScheduler = new ScheduledThreadPoolExecutor(1);
+    static {
+        timeoutScheduler.setRemoveOnCancelPolicy(true);
+    }
+    private static ScheduledFuture<?> lastRefresh;
 
     private static final String TAG = "SpotifyAuth";
 
@@ -98,13 +102,17 @@ public class SpotifyAuth {
             return;
         }
 
-        accessTokenExecutor.submit(() -> {
-            action.performAction(accessToken);
-        });
+        accessTokenExecutor.submit(() -> action.performAction(accessToken));
     }
 
     public static void debugForceRefresh() {
+        if (accessToken == null) {
+            return;
+        }
+
         accessTokenExpired = true;
+        accessTokenExecutor.pause();
+        refreshAccessToken();
     }
 
     private static void requestAccessToken() {
@@ -137,9 +145,7 @@ public class SpotifyAuth {
         });
     }
 
-    // TODO: refreshing is still kinda broken
-    private static synchronized void refreshAccessToken() {
-        timeoutScheduler.shutdownNow();
+    private static void refreshAccessToken() {
         RequestBody formBody = new FormBody.Builder()
                 .addEncoded("grant_type", "refresh_token")
                 .addEncoded("refresh_token", refreshToken)
@@ -155,13 +161,14 @@ public class SpotifyAuth {
         authClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.w("SDF", "asdfa");
                 e.printStackTrace();
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                parseTokenResponse(response.body().charStream());
+                String body = response.body().string();
+                Log.d(TAG, "Refresh Response: " + body);
+                parseTokenResponse(new StringReader(body));
                 response.body().close();
             }
         });
@@ -178,7 +185,12 @@ public class SpotifyAuth {
         refreshToken = tokenBody.get("refresh_token").getAsString();
         int timeout = tokenBody.get("expires_in").getAsInt();
 
-        timeoutScheduler.schedule(() -> {
+        if (lastRefresh != null && !lastRefresh.isDone()) {
+            Log.d(TAG, "Cancelling last token refresh action");
+            lastRefresh.cancel(true);
+        }
+
+        lastRefresh = timeoutScheduler.schedule(() -> {
             accessTokenExpired = true;
             accessTokenExecutor.pause();
             refreshAccessToken();
