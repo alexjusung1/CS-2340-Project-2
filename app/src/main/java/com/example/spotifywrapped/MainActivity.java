@@ -1,19 +1,16 @@
 package com.example.spotifywrapped;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.spotifywrapped.databinding.ActivityMainBinding;
 
 import java.net.URL;
-import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -41,15 +38,23 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     binding.textView.setText(topArtists.get(0).name);
                     try {
+                        Log.d("MainActivity", topArtists.get(0).artistImageURI);
                         URL url = new URL(topArtists.get(0).artistImageURI);
-                        Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                        binding.imageView.setImageBitmap(bmp);
+                        SpotifyAPI.fetchImageFromUrl(bitmap -> {
+                            runOnUiThread(() -> binding.imageView.setImageBitmap(bitmap));
+                        }, url);
                     } catch (Exception e) {
-                        Log.e("URL", "Image URL failed");
+                        e.printStackTrace();
                     }
                 });
             }, TimeRange.SHORT, 1);
         }
+
+//        binding.button2.setOnClickListener(view -> {
+//            if (bmp != null) {
+//                binding.imageView.setImageBitmap(bmp);
+//            }
+//        });
 
         binding.button.setOnClickListener(view -> {
             try {
@@ -59,4 +64,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }
