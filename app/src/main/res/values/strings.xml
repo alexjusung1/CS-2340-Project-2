@@ -37,5 +37,6 @@
     <string name="top_artists">Top 10 Artists</string>
     <string name="top_songs">Top 10 Songs</string>
     <string name="username_display">USERNAME</string>
+    <string name="past_year">Past Year Re-Wrap</string>
 
 </resources>

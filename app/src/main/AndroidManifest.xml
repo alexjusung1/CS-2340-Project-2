@@ -29,6 +29,8 @@
         <activity android:name=".recommendations" />
         <activity android:name=".Top10Artists" />
         <activity android:name=".Top10Songs"/>
+        <activity android:name=".PastRewrapPage"/>
+        <activity android:name=".PastRewrapInfoPage"/>
     </application>
 
 </manifest>

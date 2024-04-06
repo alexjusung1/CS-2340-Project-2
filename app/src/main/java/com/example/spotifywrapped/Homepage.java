@@ -34,7 +34,7 @@ public class Homepage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 pastPage = 0;
-                startActivity(new Intent(Homepage.this, RewrapPage.class));
+                startActivity(new Intent(Homepage.this, PastRewrapPage.class));
             }
         });
 
