@@ -52,6 +52,8 @@ public class PastRewrapAdapter extends RecyclerView.Adapter<PastRewrapAdapter.pa
 
         public pastrewrapViewHolder(@NonNull View itemView) {
             super(itemView);
+
+            Homepage.pastPage = 1;
             pastYearTextView = itemView.findViewById(R.id.past_year);
         }
 

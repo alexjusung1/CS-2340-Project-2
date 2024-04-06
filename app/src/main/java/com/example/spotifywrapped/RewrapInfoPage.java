@@ -23,6 +23,8 @@ public class RewrapInfoPage extends AppCompatActivity {
             public void onClick(View v) {
                 if (Homepage.pastPage == 0) {
                     startActivity(new Intent(RewrapInfoPage.this, Homepage.class));
+                } else if (Homepage.pastPage == 1) {
+                    startActivity(new Intent(RewrapInfoPage.this, PastRewrapPage.class));
                 }
             }
         });
