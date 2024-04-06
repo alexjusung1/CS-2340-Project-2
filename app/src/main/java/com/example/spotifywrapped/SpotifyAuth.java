@@ -12,7 +12,6 @@ import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -57,7 +56,7 @@ public class SpotifyAuth {
     private static final String tokenURI = "https://accounts.spotify.com/api/token";
 
     private static final String codeChallengeMethod = "S256";
-    private static final String allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
+    private static final String ALLOWED_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
 
     private static final PausableThreadPoolExecutor accessTokenExecutor = PausableThreadPoolExecutor.createDefaultInstance();
     private static final ScheduledThreadPoolExecutor timeoutScheduler = new ScheduledThreadPoolExecutor(1);
@@ -102,6 +101,11 @@ public class SpotifyAuth {
             return;
         }
 
+        if (accessTokenExpired) {
+            accessTokenExpired = false;
+            refreshAccessToken();
+        }
+
         accessTokenExecutor.submit(() -> action.performAction(accessToken));
     }
 
@@ -110,7 +114,6 @@ public class SpotifyAuth {
             return;
         }
 
-        accessTokenExpired = true;
         accessTokenExecutor.pause();
         refreshAccessToken();
     }
@@ -139,7 +142,7 @@ public class SpotifyAuth {
             }
 
             @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
                 parseTokenResponse(response.body().charStream());
             }
         });
@@ -165,10 +168,8 @@ public class SpotifyAuth {
             }
 
             @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                String body = response.body().string();
-                Log.d(TAG, "Refresh Response: " + body);
-                parseTokenResponse(new StringReader(body));
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                parseTokenResponse(response.body().charStream());
                 response.body().close();
             }
         });
@@ -180,7 +181,6 @@ public class SpotifyAuth {
 
         accessToken = tokenBody.get("access_token").getAsString();
         Log.d(TAG, "Access Token: " + accessToken);
-        accessTokenExpired = false;
 
         refreshToken = tokenBody.get("refresh_token").getAsString();
         int timeout = tokenBody.get("expires_in").getAsInt();
@@ -192,18 +192,19 @@ public class SpotifyAuth {
 
         lastRefresh = timeoutScheduler.schedule(() -> {
             accessTokenExpired = true;
+            Log.d(TAG, "Access Token timed out");
             accessTokenExecutor.pause();
-            refreshAccessToken();
         }, timeout, TimeUnit.SECONDS);
 
         accessTokenExecutor.resume();
     }
+
     private static String genCodeVerifier() {
         SecureRandom rng = new SecureRandom();
 
-        return rng.ints(0, allowedChars.length())
+        return rng.ints(0, ALLOWED_CHARS.length())
                 .limit(64)
-                .mapToObj(allowedChars::charAt)
+                .mapToObj(ALLOWED_CHARS::charAt)
                 .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
                 .toString();
     }
