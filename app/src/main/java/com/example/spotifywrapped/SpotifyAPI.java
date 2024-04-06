@@ -26,6 +26,11 @@ interface TopArtistsAction {
     void performAction(List<ArtistData> topArtists);
 }
 
+@FunctionalInterface
+interface TopTracksAction {
+    void performAction(List<TrackData> topTracks);
+}
+
 public class SpotifyAPI {
     private static final OkHttpClient reqClient;
     static {
@@ -81,6 +86,62 @@ public class SpotifyAPI {
     }
 
     public static List<TrackData> getTopTracks(TimeRange range, int count) {
-        return new ArrayList<>(count);
+        new Thread (() -> SpotifyAuth.useAccessToken(accessToken -> {
+            String query = topItemURL
+                .concat("?time_range=" + range.getValue())
+                .concat("&limit" + count)
+                .concat("&offset=" + offset);
+            
+            Request request = new Request.Builder()
+                .url(reqURL)
+                .addHeader("Authorization", "Bearer " + accessToken)
+                .build();
+            
+            
+            reqClient.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    Log.w("API Error", "Top Tracks Call failed");
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void OnResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    String body = response.body().string();
+                    // Log.e("SpotifyAPI", body) // in case of error
+                    parseTracksandRun(new StringReader(body), action);
+                    response.body().close();
+                }
+            });
+
+            
+        })).start();
+        
+    }
+
+    public static void parseTracksandRun(Reader jsonReader, TopTracksAction action) {
+        List<TrackData> topTracks = new ArrayList<>();
+
+        JsonObject body = JsonParser.parseReader(jsonReader).getAsJsonObject();
+
+        JsonArray items = body.get("items").getAsJsonArray();
+
+        for (int i = 0; i < items.size(); i++) {
+
+            JsonObject curr = items.get(i).getAsJsonObject();
+            JsonObject album = curr.get("album").getAsJsonObject();
+            JsonObject primaryArtist = curr.get("artists").getAsJsonArray()[0].getAsJsonObject();
+
+            String name = curr.get("name").getAsString();
+            String albumName = album.get("name").getAsString();
+            String albumImageURL = album.get("images").getAsJsonArray()[1].getAsJsonObject().get("url").getasString();
+            // for this one, album images has 3 different resolutions. index 2 is 300x300
+            
+            String artistName = primaryArtist.get("name").getAsString();
+            String audioURL = curr.get("preview_url").getAsString();
+            topTracks.add(new TrackData(name, albumName, albumImageURL, artistName, audioURL));
+        }
+
+        action.performAction(topTracks);
     }
 }
