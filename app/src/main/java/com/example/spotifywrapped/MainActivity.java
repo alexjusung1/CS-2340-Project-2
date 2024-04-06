@@ -41,7 +41,25 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("MainActivity", topArtists.get(0).artistImageURI);
                         URL url = new URL(topArtists.get(0).artistImageURI);
                         SpotifyAPI.fetchImageFromUrl(bitmap -> {
+                            if (isFinishing()) { return; }
                             runOnUiThread(() -> binding.imageView.setImageBitmap(bitmap));
+                        }, url);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }, TimeRange.SHORT, 1);
+
+            SpotifyAPI.getTopTracks(topTracks -> {
+                if (isFinishing()) { return; }
+                runOnUiThread(() -> {
+                    binding.textView3.setText(topTracks.get(0).name);
+                    try {
+                        Log.d("MainActivity", topTracks.get(0).albumImageUrl);
+                        URL url = new URL(topTracks.get(0).albumImageUrl);
+                        SpotifyAPI.fetchImageFromUrl(bitmap -> {
+                            if (isFinishing()) { return; }
+                            runOnUiThread(() -> binding.imageView2.setImageBitmap(bitmap));
                         }, url);
                     } catch (Exception e) {
                         e.printStackTrace();

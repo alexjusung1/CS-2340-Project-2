@@ -48,13 +48,14 @@ public class SpotifyAPI {
                 .readTimeout(30, TimeUnit.SECONDS)
                 .build();
     }
-    private static final String topItemURL = "https://api.spotify.com/v1/me/top/artists";
+    private static final String topArtistsURL = "https://api.spotify.com/v1/me/top/artists";
+    private static final String topTracksURL = "https://api.spotify.com/v1/me/top/tracks";
 
     public static void getTopArtists(TopArtistsAction action, TimeRange range, int count) {
         new Thread(() -> SpotifyAuth.useAccessToken(accessToken -> {
             String offset = "0";
 
-            String reqURL = topItemURL
+            String reqURL = topArtistsURL
                     .concat("?time_range=" + range.getValue())
                     .concat("&limit" + count)
                     .concat("&offset=" + offset);
@@ -94,15 +95,15 @@ public class SpotifyAPI {
         action.performAction(topArtists);
     }
 
-    public static List<TrackData> getTopTracks(TimeRange range, int count) {
+    public static void getTopTracks(TopTracksAction action, TimeRange range, int count) {
         new Thread (() -> SpotifyAuth.useAccessToken(accessToken -> {
-            String query = topItemURL
+            String query = topTracksURL
                 .concat("?time_range=" + range.getValue())
                 .concat("&limit" + count)
-                .concat("&offset=" + offset);
+                .concat("&offset=" + "0");
             
             Request request = new Request.Builder()
-                .url(reqURL)
+                .url(query)
                 .addHeader("Authorization", "Bearer " + accessToken)
                 .build();
             
@@ -115,7 +116,7 @@ public class SpotifyAPI {
                 }
 
                 @Override
-                public void OnResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                     String body = response.body().string();
                     // Log.e("SpotifyAPI", body) // in case of error
                     parseTracksandRun(new StringReader(body), action);
@@ -139,19 +140,21 @@ public class SpotifyAPI {
 
             JsonObject curr = items.get(i).getAsJsonObject();
             JsonObject album = curr.get("album").getAsJsonObject();
-            JsonObject primaryArtist = curr.get("artists").getAsJsonArray()[0].getAsJsonObject();
+            JsonObject primaryArtist = curr.get("artists").getAsJsonArray().get(0).getAsJsonObject();
 
             String name = curr.get("name").getAsString();
             String albumName = album.get("name").getAsString();
-            String albumImageURL = album.get("images").getAsJsonArray()[1].getAsJsonObject().get("url").getasString();
+            String albumImageURL = album.get("images").getAsJsonArray().get(1).getAsJsonObject().get("url").getAsString();
             // for this one, album images has 3 different resolutions. index 2 is 300x300
-            
+
             String artistName = primaryArtist.get("name").getAsString();
             String audioURL = curr.get("preview_url").getAsString();
             topTracks.add(new TrackData(name, albumName, albumImageURL, artistName, audioURL));
         }
 
         action.performAction(topTracks);
+    }
+
     public static void fetchImageFromUrl(FetchImageAction action, URL url) {
         new Thread(() -> {
             Request request = new Request.Builder()
