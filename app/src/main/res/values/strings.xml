@@ -7,6 +7,7 @@
     <string name="change_username_hint">New Username</string>
     <string name="change_password">Change Password</string>
     <string name="change_password_hint">New Password</string>
+    <string name="link_spotify_account">Link Spotify Account</string>
     <string name="linked_spotify_account">Linked Spotify Account</string>
     <string name="sample_username">Sample Username</string>
     <string name="remove_account">Remove Account</string>
