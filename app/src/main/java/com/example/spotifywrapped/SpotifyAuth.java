@@ -97,7 +97,7 @@ public class SpotifyAuth {
     }
 
     public static void useAccessToken(AccessTokenAction action) {
-        if (authorizationCode == null) {
+        if (isLoggedOut()) {
             return;
         }
 
@@ -109,8 +109,16 @@ public class SpotifyAuth {
         accessTokenExecutor.submit(() -> action.performAction(accessToken));
     }
 
+    public static boolean isLoggedOut() {
+        return authorizationCode == null;
+    }
+
+    public static void logout() {
+        authorizationCode = null;
+    }
+
     public static void debugForceRefresh() {
-        if (accessToken == null) {
+        if (isLoggedOut()) {
             return;
         }
 
