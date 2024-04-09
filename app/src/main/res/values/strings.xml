@@ -39,5 +39,7 @@
     <string name="top_songs">Top 10 Songs</string>
     <string name="username_display">USERNAME</string>
     <string name="past_year">Past Year Re-Wrap</string>
+    <string name="connect">Connect</string>
+    <string name="connect_to_spotify">Connect to Spotify</string>
 
 </resources>
