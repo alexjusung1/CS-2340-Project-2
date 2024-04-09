@@ -7,11 +7,14 @@
     <TextView
         android:id="@+id/past_year"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:textAlignment="center"
+        android:layout_height="54dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/gradient_button_3"
+        android:gravity="center"
         android:text="@string/past_year"
-        android:textStyle="bold"
-        android:background="@drawable/gradient_button_1"
-        android:layout_marginTop="8dp" />
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="24dp"
+        android:textStyle="bold" />
 
 </LinearLayout>
