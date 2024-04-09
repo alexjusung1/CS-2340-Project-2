@@ -6,7 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.window.OnBackInvokedCallback;
+import android.window.OnBackInvokedDispatcher;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class Homepage extends AppCompatActivity {
@@ -48,6 +52,12 @@ public class Homepage extends AppCompatActivity {
                 startActivity(new Intent(Homepage.this, recommendations.class));
             }
         });
-    }
 
+//        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+//            @Override
+//            public void handleOnBackPressed() {
+//
+//            }
+//        });
+    }
 }
