@@ -44,12 +44,7 @@ public class PastRewrapPage extends AppCompatActivity {
 
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
 
-        topAppBar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(PastRewrapPage.this, Homepage.class));
-            }
-        });
+        topAppBar.setOnClickListener(v -> finish());
 
     }
 }

@@ -35,12 +35,7 @@ public class SettingsFragment extends AppCompatActivity {
             }
         });
 
-        settingsBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick (View v) {
-                startActivity(new Intent(SettingsFragment.this, Homepage.class));
-            }
-        });
+        settingsBack.setOnClickListener(v -> finish());
     }
 
 //    // TODO: Rename parameter arguments, choose names that match

@@ -18,16 +18,7 @@ public class RewrapInfoPage extends AppCompatActivity {
         Button topArtist = findViewById(R.id.top_artist);
         Button topSongs = findViewById(R.id.top_song);
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Homepage.pastPage == 0) {
-                    startActivity(new Intent(RewrapInfoPage.this, Homepage.class));
-                } else if (Homepage.pastPage == 1) {
-                    startActivity(new Intent(RewrapInfoPage.this, PastRewrapPage.class));
-                }
-            }
-        });
+        btnBack.setOnClickListener(v -> finish());
 
         topArtist.setOnClickListener(new View.OnClickListener() {
             @Override
