@@ -9,14 +9,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.spotifywrapped.R;
+import com.example.spotifywrapped.databinding.ArtistFragBinding;
 
-public class SongFrag1 extends Fragment {
+public class ArtistFrag extends Fragment {
+    ArtistFragBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.song_frag_1, container, false);
+        binding = ArtistFragBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        binding.number.setText(String.format("#%d",
+                requireArguments().getInt("position", -1) + 1));
     }
 }
