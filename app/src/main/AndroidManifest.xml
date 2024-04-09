@@ -26,8 +26,10 @@
         <activity android:name=".RewrapPage" />
         <activity android:name=".RewrapInfoPage" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".SettingsFragment">
-            <intent-filter android:autoVerify="true">
+        <activity android:name=".SettingsFragment"
+            android:exported="true">
+            <intent-filter
+                android:autoVerify="true">
             <action android:name="android.intent.action.VIEW" />
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />
