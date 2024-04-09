@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
@@ -20,7 +19,7 @@ public class Top10Songs extends AppCompatActivity {
         setContentView(R.layout.rewrapped_template_songs);
 
         ViewPager2 vp = findViewById(R.id.viewPager);
-        vp.setAdapter(new PagerAdapterS(this));
+        vp.setAdapter(new PagerAdapterTrack(this));
 
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
 //        TextView numberTextView = findViewById(R.id.number);

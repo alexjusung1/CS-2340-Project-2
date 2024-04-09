@@ -21,7 +21,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Homepage" />
+        <activity android:name=".Homepage"
+            android:exported="true">
+            <intent-filter
+                android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="https"
+                    android:host="spotifywrappedapp-819f6.firebaseapp.com"
+                    android:pathPrefix="/app-data" />
+            </intent-filter>
+        </activity>
         <activity android:name=".RewrapInfoPage" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".SettingsFragment" />

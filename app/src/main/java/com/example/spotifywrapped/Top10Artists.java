@@ -1,18 +1,15 @@
 package com.example.spotifywrapped;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.navigation.NavigationBarItemView;
 
 public class Top10Artists extends AppCompatActivity {
 
@@ -22,7 +19,7 @@ public class Top10Artists extends AppCompatActivity {
         setContentView(R.layout.rewrapped_template_artist);
 
         ViewPager2 vp = findViewById(R.id.viewPager);
-        vp.setAdapter(new PagerAdapterA(this));
+        vp.setAdapter(new PagerAdapterArtist(this));
 
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
 //        TextView numberTextView = findViewById(R.id.number);

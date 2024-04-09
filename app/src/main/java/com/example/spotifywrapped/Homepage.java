@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.window.OnBackInvokedCallback;
+import android.window.OnBackInvokedDispatcher;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class Homepage extends AppCompatActivity {
-    static int pastPage = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,7 +28,6 @@ public class Homepage extends AppCompatActivity {
         rewrapInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pastPage = 0;
                 startActivity(new Intent(Homepage.this, RewrapInfoPage.class));
             }
         });
@@ -33,7 +35,6 @@ public class Homepage extends AppCompatActivity {
         pastRewrap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pastPage = 0;
                 startActivity(new Intent(Homepage.this, PastRewrapPage.class));
             }
         });
@@ -41,7 +42,6 @@ public class Homepage extends AppCompatActivity {
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pastPage = 0;
                 startActivity(new Intent(Homepage.this, SettingsFragment.class));
             }
         });
@@ -52,6 +52,12 @@ public class Homepage extends AppCompatActivity {
                 startActivity(new Intent(Homepage.this, recommendations.class));
             }
         });
-    }
 
+//        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+//            @Override
+//            public void handleOnBackPressed() {
+//
+//            }
+//        });
+    }
 }

@@ -14,7 +14,7 @@ import android.widget.ImageView;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link SettingsFragment#newInstance} factory method to
+ * Use the {@link SettingsFragment} factory method to
  * create an instance of this fragment.
  */
 public class SettingsFragment extends AppCompatActivity {
@@ -25,12 +25,17 @@ public class SettingsFragment extends AppCompatActivity {
 
         ImageView settingsBack = findViewById(R.id.backSettings);
 
-        settingsBack.setOnClickListener(new View.OnClickListener() {
+        Button logInButton = findViewById(R.id.button3);
+
+        logInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View v) {
-                startActivity(new Intent(SettingsFragment.this, Homepage.class));
+                SpotifyAuth.getAuthorizationIntent();
+                logInButton.setText(R.string.log_out_spotify);
             }
         });
+
+        settingsBack.setOnClickListener(v -> finish());
     }
 
 //    // TODO: Rename parameter arguments, choose names that match
