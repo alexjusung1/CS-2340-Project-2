@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -25,7 +26,17 @@
         <activity android:name=".RewrapPage" />
         <activity android:name=".RewrapInfoPage" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".SettingsFragment" />
+        <activity android:name=".SettingsFragment">
+            <intent-filter android:autoVerify="true">
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+
+            <data android:scheme="https"
+                android:host="spotifywrappedapp-819f6.firebaseapp.com"
+                android:pathPrefix="/app-data" />
+            </intent-filter>
+        </activity>
         <activity android:name=".recommendations" />
         <activity android:name=".Top10Artists" />
         <activity android:name=".Top10Songs"/>
