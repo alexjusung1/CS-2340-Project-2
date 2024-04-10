@@ -40,7 +40,7 @@ public class SpotifyAuth {
     private static boolean accessTokenExpired;
     private static String refreshToken;
 
-    private static final String redirectURI = "com.example.spotifywrapped://auth";
+    private static final String redirectURI = "https://spotifywrappedapp-819f6.firebaseapp.com/app-data";
     private static final String clientID = "5f164b1b815e411298a2df84bae6ddbb";
 
     private static final OkHttpClient authClient;
