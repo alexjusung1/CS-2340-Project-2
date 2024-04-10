@@ -44,11 +44,6 @@ public class Top10Songs extends AppCompatActivity {
 //            albumNameTextView.setText(albumName);
 //        }
 
-        topAppBar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Top10Songs.this, RewrapInfoPage.class));
-            }
-        });
+        topAppBar.setOnClickListener(v -> finish());
     }
 }

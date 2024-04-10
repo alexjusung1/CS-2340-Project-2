@@ -47,11 +47,6 @@ public class Top10Artists extends AppCompatActivity {
 //              albumNameTextView.setText(albumName);
 //        }
 
-        topAppBar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Top10Artists.this, RewrapInfoPage.class));
-            }
-        });
+        topAppBar.setOnClickListener(v -> finish());
     }
 }
