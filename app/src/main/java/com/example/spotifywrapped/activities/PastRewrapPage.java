@@ -1,5 +1,6 @@
 package com.example.spotifywrapped.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,7 +47,7 @@ public class PastRewrapPage extends AppCompatActivity {
 
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
 
-        topAppBar.setOnClickListener(v -> finish());
+        topAppBar.setOnClickListener(v -> startActivity(new Intent(PastRewrapPage.this, Homepage.class)));
 
     }
 }
