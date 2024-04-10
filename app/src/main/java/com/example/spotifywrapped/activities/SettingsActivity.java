@@ -1,23 +1,23 @@
-package com.example.spotifywrapped;
+package com.example.spotifywrapped.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.example.spotifywrapped.R;
+import com.example.spotifywrapped.utils.SpotifyAuth;
+
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link SettingsFragment} factory method to
+ * A simple {@link AppCompatActivity} subclass.
+ * Use the {@link SettingsActivity} factory method to
  * create an instance of this fragment.
  */
-public class SettingsFragment extends AppCompatActivity {
+public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

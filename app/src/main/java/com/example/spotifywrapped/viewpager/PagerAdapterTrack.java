@@ -1,4 +1,4 @@
-package com.example.spotifywrapped;
+package com.example.spotifywrapped.viewpager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;

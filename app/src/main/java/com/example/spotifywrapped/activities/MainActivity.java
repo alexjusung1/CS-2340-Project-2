@@ -1,4 +1,4 @@
-package com.example.spotifywrapped;
+package com.example.spotifywrapped.activities;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -8,6 +8,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.spotifywrapped.utils.SpotifyAPI;
+import com.example.spotifywrapped.utils.SpotifyAuth;
+import com.example.spotifywrapped.data.TimeRange;
 import com.example.spotifywrapped.databinding.ActivityMainBinding;
 
 import java.net.URL;
@@ -36,10 +39,10 @@ public class MainActivity extends AppCompatActivity {
             SpotifyAPI.getTopArtists(topArtists -> {
                 if (isFinishing()) { return; }
                 runOnUiThread(() -> {
-                    binding.textView.setText(topArtists.get(0).name);
+                    binding.textView.setText(topArtists.get(0).getName());
                     try {
-                        Log.d("MainActivity", topArtists.get(0).artistImageURI);
-                        URL url = new URL(topArtists.get(0).artistImageURI);
+                        Log.d("MainActivity", topArtists.get(0).getArtistImageURI());
+                        URL url = new URL(topArtists.get(0).getArtistImageURI());
                         SpotifyAPI.fetchImageFromURL(bitmap -> {
                             if (isFinishing()) { return; }
                             runOnUiThread(() -> binding.imageView.setImageBitmap(bitmap));
@@ -53,10 +56,10 @@ public class MainActivity extends AppCompatActivity {
             SpotifyAPI.getTopTracks(topTracks -> {
                 if (isFinishing()) { return; }
                 runOnUiThread(() -> {
-                    binding.textView3.setText(topTracks.get(0).name);
+                    binding.textView3.setText(topTracks.get(0).getName());
                     try {
-                        Log.d("MainActivity", topTracks.get(0).albumImageUrl);
-                        URL url = new URL(topTracks.get(0).albumImageUrl);
+                        Log.d("MainActivity", topTracks.get(0).getAlbumImageUrl());
+                        URL url = new URL(topTracks.get(0).getAlbumImageUrl());
                         SpotifyAPI.fetchImageFromURL(bitmap -> {
                             if (isFinishing()) { return; }
                             runOnUiThread(() -> binding.imageView2.setImageBitmap(bitmap));

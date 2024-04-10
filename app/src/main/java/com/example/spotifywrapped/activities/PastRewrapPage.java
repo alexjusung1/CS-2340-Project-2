@@ -1,15 +1,15 @@
-package com.example.spotifywrapped;
+package com.example.spotifywrapped.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.spotifywrapped.R;
+import com.example.spotifywrapped.data.PastYears;
 import com.example.spotifywrapped.databinding.PastRewrapsFragmentBinding;
+import com.example.spotifywrapped.recyclerview.PastRewrapAdapter;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;

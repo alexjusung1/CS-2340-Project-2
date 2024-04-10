@@ -1,21 +1,23 @@
-package com.example.spotifywrapped;
+package com.example.spotifywrapped.activities;
 
 import android.content.Intent;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.window.OnBackInvokedCallback;
-import android.window.OnBackInvokedDispatcher;
 
-import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.spotifywrapped.R;
+import com.example.spotifywrapped.utils.SpotifyAuth;
 
 public class Homepage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (SpotifyAuth.isLoggedOut()) {
+            startActivity(new Intent(this, ConnectToSpotifyActivity.class));
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homepage);
 
@@ -42,14 +44,14 @@ public class Homepage extends AppCompatActivity {
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Homepage.this, SettingsFragment.class));
+                startActivity(new Intent(Homepage.this, SettingsActivity.class));
             }
         });
 
         recommendations.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Homepage.this, recommendations.class));
+                startActivity(new Intent(Homepage.this, com.example.spotifywrapped.activities.recommendations.class));
             }
         });
 
