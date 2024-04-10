@@ -1,11 +1,13 @@
-package com.example.spotifywrapped;
+package com.example.spotifywrapped.utils;
 
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.spotifywrapped.data.TimeRange;
+import com.example.spotifywrapped.data.ArtistData;
+import com.example.spotifywrapped.data.TrackData;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -24,21 +26,6 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-
-@FunctionalInterface
-interface TopArtistsAction {
-    void performAction(List<ArtistData> topArtists);
-}
-
-@FunctionalInterface
-interface FetchImageAction {
-    void performAction(Bitmap image);
-}
-
-@FunctionalInterface
-interface TopTracksAction {
-    void performAction(List<TrackData> topTracks);
-}
 
 public class SpotifyAPI {
     private static final OkHttpClient reqClient;

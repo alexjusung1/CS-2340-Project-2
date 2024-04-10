@@ -1,4 +1,4 @@
-package com.example.spotifywrapped;
+package com.example.spotifywrapped.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +8,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.spotifywrapped.R;
+import com.example.spotifywrapped.data.Artist;
 import com.example.spotifywrapped.databinding.RecommendationsDisplayBinding;
+import com.example.spotifywrapped.recyclerview.recommendationAdapter;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;

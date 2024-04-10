@@ -1,4 +1,4 @@
-package com.example.spotifywrapped;
+package com.example.spotifywrapped.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import android.widget.Spinner;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.spotifywrapped.viewpager.PagerAdapterArtist;
+import com.example.spotifywrapped.R;
 import com.google.android.material.appbar.MaterialToolbar;
 
 public class Top10Artists extends AppCompatActivity {

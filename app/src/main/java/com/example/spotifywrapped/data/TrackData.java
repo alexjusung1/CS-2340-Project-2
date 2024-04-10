@@ -1,10 +1,10 @@
-package com.example.spotifywrapped;
+package com.example.spotifywrapped.data;
 
 import com.google.gson.JsonObject;
 
 public class TrackData {
 
-    String name;
+    private String name;
     String albumName;
     String albumImageUrl;
     String artistName;
@@ -21,5 +21,13 @@ public class TrackData {
 
         artistName = primaryArtist.get("name").getAsString();
         audioURL = jsonObject.get("preview_url").getAsString();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAlbumImageUrl() {
+        return albumImageUrl;
     }
 }
