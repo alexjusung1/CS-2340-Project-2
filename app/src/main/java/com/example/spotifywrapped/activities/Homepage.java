@@ -29,7 +29,10 @@ public class Homepage extends AppCompatActivity {
                 if (SpotifyAuth.isLoggedOut()) {
                     startActivity(new Intent(Homepage.this, ConnectToSpotifyActivity.class));
                 } else {
-                    startActivity(new Intent(Homepage.this, RewrapInfoPage.class));
+                    Intent intent = new Intent(Homepage.this, RewrapInfoPage.class);
+                    intent.putExtra("isCurrent", true);
+
+                    startActivity(intent);
                 }
             }
         });

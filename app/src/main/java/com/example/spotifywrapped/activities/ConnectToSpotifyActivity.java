@@ -24,7 +24,11 @@ public class ConnectToSpotifyActivity extends AppCompatActivity {
             connect.setOnClickListener(v -> startActivity(SpotifyAuth.getAuthorizationIntent()));
         } else if (action.equals(Intent.ACTION_VIEW)) {
             SpotifyAuth.parseAuthorizationResponse(intent.getData());
-            startActivity(new Intent(this, RewrapInfoPage.class));
+
+            Intent intent_rewrap = new Intent(this, RewrapInfoPage.class);
+            intent_rewrap.putExtra("isCurrent", true);
+
+            startActivity(intent_rewrap);
         }
     }
 }

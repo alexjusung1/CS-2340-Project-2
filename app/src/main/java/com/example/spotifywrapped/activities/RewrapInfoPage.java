@@ -20,6 +20,8 @@ public class RewrapInfoPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rewrap_info_page);
 
+        Bundle passedData = getIntent().getExtras();
+
         ImageView btnBack = findViewById(R.id.back);
         ImageView saveBtn = findViewById(R.id.save_button);
         Button topArtist = findViewById(R.id.top_artist);
