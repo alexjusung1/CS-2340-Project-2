@@ -25,7 +25,7 @@ public class SettingsFragment extends AppCompatActivity {
 
         ImageView settingsBack = findViewById(R.id.backSettings);
 
-        Button logInButton = findViewById(R.id.button3);
+        Button logInButton = findViewById(R.id.loginSpotifyButton);
 
         logInButton.setOnClickListener(new View.OnClickListener() {
             @Override
