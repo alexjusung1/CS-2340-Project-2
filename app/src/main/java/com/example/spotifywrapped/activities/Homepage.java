@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.spotifywrapped.R;
 import com.example.spotifywrapped.utils.SpotifyAuth;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class Homepage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +23,7 @@ public class Homepage extends AppCompatActivity {
         Button pastRewrap = findViewById(R.id.past_rewrap);
         ImageView settings = findViewById(R.id.setting);
         Button recommendations = findViewById(R.id.recommendation);
+        CircleImageView circleImageView = findViewById(R.id.user_image);
 //        change later
 
         rewrapInfo.setOnClickListener(new View.OnClickListener() {

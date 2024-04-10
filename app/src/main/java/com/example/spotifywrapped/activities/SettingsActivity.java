@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.spotifywrapped.R;
 import com.example.spotifywrapped.utils.SpotifyAuth;
@@ -25,7 +26,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         ImageView settingsBack = findViewById(R.id.backSettings);
 
-        Button logInButton = findViewById(R.id.loginSpotifyButton);
+        TextView logInButton = findViewById(R.id.loginSpotifyButton);
 
         logInButton.setOnClickListener(new View.OnClickListener() {
             @Override
