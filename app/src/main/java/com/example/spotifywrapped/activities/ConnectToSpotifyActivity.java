@@ -24,7 +24,7 @@ public class ConnectToSpotifyActivity extends AppCompatActivity {
             connect.setOnClickListener(v -> startActivity(SpotifyAuth.getAuthorizationIntent()));
         } else if (action.equals(Intent.ACTION_VIEW)) {
             SpotifyAuth.parseAuthorizationResponse(intent.getData());
-            finish();
+            startActivity(new Intent(this, RewrapInfoPage.class));
         }
     }
 }

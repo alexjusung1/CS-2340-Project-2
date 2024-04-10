@@ -1,8 +1,8 @@
 package com.example.spotifywrapped.utils;
 
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
@@ -13,7 +13,6 @@ public class PausableThreadPoolExecutor extends ThreadPoolExecutor {
     private boolean isPaused;
     private ReentrantLock pauseLock = new ReentrantLock();
     private Condition unpaused = pauseLock.newCondition();
-    private static final int DEFAULT_QUEUE_LEN = 10;
 
     public static PausableThreadPoolExecutor createDefaultInstance() {
         return new PausableThreadPoolExecutor(
@@ -21,7 +20,7 @@ public class PausableThreadPoolExecutor extends ThreadPoolExecutor {
             Integer.MAX_VALUE,
             60,
             TimeUnit.SECONDS,
-            new ArrayBlockingQueue<>(DEFAULT_QUEUE_LEN)
+            new LinkedBlockingQueue<>()
         );
     }
 

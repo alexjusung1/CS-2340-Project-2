@@ -30,7 +30,8 @@
         <activity android:name=".activities.Top10Songs"/>
         <activity android:name=".activities.PastRewrapPage"/>
         <activity android:name=".activities.ConnectToSpotifyActivity"
-            android:exported="true">
+            android:exported="true"
+            android:noHistory="true">
             <intent-filter
                 android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />

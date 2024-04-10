@@ -4,10 +4,24 @@
       "namespace": "android_app",
       "package_name": "com.example.spotifywrapped",
       "sha256_cert_fingerprints":
-      [
-        "5F:17:22:D4:0C:71:4D:ED:27:0D:94:7E:26:07:AB:59:CF:C2:1E:DA:74:DB:C1:F0:8C:BD:C8:FB:DF:1E:6C:7F",
-        "0B:3C:4A:24:70:26:58:4F:A7:52:E8:2D:EC:77:C9:D7:B5:9A:FB:5A:45:2D:A7:51:D5:C2:D5:22:F8:CE:06:49",
-        "5A:DE:0D:0F:07:73:D1:D6:AA:B6:87:60:16:F1:5F:1A:54:1D:C7:3C:2B:59:2C:17:B3:44:8D:92:7B:BE:AC:F7"
-      ]
+      ["5F:17:22:D4:0C:71:4D:ED:27:0D:94:7E:26:07:AB:59:CF:C2:1E:DA:74:DB:C1:F0:8C:BD:C8:FB:DF:1E:6C:7F"]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.example.spotifywrapped",
+      "sha256_cert_fingerprints":
+      ["0B:3C:4A:24:70:26:58:4F:A7:52:E8:2D:EC:77:C9:D7:B5:9A:FB:5A:45:2D:A7:51:D5:C2:D5:22:F8:CE:06:49"]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.example.spotifywrapped",
+      "sha256_cert_fingerprints":
+      ["5A:DE:0D:0F:07:73:D1:D6:AA:B6:87:60:16:F1:5F:1A:54:1D:C7:3C:2B:59:2C:17:B3:44:8D:92:7B:BE:AC:F7"]
     }
   }]

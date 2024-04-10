@@ -14,10 +14,6 @@ import com.example.spotifywrapped.utils.SpotifyAuth;
 public class Homepage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (SpotifyAuth.isLoggedOut()) {
-            startActivity(new Intent(this, ConnectToSpotifyActivity.class));
-        }
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homepage);
 
@@ -30,7 +26,11 @@ public class Homepage extends AppCompatActivity {
         rewrapInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Homepage.this, RewrapInfoPage.class));
+                if (SpotifyAuth.isLoggedOut()) {
+                    startActivity(new Intent(Homepage.this, ConnectToSpotifyActivity.class));
+                } else {
+                    startActivity(new Intent(Homepage.this, RewrapInfoPage.class));
+                }
             }
         });
 
