@@ -31,15 +31,11 @@
         <activity android:name=".activities.PastRewrapPage"/>
         <activity android:name=".activities.ConnectToSpotifyActivity"
             android:exported="true">
-            <intent-filter
-                android:autoVerify="true">
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="https"
-                    android:host="spotifywrappedapp-819f6.firebaseapp.com"
-                    android:pathPrefix="/app-data" />
+                <data android:host="auth" android:scheme="com.example.spotifywrapped"/>
             </intent-filter>
         </activity>
     </application>
