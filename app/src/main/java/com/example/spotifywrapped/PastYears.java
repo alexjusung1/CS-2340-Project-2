@@ -1,22 +1,12 @@
 package com.example.spotifywrapped;
 
 public class PastYears {
-    private int year;
     private String user;
-    private String month;
+    private String month_year;
 
-    public PastYears(String user, String month, int year) {
+    public PastYears(String user, String month_year) {
         this.user = user;
-        this.month = month;
-        this.year = year;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
+        this.month_year = month_year;
     }
 
     public String getUser() {
@@ -27,11 +17,11 @@ public class PastYears {
         this.user = user;
     }
 
-    public String getMonth() {
-        return month;
+    public String getMonth_year() {
+        return month_year;
     }
 
-    public void setMonth(String month) {
-        this.month = month;
+    public void setMonth_year(String month_year) {
+        this.month_year = month_year;
     }
 }
