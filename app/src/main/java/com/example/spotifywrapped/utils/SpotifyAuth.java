@@ -203,6 +203,8 @@ public class SpotifyAuth {
             lastRefresh.cancel(true);
         }
 
+        FirebaseAuth f = FirebaseAuth.getInstance();
+
         lastRefresh = timeoutScheduler.schedule(() -> {
             accessTokenExpired = true;
             Log.d(TAG, "Access Token timed out");
