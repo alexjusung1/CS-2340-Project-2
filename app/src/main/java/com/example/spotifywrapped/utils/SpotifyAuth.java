@@ -7,6 +7,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.spotifywrapped.FirestoreUpdate;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -192,6 +194,9 @@ public class SpotifyAuth {
             Log.d(TAG, "Cancelling last token refresh action");
             lastRefresh.cancel(true);
         }
+
+        FirebaseAuth f = FirebaseAuth.getInstance();
+        f.
 
         lastRefresh = timeoutScheduler.schedule(() -> {
             accessTokenExpired = true;
