@@ -31,7 +31,7 @@ public class RewrapInfoPage extends AppCompatActivity {
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences("RewrapPrefs", MODE_PRIVATE);
 
-        btnBack.setOnClickListener(v -> startActivity(new Intent(RewrapInfoPage.this, PastRewrapPage.class)));
+        btnBack.setOnClickListener(v -> finish());
 
         rewrapName.setOnClickListener(v -> rewrapName.setText(""));
 
