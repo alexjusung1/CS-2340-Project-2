@@ -27,18 +27,18 @@ public class FirestoreUpdate {
     private static final String TAG = "FirestoreUpdate";
     public void updateFireStore(String codeVerifier, String authorizationCode) {
         DocumentReference documentReference = fStore.collection("users").document(userID);
-        Map<String, String> userSpotifyInfo = new HashMap<>();
+        Map<String, Object> userSpotifyInfo = new HashMap<>();
         userSpotifyInfo.put("codeVerifier", codeVerifier);
         userSpotifyInfo.put("authorizationCode", authorizationCode);
-        documentReference.set(userSpotifyInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
+        documentReference.update(userSpotifyInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                Log.d(TAG, "onSuccess: User Spotify Info successfully added " + userID);
+                Log.d(TAG, "onSuccess: User Spotify Info successfully updated for " + userID);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, "onFailure: " + e.toString());
+                Log.e(TAG, "onFailure: Error updating user Spotify info for " + userID, e);
             }
         });
     }
