@@ -8,7 +8,9 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.spotifywrapped.FirestoreUpdate;
+import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -38,7 +40,7 @@ public class SpotifyAuth {
     private static boolean accessTokenExpired;
     private static String refreshToken;
 
-    private static final String redirectURI = "com.example.spotifywrapped://auth";
+    private static final String redirectURI = "https://spotifywrappedapp-819f6.firebaseapp.com/app-data";
     private static final String clientID = "5f164b1b815e411298a2df84bae6ddbb";
 
     private static final OkHttpClient authClient;
@@ -63,6 +65,12 @@ public class SpotifyAuth {
     private static ScheduledFuture<?> lastRefresh;
 
     private static final String TAG = "SpotifyAuth";
+
+
+    private static String userID;
+    private FirebaseFirestore fStore;
+
+    private FirestoreUpdate firestoreUpdate;
 
     @NonNull
     public static Intent getAuthorizationIntent() {
@@ -195,14 +203,18 @@ public class SpotifyAuth {
             lastRefresh.cancel(true);
         }
 
-        FirebaseAuth f = FirebaseAuth.getInstance();
-
         lastRefresh = timeoutScheduler.schedule(() -> {
             accessTokenExpired = true;
             Log.d(TAG, "Access Token timed out");
             accessTokenExecutor.pause();
         }, timeout, TimeUnit.SECONDS);
 
+        // Firebase Stuff
+        FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+        FirebaseAuth fAuth = FirebaseAuth.getInstance();
+        userID = fAuth.getUid();
+        FirestoreUpdate firestoreUpdate = new FirestoreUpdate(fStore, userID);
+        firestoreUpdate.updateFireStore(codeVerifier, authorizationCode);
         accessTokenExecutor.resume();
     }
 
