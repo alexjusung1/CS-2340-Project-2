@@ -14,7 +14,7 @@
         android:text="@string/past_year"
         android:textAlignment="center"
         android:textColor="@color/white"
-        android:textSize="24dp"
+        android:textSize="25dp"
         android:textStyle="bold" />
 
 </LinearLayout>

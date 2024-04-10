@@ -39,7 +39,7 @@ public class PastRewrapAdapter extends RecyclerView.Adapter<PastRewrapAdapter.pa
     @Override
     public void onBindViewHolder(@NonNull pastrewrapViewHolder holder, int position) {
         PastYears pastYears = pastyearCountList.get(position);
-        holder.pastYearTextView.setText(pastYears.getMonth_year());
+        holder.pastYearTextView.setText(pastYears.getUser() + " - " + pastYears.getMonth_year());
     }
 
     @Override
