@@ -8,18 +8,23 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.spotifywrapped.FirestoreUpdate;
+import com.example.spotifywrapped.data.ArtistData;
 import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +45,8 @@ public class SpotifyAuth {
     private static boolean accessTokenExpired;
     private static String refreshToken;
 
+    public static String username;
+
     private static final String redirectURI = "https://spotifywrappedapp-819f6.firebaseapp.com/app-data";
     private static final String clientID = "5f164b1b815e411298a2df84bae6ddbb";
 
@@ -53,6 +60,8 @@ public class SpotifyAuth {
 
     private static final String authCodeURI = "https://accounts.spotify.com/authorize";
     private static final String tokenURI = "https://accounts.spotify.com/api/token";
+
+    private static final String selfURI = "https://api.spotify.com/v1/me";
 
     private static final String codeChallengeMethod = "S256";
     private static final String ALLOWED_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
@@ -157,6 +166,7 @@ public class SpotifyAuth {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) {
                 parseTokenResponse(response.body().charStream());
+                loadUserData();
             }
         });
     }
@@ -187,6 +197,37 @@ public class SpotifyAuth {
             }
         });
     }
+
+    public static boolean loadUserData() {
+        if (!isLoggedOut()) {
+            Request request = new Request.Builder()
+                    .url(selfURI)
+                    .addHeader("Authorization", "Bearer " + accessToken)
+                    .build();
+            authClient.newCall(request);
+            authClient.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    Log.e("SELFINFO", "Self info Call Failed");
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    String body = response.body().string();
+                    StringReader sr = new StringReader(body);
+                    JsonObject info = JsonParser.parseReader(sr)
+                            .getAsJsonObject();
+
+                    username = info.get("display_name").getAsString();
+                    Log.d("USERNAME", username);
+                }
+            });
+        }
+        return false;
+    }
+
+
 
     private static void parseTokenResponse(Reader jsonReader) {
         JsonObject tokenBody = JsonParser.parseReader(jsonReader)
