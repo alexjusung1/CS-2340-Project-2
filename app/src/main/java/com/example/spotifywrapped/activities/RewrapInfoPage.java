@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -69,6 +70,7 @@ public class RewrapInfoPage extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("rewrapName", name);
         editor.apply();
+        Toast.makeText(RewrapInfoPage.this, "Rewrap Saved", Toast.LENGTH_LONG).show();
     }
 }
 

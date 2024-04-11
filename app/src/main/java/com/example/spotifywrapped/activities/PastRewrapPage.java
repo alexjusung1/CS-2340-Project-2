@@ -36,6 +36,7 @@ public class PastRewrapPage extends AppCompatActivity {
 
         pastYears = new ArrayList<>();
         // Add your artists to the list here
+        // pastYears list will be more dynamic with the user's data in the long run
         pastYears.add(new PastYears("chamilliyu ", "December 2021"));
         pastYears.add(new PastYears("chamilliyu ", "November 2021"));
         pastYears.add(new PastYears("chamilliyu ", "October 2021"));
