@@ -34,6 +34,8 @@ public class Top10Artists extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         dropdown.setAdapter(adapter);
 
+
+
 //        Bundle extras = getIntent().getExtras();
 //        if (extras != null) {
 //            String number = extras.getString("number");

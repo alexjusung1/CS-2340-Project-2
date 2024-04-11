@@ -3,17 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/playbutton"
         android:icon="@drawable/baseline_play_arrow_24"
-        android:title="play_button"
+        android:title="@string/play_button"
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/notification"
         android:icon="@drawable/round_notifications_active_24"
-        android:title="notification"
+        android:title="@string/notification"
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/volume"
         android:icon="@drawable/baseline_volume_up_24"
-        android:title="volume"
+        android:title="@string/volume"
         app:showAsAction="ifRoom" />
 </menu>

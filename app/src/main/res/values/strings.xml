@@ -43,5 +43,7 @@
     <string name="connect">Connect</string>
     <string name="connect_to_spotify">Connect to Spotify</string>
     <string name="rewrap_name">Rewrap Name</string>
+    <string name="play_button">Play_Button</string>
+    <string name="volume">Volume</string>
 
 </resources>
