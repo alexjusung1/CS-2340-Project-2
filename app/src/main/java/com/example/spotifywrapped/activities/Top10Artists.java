@@ -41,9 +41,7 @@ public class Top10Artists extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
 
         topAppBar.setOnClickListener(v -> finish());
