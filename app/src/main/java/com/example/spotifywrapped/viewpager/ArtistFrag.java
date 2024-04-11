@@ -1,22 +1,21 @@
 package com.example.spotifywrapped.viewpager;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.example.spotifywrapped.data.ArtistData;
+import com.example.spotifywrapped.activities.ArtistsViewModel;
 import com.example.spotifywrapped.databinding.ArtistFragBinding;
 import com.example.spotifywrapped.utils.SpotifyAPI;
+import com.example.spotifywrapped.utils.SpotifyDataHolder;
 
-import java.net.URL;
+import java.util.concurrent.CompletableFuture;
 
 public class ArtistFrag extends Fragment {
     ArtistFragBinding binding;
@@ -32,9 +31,28 @@ public class ArtistFrag extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        int pos = requireArguments().getInt("position", -1) + 1;
-        binding.number.setText(String.format("#%d",
-                requireArguments().getInt("position", -1) + 1));
+        int pos = requireArguments().getInt("position", -1);
+        binding.number.setText(String.format("#%d", pos + 1));
+
+        ArtistsViewModel viewModel = new ViewModelProvider(requireActivity())
+                .get(ArtistsViewModel.class);
+
+        viewModel.getTimeRangeObserver()
+                .observe(getViewLifecycleOwner(), timeRange -> {
+                    CompletableFuture.supplyAsync(() ->
+                                    SpotifyDataHolder.getCurrentTopArtistAsync(timeRange, pos))
+                            .thenAccept(artistData -> {
+                                SpotifyAPI.fetchImageFromURL(bitmap -> {
+                                    requireActivity().runOnUiThread(() -> {
+                                        binding.musicAlbumView.setImageBitmap(bitmap);
+                                    });
+                                }, artistData.getArtistImageURL());
+                                requireActivity().runOnUiThread(() -> {
+                                    binding.artistName.setText(artistData.getName());
+                                    binding.followerNumber.setText(artistData.getFollowerCount());
+                                });
+                            });
+                });
     }
 
     @Override

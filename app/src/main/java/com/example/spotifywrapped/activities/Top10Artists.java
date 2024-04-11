@@ -1,25 +1,20 @@
 package com.example.spotifywrapped.activities;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.spotifywrapped.R;
 import com.example.spotifywrapped.data.TimeRange;
 import com.example.spotifywrapped.viewpager.PagerAdapterArtist;
-import com.example.spotifywrapped.R;
 import com.google.android.material.appbar.MaterialToolbar;
 
-import java.io.InputStream;
 import java.util.Arrays;
 
 public class Top10Artists extends AppCompatActivity {
@@ -29,14 +24,12 @@ public class Top10Artists extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rewrapped_template_artist);
 
+        ArtistsViewModel viewModel = new ViewModelProvider(this).get(ArtistsViewModel.class);
+
         ViewPager2 vp = findViewById(R.id.viewPager);
         vp.setAdapter(new PagerAdapterArtist(this));
 
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
-//        TextView numberTextView = findViewById(R.id.number);
-//        TextView songNameTextView = findViewById(R.id.song_name);
-//        TextView artistNameTextView = findViewById(R.id.artist_name);
-//        TextView albumNameTextView = findViewById(R.id.album_name);
         Spinner dropdown = findViewById(R.id.dropdownMenu);
         String[] items = Arrays.stream(TimeRange.values())
                 .map(TimeRange::getDescription)
@@ -44,43 +37,18 @@ public class Top10Artists extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         dropdown.setAdapter(adapter);
 
-//        Bundle extras = getIntent().getExtras();
-//        if (extras != null) {
-//            String number = extras.getString("number");
-//            String songName = extras.getString("songName");
-//            String artistName = extras.getString("artistName");
-//            String albumName = extras.getString("albumName");
-//
-//              numberTextView.setText(number);
-//              songNameTextView.setText(songName);
-//              artistNameTextView.setText(artistName);
-//              albumNameTextView.setText(albumName);
-//        }
+        dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                viewModel.setCurrentTimeRange(TimeRange.values()[position]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         topAppBar.setOnClickListener(v -> finish());
-    }
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
     }
 }

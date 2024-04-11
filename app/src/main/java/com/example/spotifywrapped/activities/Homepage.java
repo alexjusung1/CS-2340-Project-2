@@ -20,6 +20,7 @@ public class Homepage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homepage);
 
+
         Button rewrapInfo = findViewById(R.id.rewrapinfo);
         Button pastRewrap = findViewById(R.id.past_rewrap);
         ImageView settings = findViewById(R.id.setting);

@@ -3,10 +3,13 @@ package com.example.spotifywrapped.data;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class ArtistData {
     private String name;
     private int followerCount;
-    private String artistImageURI;
+    private URL artistImageURL;
     int popularity;
 
     public ArtistData(JsonObject jsonObject) {
@@ -19,15 +22,20 @@ public class ArtistData {
                 .getAsInt();
 
         JsonArray pictures = jsonObject.get("images").getAsJsonArray();
-        artistImageURI = pictures.get(0).getAsJsonObject().get("url").getAsString();
+        try {
+            artistImageURL = new URL(pictures.get(0).getAsJsonObject().get("url").getAsString());
+        } catch (MalformedURLException e) {
+            artistImageURL = null;
+            e.printStackTrace();
+        }
     }
 
     public String getName() {
         return name;
     }
 
-    public String getArtistImageURI() {
-        return artistImageURI;
+    public URL getArtistImageURL() {
+        return artistImageURL;
     }
 
     public String getFollowerCount() {

@@ -23,6 +23,14 @@ public class RewrappedSummary {
         topTenArtists.put(timeRange, topArtists);
     }
 
+    public ArtistData getTopArtist(TimeRange timeRange, int position) {
+        return topTenArtists.get(timeRange).get(position);
+    }
+
+    public List<ArtistData> getTopArtists(TimeRange timeRange) {
+        return topTenArtists.get(timeRange);
+    }
+
     public boolean hasArtistsFromTime(TimeRange timeRange) {
         return topTenArtists.containsKey(timeRange);
     }

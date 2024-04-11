@@ -6,7 +6,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.example.spotifywrapped.data.TimeRange;
+
 public class PagerAdapterArtist extends FragmentStateAdapter {
+
     public PagerAdapterArtist(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
