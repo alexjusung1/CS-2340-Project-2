@@ -33,4 +33,22 @@
       "sha256_cert_fingerprints":
       ["C9:19:57:51:07:49:A6:78:39:64:DA:90:D1:24:4C:92:3F:C1:2E:76:5D:CD:68:F2:37:B4:2B:0D:65:8A:87:6A"]
     }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.example.spotifywrapped",
+      "sha256_cert_fingerprints":
+      ["0C:0A:97:41:69:83:C2:40:71:C4:07:61:D1:C4:8F:F2:4D:40:48:18:B4:B8:F7:9D:C4:D2:AB:A6:32:E9:61:AF"]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.example.spotifywrapped",
+      "sha256_cert_fingerprints":
+      ["15:B4:35:41:E9:C2:DD:78:80:D1:75:82:09:C3:07:CC:DE:68:2C:73:45:92:7D:28:D2:CB:4E:9A:1A:8F:EE:76"]
+    }
   }]

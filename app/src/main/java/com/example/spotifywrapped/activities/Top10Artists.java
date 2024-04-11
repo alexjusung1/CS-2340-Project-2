@@ -14,11 +14,13 @@ import android.widget.Spinner;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.spotifywrapped.data.TimeRange;
 import com.example.spotifywrapped.viewpager.PagerAdapterArtist;
 import com.example.spotifywrapped.R;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.io.InputStream;
+import java.util.Arrays;
 
 public class Top10Artists extends AppCompatActivity {
 
@@ -36,11 +38,11 @@ public class Top10Artists extends AppCompatActivity {
 //        TextView artistNameTextView = findViewById(R.id.artist_name);
 //        TextView albumNameTextView = findViewById(R.id.album_name);
         Spinner dropdown = findViewById(R.id.dropdownMenu);
-        String[] items = new String[]{"Short Term", "Medium Term", "Long Term"};
+        String[] items = Arrays.stream(TimeRange.values())
+                .map(TimeRange::getDescription)
+                .toArray(String[]::new);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         dropdown.setAdapter(adapter);
-
-
 
 //        Bundle extras = getIntent().getExtras();
 //        if (extras != null) {
