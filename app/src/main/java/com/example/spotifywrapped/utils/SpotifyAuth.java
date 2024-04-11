@@ -98,10 +98,10 @@ public class SpotifyAuth {
             if (!accessTokenValid) tokenValid.await();
 
             if (Instant.now().compareTo(refreshTime) >= 0) {
-                CompletableFuture.runAsync(SpotifyAuth::refreshAccessTokenAsync).get();
+                SpotifyAuth.refreshAccessTokenAsync();
             }
             return accessToken;
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException e) {
             Log.e(TAG, "Error while waiting for refresh");
             throw new RuntimeException(e);
         } finally {

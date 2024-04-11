@@ -42,11 +42,12 @@ public class ArtistFrag extends Fragment {
                     CompletableFuture.supplyAsync(() ->
                                     SpotifyDataHolder.getCurrentTopArtistAsync(timeRange, pos))
                             .thenAccept(artistData -> {
-                                SpotifyAPI.fetchImageFromURL(bitmap -> {
-                                    requireActivity().runOnUiThread(() -> {
-                                        binding.musicAlbumView.setImageBitmap(bitmap);
-                                    });
-                                }, artistData.getArtistImageURL());
+                                CompletableFuture.supplyAsync(artistData::getArtistImageAsync)
+                                        .thenAccept(bitmap -> {
+                                            requireActivity().runOnUiThread(() -> {
+                                                binding.musicAlbumView.setImageBitmap(bitmap);
+                                            });
+                                        });
                                 requireActivity().runOnUiThread(() -> {
                                     binding.artistName.setText(artistData.getName());
                                     binding.followerNumber.setText(artistData.getFollowerCount());
