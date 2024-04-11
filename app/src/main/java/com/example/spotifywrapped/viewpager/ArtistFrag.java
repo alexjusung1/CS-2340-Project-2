@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.spotifywrapped.activities.ArtistsViewModel;
+import com.example.spotifywrapped.activities.TimeRangeViewModel;
 import com.example.spotifywrapped.databinding.ArtistFragBinding;
 import com.example.spotifywrapped.utils.SpotifyAPI;
 import com.example.spotifywrapped.utils.SpotifyDataHolder;
@@ -34,8 +34,8 @@ public class ArtistFrag extends Fragment {
         int pos = requireArguments().getInt("position", -1);
         binding.number.setText(String.format("#%d", pos + 1));
 
-        ArtistsViewModel viewModel = new ViewModelProvider(requireActivity())
-                .get(ArtistsViewModel.class);
+        TimeRangeViewModel viewModel = new ViewModelProvider(requireActivity())
+                .get(TimeRangeViewModel.class);
 
         viewModel.getTimeRangeObserver()
                 .observe(getViewLifecycleOwner(), timeRange -> {

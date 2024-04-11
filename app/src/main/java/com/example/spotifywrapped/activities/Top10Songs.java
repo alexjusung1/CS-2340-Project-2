@@ -24,25 +24,11 @@ public class Top10Songs extends AppCompatActivity {
         vp.setAdapter(new PagerAdapterTrack(this));
 
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
-//        TextView numberTextView = findViewById(R.id.number);
-//        TextView artistNameTextView = findViewById(R.id.artist_name);
-//        TextView albumNameTextView = findViewById(R.id.album_name);
 
         Spinner dropdown = findViewById(R.id.dropdownMenu);
         String[] items = new String[]{"Short Term", "Medium Term", "Long Term"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         dropdown.setAdapter(adapter);
-
-//        Bundle extras = getIntent().getExtras();
-//        if (extras != null) {
-//            String number = extras.getString("number");
-//            String artistName = extras.getString("artistName");
-//            String albumName = extras.getString("albumName");
-//
-//            numberTextView.setText(number);
-//            artistNameTextView.setText(artistName);
-//            albumNameTextView.setText(albumName);
-//        }
 
         topAppBar.setOnClickListener(v -> finish());
     }

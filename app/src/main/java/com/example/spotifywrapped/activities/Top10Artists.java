@@ -15,8 +15,6 @@ import com.example.spotifywrapped.data.TimeRange;
 import com.example.spotifywrapped.viewpager.PagerAdapterArtist;
 import com.google.android.material.appbar.MaterialToolbar;
 
-import java.util.Arrays;
-
 public class Top10Artists extends AppCompatActivity {
 
     @Override
@@ -24,17 +22,16 @@ public class Top10Artists extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rewrapped_template_artist);
 
-        ArtistsViewModel viewModel = new ViewModelProvider(this).get(ArtistsViewModel.class);
+        TimeRangeViewModel viewModel = new ViewModelProvider(this).get(TimeRangeViewModel.class);
 
         ViewPager2 vp = findViewById(R.id.viewPager);
         vp.setAdapter(new PagerAdapterArtist(this));
 
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         Spinner dropdown = findViewById(R.id.dropdownMenu);
-        String[] items = Arrays.stream(TimeRange.values())
-                .map(TimeRange::getDescription)
-                .toArray(String[]::new);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item,
+                TimeRange.descriptions);
         dropdown.setAdapter(adapter);
 
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

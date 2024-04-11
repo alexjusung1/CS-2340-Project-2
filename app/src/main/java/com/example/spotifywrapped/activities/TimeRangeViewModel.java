@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.spotifywrapped.data.TimeRange;
 
-public class ArtistsViewModel extends ViewModel {
+public class TimeRangeViewModel extends ViewModel {
     private final MutableLiveData<TimeRange> currentTimeRange = new MutableLiveData<>();
 
     public LiveData<TimeRange> getTimeRangeObserver() {
