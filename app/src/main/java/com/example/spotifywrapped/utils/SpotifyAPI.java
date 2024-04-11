@@ -39,6 +39,7 @@ public class SpotifyAPI {
     private static final String topTracksURL = "https://api.spotify.com/v1/me/top/tracks";
 
     public static List<ArtistData> topArtists;
+    public static List<TrackData> topTracks;
 
     public static void getTopArtists(TopArtistsAction action, TimeRange range, int count) {
         SpotifyAuth.useAccessToken(accessToken -> {
@@ -117,7 +118,7 @@ public class SpotifyAPI {
     }
 
     public static void parseTracksAndRun(Reader jsonReader, TopTracksAction action) {
-        List<TrackData> topTracks = new ArrayList<>();
+        topTracks = new ArrayList<>();
 
         JsonObject body = JsonParser.parseReader(jsonReader).getAsJsonObject();
 
@@ -127,7 +128,7 @@ public class SpotifyAPI {
             topTracks.add(new TrackData(items.get(i).getAsJsonObject()));
         }
 
-        action.performAction(topTracks);
+        //action.performAction(topTracks);
     }
 
     public static void fetchImageFromURL(FetchImageAction action, URL url) {

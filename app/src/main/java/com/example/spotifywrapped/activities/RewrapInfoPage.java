@@ -24,6 +24,7 @@ public class RewrapInfoPage extends AppCompatActivity {
 
         Bundle passedData = getIntent().getExtras();
         SpotifyAPI.getTopArtists(null, TimeRange.SHORT, 10);
+        SpotifyAPI.getTopTracks(null, TimeRange.SHORT, 10);
         ImageView btnBack = findViewById(R.id.back);
         ImageView saveBtn = findViewById(R.id.save_button);
         Button topArtist = findViewById(R.id.top_artist);
