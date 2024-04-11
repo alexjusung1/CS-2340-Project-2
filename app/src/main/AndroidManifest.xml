@@ -12,8 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SpotifyWrapped"
         tools:targetApi="34">
-        <activity
-            android:name=".activities.SignUpActivity"
+        <activity android:name=".activities.SignUpActivity" />
+        <activity android:name=".activities.Homepage" />
+        <activity android:name=".activities.RewrapInfoPage" />
+        <activity android:name=".activities.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,9 +23,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.Homepage" />
-        <activity android:name=".activities.RewrapInfoPage" />
-        <activity android:name=".activities.LoginActivity" />
         <activity android:name=".activities.SettingsActivity" />
         <activity android:name=".activities.recommendations" />
         <activity android:name=".activities.Top10Artists" />

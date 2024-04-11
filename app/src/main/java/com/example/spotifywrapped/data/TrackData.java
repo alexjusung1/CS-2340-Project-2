@@ -30,4 +30,12 @@ public class TrackData {
     public String getAlbumImageUrl() {
         return albumImageUrl;
     }
+
+    public String getAlbumName() {
+        return albumName;
+    }
+
+    public String getArtistName() {
+        return artistName;
+    }
 }

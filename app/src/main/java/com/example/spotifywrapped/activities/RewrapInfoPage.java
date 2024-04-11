@@ -9,7 +9,12 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.spotifywrapped.R;
+import com.example.spotifywrapped.utils.SpotifyDataHolder;
 import com.google.android.material.textfield.TextInputEditText;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 public class RewrapInfoPage extends AppCompatActivity {
     SharedPreferences sharedPreferences;
@@ -28,14 +33,25 @@ public class RewrapInfoPage extends AppCompatActivity {
         Button topSongs = findViewById(R.id.top_song);
         rewrapName = findViewById(R.id.rewrap_name);
 
+        if (passedData != null && passedData.getBoolean("isCurrent")) {
+            CompletableFuture.runAsync(SpotifyDataHolder::prepareNewSummmaryAsync);
+            CompletableFuture.supplyAsync(SpotifyDataHolder::getCurrentSummaryAsync)
+                    .thenAccept(rewrappedSummary -> {
+                        if (isFinishing()) { return; }
+                        runOnUiThread(() -> rewrapName.setText(rewrappedSummary.getSummaryName()));
+                    });
+        }
+
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences("RewrapPrefs", MODE_PRIVATE);
 
         btnBack.setOnClickListener(v -> finish());
 
-        rewrapName.setOnClickListener(v -> rewrapName.setText(""));
-
-        topArtist.setOnClickListener(v -> startActivity(new Intent(RewrapInfoPage.this, Top10Artists.class)));
+        topArtist.setOnClickListener(v -> {
+            Intent intent = new Intent(RewrapInfoPage.this, Top10Artists.class);
+            intent.putExtra("isCurrent", passedData != null && passedData.getBoolean("isCurrent"));
+            startActivity(intent);
+        });
 
         topSongs.setOnClickListener(v -> startActivity(new Intent(RewrapInfoPage.this, Top10Songs.class)));
 

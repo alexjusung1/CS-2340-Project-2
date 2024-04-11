@@ -36,39 +36,39 @@ public class MainActivity extends AppCompatActivity {
             SpotifyAuth.parseAuthorizationResponse(uri);
             // TODO: Reroute to previous layout/fragment
 
-            SpotifyAPI.getTopArtists(topArtists -> {
-                if (isFinishing()) { return; }
-                runOnUiThread(() -> {
-                    binding.textView.setText(topArtists.get(0).getName());
-                    try {
-                        Log.d("MainActivity", topArtists.get(0).getArtistImageURI());
-                        URL url = new URL(topArtists.get(0).getArtistImageURI());
-                        SpotifyAPI.fetchImageFromURL(bitmap -> {
-                            if (isFinishing()) { return; }
-                            runOnUiThread(() -> binding.imageView.setImageBitmap(bitmap));
-                        }, url);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-            }, TimeRange.SHORT, 1);
+//            SpotifyAPI.getTopArtists(topArtists -> {
+//                if (isFinishing()) { return; }
+//                runOnUiThread(() -> {
+//                    binding.textView.setText(topArtists.get(0).getName());
+//                    try {
+//                        Log.d("MainActivity", topArtists.get(0).getArtistImageURI());
+//                        URL url = new URL(topArtists.get(0).getArtistImageURI());
+//                        SpotifyAPI.fetchImageFromURL(bitmap -> {
+//                            if (isFinishing()) { return; }
+//                            runOnUiThread(() -> binding.imageView.setImageBitmap(bitmap));
+//                        }, url);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//            }, TimeRange.SHORT, 1);
 
-            SpotifyAPI.getTopTracks(topTracks -> {
-                if (isFinishing()) { return; }
-                runOnUiThread(() -> {
-                    binding.textView3.setText(topTracks.get(0).getName());
-                    try {
-                        Log.d("MainActivity", topTracks.get(0).getAlbumImageUrl());
-                        URL url = new URL(topTracks.get(0).getAlbumImageUrl());
-                        SpotifyAPI.fetchImageFromURL(bitmap -> {
-                            if (isFinishing()) { return; }
-                            runOnUiThread(() -> binding.imageView2.setImageBitmap(bitmap));
-                        }, url);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-            }, TimeRange.SHORT, 1);
+//            SpotifyAPI.getTopTracks(topTracks -> {
+//                if (isFinishing()) { return; }
+//                runOnUiThread(() -> {
+//                    binding.textView3.setText(topTracks.get(0).getName());
+//                    try {
+//                        Log.d("MainActivity", topTracks.get(0).getAlbumImageUrl());
+//                        URL url = new URL(topTracks.get(0).getAlbumImageUrl());
+//                        SpotifyAPI.fetchImageFromURL(bitmap -> {
+//                            if (isFinishing()) { return; }
+//                            runOnUiThread(() -> binding.imageView2.setImageBitmap(bitmap));
+//                        }, url);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//            }, TimeRange.SHORT, 1);
         }
 
         binding.button.setOnClickListener(view -> {
@@ -79,8 +79,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        binding.button2.setOnClickListener(view -> {
-            SpotifyAuth.debugForceRefresh();
-        });
+//        binding.button2.setOnClickListener(view -> {
+//            SpotifyAuth.debugForceRefresh();
+//        });
     }
 }
