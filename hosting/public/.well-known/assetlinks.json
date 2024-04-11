@@ -24,4 +24,13 @@
       "sha256_cert_fingerprints":
       ["5A:DE:0D:0F:07:73:D1:D6:AA:B6:87:60:16:F1:5F:1A:54:1D:C7:3C:2B:59:2C:17:B3:44:8D:92:7B:BE:AC:F7"]
     }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.example.spotifywrapped",
+      "sha256_cert_fingerprints":
+      ["C9:19:57:51:07:49:A6:78:39:64:DA:90:D1:24:4C:92:3F:C1:2E:76:5D:CD:68:F2:37:B4:2B:0D:65:8A:87:6A"]
+    }
   }]

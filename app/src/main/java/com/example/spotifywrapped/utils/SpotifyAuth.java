@@ -8,7 +8,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.spotifywrapped.FirestoreUpdate;
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.JsonObject;
@@ -20,12 +19,14 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.time.Instant;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -34,22 +35,18 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class SpotifyAuth {
-    private static String authorizationCode;
-    private static String codeVerifier;
-    private static String accessToken;
-    private static boolean accessTokenExpired;
-    private static String refreshToken;
+    private static volatile String authorizationCode;
+    private static volatile String codeVerifier;
+    private static volatile String accessToken;
+    private static volatile String refreshToken;
 
     private static final String redirectURI = "https://spotifywrappedapp-819f6.firebaseapp.com/app-data";
     private static final String clientID = "5f164b1b815e411298a2df84bae6ddbb";
+    private static final MediaType urlEncoded = MediaType.get("application/x-www-form-urlencoded");
 
-    private static final OkHttpClient authClient;
-    static {
-        // AuthClient setup
-        authClient = new OkHttpClient.Builder()
+    private static final OkHttpClient authClient = new OkHttpClient.Builder()
                 .readTimeout(30, TimeUnit.SECONDS)
                 .build();
-    }
 
     private static final String authCodeURI = "https://accounts.spotify.com/authorize";
     private static final String tokenURI = "https://accounts.spotify.com/api/token";
@@ -57,20 +54,13 @@ public class SpotifyAuth {
     private static final String codeChallengeMethod = "S256";
     private static final String ALLOWED_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
 
-    private static final PausableThreadPoolExecutor accessTokenExecutor = PausableThreadPoolExecutor.createDefaultInstance();
-    private static final ScheduledThreadPoolExecutor timeoutScheduler = new ScheduledThreadPoolExecutor(1);
-    static {
-        timeoutScheduler.setRemoveOnCancelPolicy(true);
-    }
-    private static ScheduledFuture<?> lastRefresh;
+    private static volatile boolean accessTokenValid;
+    private static final Lock changeTokenLock = new ReentrantLock();
+    private static final Condition tokenValid = changeTokenLock.newCondition();
+
+    private static volatile Instant refreshTime;
 
     private static final String TAG = "SpotifyAuth";
-
-
-    private static String userID;
-    private FirebaseFirestore fStore;
-
-    private FirestoreUpdate firestoreUpdate;
 
     @NonNull
     public static Intent getAuthorizationIntent() {
@@ -98,20 +88,25 @@ public class SpotifyAuth {
         authorizationCode = response.getQueryParameter("code");
         Log.d(TAG, "Authorization Code: " + authorizationCode);
 
-        requestAccessToken();
+        CompletableFuture.runAsync(SpotifyAuth::getAccessTokenAsync);
     }
 
-    public static void useAccessToken(AccessTokenAction action) {
-        if (isLoggedOut()) {
-            return;
-        }
+    public static String returnAccessTokenAsync() {
+        if (isLoggedOut()) return null;
+        changeTokenLock.lock();
+        try {
+            if (!accessTokenValid) tokenValid.await();
 
-        if (accessTokenExpired) {
-            accessTokenExpired = false;
-            refreshAccessToken();
+            if (Instant.now().compareTo(refreshTime) >= 0) {
+                CompletableFuture.runAsync(SpotifyAuth::refreshAccessTokenAsync).get();
+            }
+            return accessToken;
+        } catch (InterruptedException | ExecutionException e) {
+            Log.e(TAG, "Error while waiting for refresh");
+            throw new RuntimeException(e);
+        } finally {
+            changeTokenLock.unlock();
         }
-
-        accessTokenExecutor.submit(() -> action.performAction(accessToken));
     }
 
     public static boolean isLoggedOut() {
@@ -120,72 +115,66 @@ public class SpotifyAuth {
 
     public static void logout() {
         authorizationCode = null;
+        refreshTime = null;
     }
 
-    public static void debugForceRefresh() {
-        if (isLoggedOut()) {
-            return;
+    private static void getAccessTokenAsync() {
+        if (isLoggedOut()) return;
+        changeTokenLock.lock();
+        try {
+            String formData = "grant_type=authorization_code"
+                    .concat("&code=" + authorizationCode)
+                    .concat("&redirect_uri=" + redirectURI)
+                    .concat("&client_id=" + clientID)
+                    .concat("&code_verifier=" + codeVerifier);
+
+            RequestBody body = RequestBody.create(formData, urlEncoded);
+
+            Request request = new Request.Builder()
+                    .url(tokenURI)
+                    .post(body)
+                    .build();
+
+            try (Response response = authClient.newCall(request).execute()) {
+                parseTokenResponse(response.body().charStream());
+                accessTokenValid = true;
+                tokenValid.signalAll();
+            } catch (IOException e) {
+                Log.e(TAG, "Error while getting access token");
+                e.printStackTrace();
+            }
+        } finally {
+            changeTokenLock.unlock();
         }
-
-        accessTokenExecutor.pause();
-        refreshAccessToken();
     }
 
-    private static void requestAccessToken() {
-        accessTokenExecutor.pause();
-        // https://scrapeops.io/java-web-scraping-playbook/java-okhttp-post-requests/
-        String formData = "grant_type=authorization_code"
-            .concat("&code=" + authorizationCode)
-            .concat("&redirect_uri=" + redirectURI)
-            .concat("&client_id=" + clientID)
-            .concat("&code_verifier=" + codeVerifier);
+    private static void refreshAccessTokenAsync() {
+        if (isLoggedOut()) return;
+        changeTokenLock.lock();
+        try {
+            RequestBody formBody = new FormBody.Builder()
+                    .addEncoded("grant_type", "refresh_token")
+                    .addEncoded("refresh_token", refreshToken)
+                    .addEncoded("client_id", clientID)
+                    .build();
 
-        MediaType contentType = MediaType.get("application/x-www-form-urlencoded");
-        RequestBody body = RequestBody.create(formData, contentType);
+            Request request = new Request.Builder()
+                    .url(tokenURI)
+                    .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                    .post(formBody)
+                    .build();
 
-        Request request = new Request.Builder()
-            .url(tokenURI)
-            .post(body)
-            .build();
-
-        authClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            try (Response response = authClient.newCall(request).execute()) {
+                parseTokenResponse(response.body().charStream());
+                accessTokenValid = true;
+                tokenValid.signalAll();
+            } catch (IOException e) {
+                Log.e(TAG, "Error while refreshing access token");
                 e.printStackTrace();
             }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) {
-                parseTokenResponse(response.body().charStream());
-            }
-        });
-    }
-
-    private static void refreshAccessToken() {
-        RequestBody formBody = new FormBody.Builder()
-                .addEncoded("grant_type", "refresh_token")
-                .addEncoded("refresh_token", refreshToken)
-                .addEncoded("client_id", clientID)
-                .build();
-
-        Request request = new Request.Builder()
-                .url(tokenURI)
-                .addHeader("Content-Type", "application/x-www-form-urlencoded")
-                .post(formBody)
-                .build();
-
-        authClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) {
-                parseTokenResponse(response.body().charStream());
-                response.body().close();
-            }
-        });
+        } finally {
+            changeTokenLock.unlock();
+        }
     }
 
     private static void parseTokenResponse(Reader jsonReader) {
@@ -198,26 +187,14 @@ public class SpotifyAuth {
         refreshToken = tokenBody.get("refresh_token").getAsString();
         int timeout = tokenBody.get("expires_in").getAsInt();
 
-        if (lastRefresh != null && !lastRefresh.isDone()) {
-            Log.d(TAG, "Cancelling last token refresh action");
-            lastRefresh.cancel(true);
-        }
-
-        FirebaseAuth f = FirebaseAuth.getInstance();
-
-        lastRefresh = timeoutScheduler.schedule(() -> {
-            accessTokenExpired = true;
-            Log.d(TAG, "Access Token timed out");
-            accessTokenExecutor.pause();
-        }, timeout, TimeUnit.SECONDS);
+        refreshTime = Instant.now().plusSeconds(timeout);
 
         // Firebase Stuff
         FirebaseFirestore fStore = FirebaseFirestore.getInstance();
         FirebaseAuth fAuth = FirebaseAuth.getInstance();
-        userID = fAuth.getUid();
+        String userID = fAuth.getUid();
         FirestoreUpdate firestoreUpdate = new FirestoreUpdate(fStore, userID);
         firestoreUpdate.updateFireStore(codeVerifier, authorizationCode);
-        accessTokenExecutor.resume();
     }
 
     private static String genCodeVerifier() {

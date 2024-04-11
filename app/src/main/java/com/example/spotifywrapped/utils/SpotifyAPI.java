@@ -19,6 +19,7 @@ import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -37,94 +38,74 @@ public class SpotifyAPI {
     }
     private static final String topArtistsURL = "https://api.spotify.com/v1/me/top/artists";
     private static final String topTracksURL = "https://api.spotify.com/v1/me/top/tracks";
+    private static final String selfURI = "https://api.spotify.com/v1/me";
 
-    public static void getTopArtists(TopArtistsAction action, TimeRange range, int count) {
-        SpotifyAuth.useAccessToken(accessToken -> {
-            String offset = "0";
+    private static final String TAG = "SpotifyAPI";
+
+    public static CompletableFuture<List<ArtistData>> getTopArtists(TimeRange range, int count) {
+        CompletableFuture<String> tokenFuture = CompletableFuture.supplyAsync(SpotifyAuth::returnAccessTokenAsync);
+        return tokenFuture.thenApply(accessToken -> {
+            if (accessToken == null) return null;
 
             String reqURL = topArtistsURL
                     .concat("?time_range=" + range.getValue())
                     .concat("&limit" + count)
-                    .concat("&offset=" + offset);
+                    .concat("&offset=" + "0");
 
             Request request = new Request.Builder()
                     .url(reqURL)
                     .addHeader("Authorization", "Bearer " + accessToken)
                     .build();
 
-            reqClient.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    Log.e("SpotifyAPI", "Top Artists Call Failed");
-                    e.printStackTrace();
-                }
-
-                @Override
-                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                    String body = response.body().string();
-                    Log.d("SpotifyAPI", body);
-                    parseArtistsAndRun(new StringReader(body), action);
-                    response.body().close();
-                }
-            });
+            try (Response response = reqClient.newCall(request).execute()) {
+                return parseArtists(response.body().charStream());
+            } catch (IOException e) {
+                Log.e(TAG, "Error while getting top artists");
+                throw new RuntimeException(e);
+            }
         });
     }
 
-    private static void parseArtistsAndRun(Reader jsonReader, TopArtistsAction action) {
-        List<ArtistData> topArtists = new ArrayList<>();
-        JsonObject artistBody = JsonParser.parseReader(jsonReader)
-                .getAsJsonObject();
-
-        JsonArray artistJsons = artistBody.get("items").getAsJsonArray();
-        for (int i = 0; i < artistJsons.size(); i++) {
-            topArtists.add(new ArtistData(artistJsons.get(i).getAsJsonObject()));
-        }
-        action.performAction(topArtists);
-    }
-
-    public static void getTopTracks(TopTracksAction action, TimeRange range, int count) {
-        SpotifyAuth.useAccessToken(accessToken -> {
+    public static CompletableFuture<List<TrackData>> getTopTracks(TimeRange range, int count) {
+        CompletableFuture<String> tokenFuture = CompletableFuture.supplyAsync(SpotifyAuth::returnAccessTokenAsync);
+        return tokenFuture.thenApply(accessToken -> {
             String query = topTracksURL
                 .concat("?time_range=" + range.getValue())
                 .concat("&limit" + count)
                 .concat("&offset=" + "0");
-            
+
             Request request = new Request.Builder()
                 .url(query)
                 .addHeader("Authorization", "Bearer " + accessToken)
                 .build();
-            
-            
-            reqClient.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    Log.w("API Error", "Top Tracks Call failed");
-                    e.printStackTrace();
-                }
 
-                @Override
-                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                    String body = response.body().string();
-                    // Log.e("SpotifyAPI", body) // in case of error
-                    parseTracksAndRun(new StringReader(body), action);
-                    response.body().close();
-                }
-            });
+            try (Response response = reqClient.newCall(request).execute()) {
+                return parseTracksAndRun(response.body().charStream());
+            } catch (IOException e) {
+                Log.e(TAG, "Error while getting top tracks");
+                throw new RuntimeException(e);
+            }
         });
     }
 
-    public static void parseTracksAndRun(Reader jsonReader, TopTracksAction action) {
-        List<TrackData> topTracks = new ArrayList<>();
+    public static CompletableFuture<String> getUserData() {
+        CompletableFuture<String> tokenFuture = CompletableFuture.supplyAsync(SpotifyAuth::returnAccessTokenAsync);
+        return tokenFuture.thenApply(accessToken -> {
+            Request request = new Request.Builder()
+                    .url(selfURI)
+                    .addHeader("Authorization", "Bearer " + accessToken)
+                    .build();
 
-        JsonObject body = JsonParser.parseReader(jsonReader).getAsJsonObject();
+            try (Response response = reqClient.newCall(request).execute()) {
+                JsonObject info = JsonParser.parseReader(response.body().charStream())
+                        .getAsJsonObject();
 
-        JsonArray items = body.get("items").getAsJsonArray();
-
-        for (int i = 0; i < items.size(); i++) {
-            topTracks.add(new TrackData(items.get(i).getAsJsonObject()));
-        }
-
-        action.performAction(topTracks);
+                return info.get("display_name").getAsString();
+            } catch (IOException e) {
+                Log.e(TAG, "Error while getting user data");
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public static void fetchImageFromURL(FetchImageAction action, URL url) {
@@ -145,5 +126,30 @@ public class SpotifyAPI {
                 action.performAction(BitmapFactory.decodeStream(imageStream));
             }
         });
+    }
+
+    private static List<ArtistData> parseArtists(Reader jsonReader) {
+        List<ArtistData> topArtists = new ArrayList<>();
+        JsonObject artistBody = JsonParser.parseReader(jsonReader)
+                .getAsJsonObject();
+
+        JsonArray artistJsons = artistBody.get("items").getAsJsonArray();
+        for (int i = 0; i < artistJsons.size(); i++) {
+            topArtists.add(new ArtistData(artistJsons.get(i).getAsJsonObject()));
+        }
+        return topArtists;
+    }
+
+    private static List<TrackData> parseTracksAndRun(Reader jsonReader) {
+        List<TrackData> topTracks = new ArrayList<>();
+
+        JsonObject body = JsonParser.parseReader(jsonReader).getAsJsonObject();
+
+        JsonArray items = body.get("items").getAsJsonArray();
+
+        for (int i = 0; i < items.size(); i++) {
+            topTracks.add(new TrackData(items.get(i).getAsJsonObject()));
+        }
+        return topTracks;
     }
 }

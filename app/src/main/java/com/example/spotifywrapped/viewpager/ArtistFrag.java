@@ -27,4 +27,10 @@ public class ArtistFrag extends Fragment {
         binding.number.setText(String.format("#%d",
                 requireArguments().getInt("position", -1) + 1));
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 }
