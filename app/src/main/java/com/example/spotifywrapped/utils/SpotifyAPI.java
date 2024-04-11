@@ -1,5 +1,6 @@
 package com.example.spotifywrapped.utils;
 
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
@@ -108,25 +109,38 @@ public class SpotifyAPI {
         });
     }
 
-    public static void fetchImageFromURL(FetchImageAction action, URL url) {
+    public static Bitmap fetchImageFromURLAsync(URL url) {
         Request request = new Request.Builder()
-                    .url(url)
-                    .build();
+                .url(url)
+                .build();
 
-        reqClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.e("SpotifyAPI", "Failed to fetch image from URL");
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                InputStream imageStream = response.body().byteStream();
-                action.performAction(BitmapFactory.decodeStream(imageStream));
-            }
-        });
+        try (Response response = reqClient.newCall(request).execute()) {
+            return BitmapFactory.decodeStream(response.body().byteStream());
+        } catch (IOException e) {
+            Log.e("SpotifyAPI", "Failed while getting image from URL");
+            throw new RuntimeException(e);
+        }
     }
+
+//    public static void fetchImageFromURL(FetchImageAction action, URL url) {
+//        Request request = new Request.Builder()
+//                    .url(url)
+//                    .build();
+//
+//        reqClient.newCall(request).enqueue(new Callback() {
+//            @Override
+//            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+//                Log.e("SpotifyAPI", "Failed to fetch image from URL");
+//                e.printStackTrace();
+//            }
+//
+//            @Override
+//            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+//                InputStream imageStream = response.body().byteStream();
+//                action.performAction(BitmapFactory.decodeStream(imageStream));
+//            }
+//        });
+//    }
 
     private static List<ArtistData> parseArtists(Reader jsonReader) {
         List<ArtistData> topArtists = new ArrayList<>();

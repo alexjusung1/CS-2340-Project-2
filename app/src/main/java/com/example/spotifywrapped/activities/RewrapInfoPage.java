@@ -56,7 +56,8 @@ public class RewrapInfoPage extends AppCompatActivity {
 
         topSongs.setOnClickListener(v -> startActivity(new Intent(RewrapInfoPage.this, Top10Songs.class)));
 
-        saveBtn.setOnClickListener(v -> saveRewrapName());
+        saveBtn.setOnClickListener(v -> {
+        });
 
         // Load saved rewrap name
         String savedRewrapName = sharedPreferences.getString("rewrapName", "");
