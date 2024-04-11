@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,6 +25,7 @@ public class Homepage extends AppCompatActivity {
         ImageView settings = findViewById(R.id.setting);
         Button recommendations = findViewById(R.id.recommendation);
         CircleImageView circleImageView = findViewById(R.id.user_image);
+        TextView username = findViewById(R.id.username);
 //        change later
 
         rewrapInfo.setOnClickListener(new View.OnClickListener() {
@@ -34,6 +36,7 @@ public class Homepage extends AppCompatActivity {
                 } else {
                     Intent intent = new Intent(Homepage.this, RewrapInfoPage.class);
                     intent.putExtra("isCurrent", true);
+                    username.setText(SpotifyAuth.username);
 
                     startActivity(intent);
                 }
