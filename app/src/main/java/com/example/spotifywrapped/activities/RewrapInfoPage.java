@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.spotifywrapped.R;
+import com.example.spotifywrapped.data.TimeRange;
+import com.example.spotifywrapped.utils.SpotifyAPI;
 import com.google.android.material.textfield.TextInputEditText;
 
 public class RewrapInfoPage extends AppCompatActivity {
@@ -21,7 +23,7 @@ public class RewrapInfoPage extends AppCompatActivity {
         setContentView(R.layout.rewrap_info_page);
 
         Bundle passedData = getIntent().getExtras();
-
+        SpotifyAPI.getTopArtists(null, TimeRange.SHORT, 10);
         ImageView btnBack = findViewById(R.id.back);
         ImageView saveBtn = findViewById(R.id.save_button);
         Button topArtist = findViewById(R.id.top_artist);
@@ -35,7 +37,10 @@ public class RewrapInfoPage extends AppCompatActivity {
 
         rewrapName.setOnClickListener(v -> rewrapName.setText(""));
 
-        topArtist.setOnClickListener(v -> startActivity(new Intent(RewrapInfoPage.this, Top10Artists.class)));
+        topArtist.setOnClickListener(v -> {
+            //SpotifyAPI.getTopArtists(null, TimeRange.SHORT, 10);
+            startActivity(new Intent(RewrapInfoPage.this, Top10Artists.class));
+        });
 
         topSongs.setOnClickListener(v -> startActivity(new Intent(RewrapInfoPage.this, Top10Songs.class)));
 

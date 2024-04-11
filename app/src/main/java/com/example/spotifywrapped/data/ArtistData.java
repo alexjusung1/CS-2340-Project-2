@@ -29,4 +29,8 @@ public class ArtistData {
     public String getArtistImageURI() {
         return artistImageURI;
     }
+
+    public String getFollowerCount() {
+        return followerCount + " Followers";
+    }
 }
