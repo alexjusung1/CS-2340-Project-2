@@ -5,25 +5,19 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.spotifywrapped.FirestoreUpdate;
 import com.example.spotifywrapped.R;
-import com.example.spotifywrapped.data.RewrappedSummary;
 import com.example.spotifywrapped.utils.SpotifyDataHolder;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
 
 public class RewrapInfoPage extends AppCompatActivity {
-    SharedPreferences sharedPreferences;
     TextInputEditText rewrapName;
 
     @Override
@@ -48,9 +42,6 @@ public class RewrapInfoPage extends AppCompatActivity {
                     });
         }
 
-        // Initialize SharedPreferences
-        sharedPreferences = getSharedPreferences("RewrapPrefs", MODE_PRIVATE);
-
         btnBack.setOnClickListener(v -> finish());
 
         topArtist.setOnClickListener(v -> {
@@ -68,20 +59,7 @@ public class RewrapInfoPage extends AppCompatActivity {
             CompletableFuture.supplyAsync(SpotifyDataHolder::getCurrentSummaryAsync)
                     .thenAccept(firestoreUpdate::updateSpotifyFireStore);
         });
-
-        // Load saved rewrap name
-        String savedRewrapName = sharedPreferences.getString("rewrapName", "");
-        rewrapName.setText(savedRewrapName);
     }
 
-    private void saveRewrapName() {
-        String name = rewrapName.getText().toString();
-
-        // Save rewrap name to SharedPreferences
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("rewrapName", name);
-        editor.apply();
-        Toast.makeText(RewrapInfoPage.this, "Rewrap Saved", Toast.LENGTH_LONG).show();
-    }
 }
 

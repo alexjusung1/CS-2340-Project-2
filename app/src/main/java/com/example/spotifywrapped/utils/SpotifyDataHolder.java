@@ -93,7 +93,6 @@ public class SpotifyDataHolder {
             Log.e("SpotifyDataHolder", "Interrupted Error in getting top tracks");
             // e.printStackTrace();
             throw new RuntimeException();
-
         } finally {
             currentSummaryLock.unlock();
         }

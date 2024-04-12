@@ -31,7 +31,7 @@ public class RewrappedSummary {
     }
 
     public TrackData getTopTrack(TimeRange timeRange, int position) {
-        return topTenTracks.get(timeRange).get(position);
+        return topTenTracks.get(timeRange.getValue()).get(position);
     }
 
     public List<ArtistData> getTopArtists(TimeRange timeRange) {
@@ -43,18 +43,18 @@ public class RewrappedSummary {
     }
 
     public boolean hasTracksFromTime(TimeRange timeRange) {
-        return topTenTracks.containsKey(timeRange);
+        return topTenTracks.containsKey(timeRange.getValue());
     }
 
     public void updateTopTracks(TimeRange timeRange, List<TrackData> topTracks) {
         topTenTracks.put(timeRange.getValue(), topTracks);
     }
 
-    public Map<String, List<ArtistData>> getTopTenTracks() {
+    public Map<String, List<ArtistData>> getTopTenArtists() {
         return topTenArtists;
     }
 
-    public Map<String, List<TrackData>> getTopTenArtists() {
+    public Map<String, List<TrackData>> getTopTenTracks() {
         return topTenTracks;
     }
 }
