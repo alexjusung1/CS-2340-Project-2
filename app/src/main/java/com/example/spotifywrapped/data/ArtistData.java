@@ -19,9 +19,9 @@ public class ArtistData {
     private String name;
     private int followerCount;
     private URL artistImageURL;
-    @Exclude private Bitmap cachedArtistImage;
-    private final Lock imageLock = new ReentrantLock();
-    int popularity;
+
+    public ArtistData() {
+    }
 
     public ArtistData(JsonObject jsonObject) {
         name = jsonObject.get("name")
@@ -42,23 +42,18 @@ public class ArtistData {
         }
     }
 
+    // Getter for 'name' attribute
     public String getName() {
         return name;
     }
 
-    public Bitmap getArtistImageAsync() {
-        imageLock.lock();
-        try {
-            if (cachedArtistImage == null) {
-                cachedArtistImage = SpotifyAPI.fetchImageFromURLAsync(artistImageURL);
-            }
-            return cachedArtistImage;
-        } finally {
-            imageLock.unlock();
-        }
+    // Getter for 'followerCount' attribute
+    public int getFollowerCount() {
+        return followerCount;
     }
 
-    public String getFollowerCount() {
-        return followerCount + " Followers";
+    // Getter for 'artistImageURL' attribute
+    public URL getArtistImageURL() {
+        return artistImageURL;
     }
 }

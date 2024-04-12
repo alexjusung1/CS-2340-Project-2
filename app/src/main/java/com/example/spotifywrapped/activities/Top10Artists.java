@@ -39,7 +39,6 @@ public class Top10Artists extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 viewModel.setCurrentTimeRange(TimeRange.values()[position]);
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });

@@ -5,6 +5,7 @@ import android.util.Log;
 import com.example.spotifywrapped.data.ArtistData;
 import com.example.spotifywrapped.data.RewrappedSummary;
 import com.example.spotifywrapped.data.TimeRange;
+import com.example.spotifywrapped.data.TrackData;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -69,11 +70,34 @@ public class SpotifyDataHolder {
             }
             return currentSummary.getTopArtist(timeRange, position);
         } catch (ExecutionException | InterruptedException e) {
-            Log.e("SpotifyDataHolder", "Failed getting top artists");
-            throw new RuntimeException(e);
+            Log.e("SpotifyDataHolder", "Failed getting top artists");throw new RuntimeException(e);
         } finally {
             currentSummaryLock.unlock();
         }
+    }
+
+    public static TrackData getCurrentTopTrackAsync(TimeRange timeRange, int position) {
+        currentSummaryLock.lock();
+
+        try {
+            if (!currentSummary.hasTracksFromTime(timeRange)) {
+                currentSummary.updateTopTracks(timeRange, SpotifyAPI.getTopTracks(timeRange, 10).get());
+            }
+
+            return currentSummary.getTopTrack(timeRange, position);
+        } catch (ExecutionException e) {
+            Log.e("SpotifyDataHolder", "Execution Error in getting top tracks");
+            // e.printStackTrace();
+            throw new RuntimeException();
+        } catch (InterruptedException e) {
+            Log.e("SpotifyDataHolder", "Interrupted Error in getting top tracks");
+            // e.printStackTrace();
+            throw new RuntimeException();
+
+        } finally {
+            currentSummaryLock.unlock();
+        }
+
     }
 
     public static RewrappedSummary getCurrentSummaryAsync() {
