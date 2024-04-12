@@ -64,11 +64,11 @@ public class Top10Songs extends AppCompatActivity {
 
                 }).thenAccept(trackData -> {
                     audioURLString = trackData.getAlbumImageUrlString();
+                    audioURI = Uri.parse(audioURLString);
+                    mediaPlayer = MediaPlayer.create(getApplicationContext(), audioURI);
+                    mediaPlayer.setVolume(1, 1);
+                    mediaPlayer.start();
                 });
-                audioURI = Uri.parse(audioURLString);
-                mediaPlayer = MediaPlayer.create(getApplicationContext(), audioURI);
-                mediaPlayer.setVolume(1, 1);
-                mediaPlayer.start();
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
