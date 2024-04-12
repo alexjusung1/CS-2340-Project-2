@@ -7,54 +7,90 @@
     android:orientation="vertical"
     android:background="#D3D3D3">
 
-    <EditText
-        android:id="@+id/editTextEmail"
-        android:layout_width="270dp"
-        android:layout_height="54dp"
-        android:layout_marginTop="240dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_gravity="center"
-        android:hint="@string/email"
-        android:inputType="textEmailAddress"
-        android:autofillHints="" />
-
-    <EditText
-        android:id="@+id/editTextPassword"
-        android:layout_width="270dp"
-        android:layout_height="56dp"
-        android:layout_marginTop="15dp"
-        android:layout_gravity="center"
-        android:hint="@string/password"
-        android:inputType="textPassword"
-        android:autofillHints="" />
-
-    <Button
-        android:id="@+id/buttonLogin"
-        android:layout_width="270dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:layout_gravity="center"
-        android:text="@string/login"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="0dp" />
-
-    <TextView
-        android:id="@+id/moveSignUp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="130dp"
-        android:clickable="true"
-        android:text="@string/moveSignUp"
-        android:textColor="#990099"/>
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/forgotPassword_firebase"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:clickable="true"
-        android:layout_marginTop="15dp"
-        android:text="@string/forget_password"
-        android:textColor="@color/purple" />
+        <ImageView
+            android:layout_width="260dp"
+            android:layout_height="260dp"
+            android:layout_marginTop="60dp"
+            android:contentDescription="@string/connect_to_spotify"
+            android:src="@drawable/logo"
+            app:layout_constraintBottom_toTopOf="@+id/editTextEmail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <EditText
+            android:id="@+id/editTextEmail"
+            android:layout_width="270dp"
+            android:layout_height="54dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:autofillHints=""
+            android:hint="@string/email"
+            android:inputType="textEmailAddress"
+            app:layout_constraintBottom_toTopOf="@+id/editTextPassword"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/editTextPassword"
+            android:layout_width="270dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:autofillHints=""
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            app:layout_constraintBottom_toTopOf="@+id/buttonLogin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/buttonLogin"
+            android:layout_width="270dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="424dp"
+            android:text="@string/login"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/moveSignUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="204dp"
+            android:clickable="true"
+            android:text="@string/moveSignUp"
+            android:textColor="#990099"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.511"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/buttonLogin" />
+
+        <TextView
+            android:id="@+id/forgotPassword_firebase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="4dp"
+            android:clickable="true"
+            android:text="@string/forget_password"
+            android:textColor="@color/purple"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/moveSignUp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>
