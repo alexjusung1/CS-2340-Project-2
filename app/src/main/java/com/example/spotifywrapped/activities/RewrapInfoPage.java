@@ -93,14 +93,13 @@ public class RewrapInfoPage extends AppCompatActivity {
         topSongs.setOnClickListener(v -> {
             Intent intent = new Intent(RewrapInfoPage.this, Top10Songs.class);
             intent.putExtra("isCurrent", isCurrent);
-            intent.putExtra("isCurrent", pastPosition);
+            intent.putExtra("pastPosition", pastPosition);
             startActivity(intent);
         });
 
         saveBtn.setOnClickListener(v -> {
             if (!isCurrent) {
                 Toast.makeText(this, "Does not support saving past summaries", Toast.LENGTH_SHORT).show();
-                Log.d("XXXXXX", String.valueOf(isCurrent));
                 return;
             }
             FirebaseAuth fAuth = FirebaseAuth.getInstance();

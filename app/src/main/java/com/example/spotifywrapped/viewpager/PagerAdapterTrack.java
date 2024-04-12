@@ -7,8 +7,14 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 public class PagerAdapterTrack extends FragmentStateAdapter {
-    public PagerAdapterTrack(@NonNull FragmentActivity fragmentActivity) {
+    boolean isCurrent;
+    int pastPositon;
+
+    public PagerAdapterTrack(@NonNull FragmentActivity fragmentActivity,
+                             boolean isCurrent, int pastPosition) {
         super(fragmentActivity);
+        this.isCurrent = isCurrent;
+        this.pastPositon = pastPosition;
     }
 
     @NonNull
@@ -18,6 +24,8 @@ public class PagerAdapterTrack extends FragmentStateAdapter {
 
         Bundle args = new Bundle();
         args.putInt("position", position);
+        args.putBoolean("isCurrent", isCurrent);
+        args.putInt("summaryPosition", pastPositon);
         fragment.setArguments(args);
 
         return fragment;

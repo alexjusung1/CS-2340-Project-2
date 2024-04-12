@@ -44,14 +44,17 @@ public class Top10Songs extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rewrapped_template_songs);
 
+        Bundle passedData = getIntent().getExtras();
+        boolean isCurrent = passedData.getBoolean("isCurrent", true);
+        int pastPosition = passedData.getInt("pastPosition", 0);
+
         ViewPager2 vp = findViewById(R.id.viewPager);
-        vp.setAdapter(new PagerAdapterTrack(this));
+        vp.setAdapter(new PagerAdapterTrack(this, isCurrent, pastPosition));
 
         vm = new ViewModelProvider(this).get(TimeRangeViewModel.class);
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
 
         Spinner dropdown = findViewById(R.id.dropdownMenu);
-        String[] items = new String[]{"Short Term", "Medium Term", "Long Term"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, TimeRange.descriptions);
         dropdown.setAdapter(adapter);
 
@@ -103,7 +106,9 @@ public class Top10Songs extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mediaPlayer.release();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+        }
     }
 
     private void initializeMediaPlayer(int position) {

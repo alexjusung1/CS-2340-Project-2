@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.spotifywrapped.activities.TimeRangeViewModel;
 import com.example.spotifywrapped.databinding.TrackFragBinding;
+import com.example.spotifywrapped.utils.FirestoreDataHolder;
 import com.example.spotifywrapped.utils.SpotifyAPI;
 import com.example.spotifywrapped.utils.SpotifyDataHolder;
 
@@ -37,21 +38,28 @@ public class TrackFrag extends Fragment {
                 .get(TimeRangeViewModel.class);
 
         vm.getTimeRangeObserver().observe(getViewLifecycleOwner(), timeRange -> {
-            CompletableFuture.supplyAsync(() -> SpotifyDataHolder.getCurrentTopTrackAsync(timeRange, pos))
-                    .thenAccept(trackData -> {
-                        CompletableFuture.supplyAsync(() -> SpotifyAPI.fetchImageFromURLAsync(trackData.getAlbumImageURLString()))
-                                        .thenAccept(bitmap -> {
-                                            requireActivity().runOnUiThread(() ->
-                                                    binding.musicAlbumView.setImageBitmap(bitmap));
-                                            });
-
+            if (requireArguments().getBoolean("isCurrent")) {
+                CompletableFuture.supplyAsync(() -> SpotifyDataHolder.getCurrentTopTrackAsync(timeRange, pos))
+                        .thenApply(trackData -> {
                             requireActivity().runOnUiThread(() -> {
                                 binding.artistName.setText(trackData.getArtistName());
                                 binding.albumName.setText(trackData.getAlbumName());
                                 binding.songName.setText(trackData.getName());
                             });
-
-                    });
+                            return SpotifyAPI.fetchImageFromURLAsync(trackData.getAlbumImageURLString());
+                        }).thenAccept(bitmap -> requireActivity().runOnUiThread(() -> binding.musicAlbumView.setImageBitmap(bitmap)));
+            } else {
+                FirestoreDataHolder.getPastSummary(requireArguments().getInt("summaryPosition"))
+                        .thenApply(summary -> summary.getTopTrack(timeRange, pos))
+                        .thenApply(trackData -> {
+                            requireActivity().runOnUiThread(() -> {
+                                binding.artistName.setText(trackData.getArtistName());
+                                binding.albumName.setText(trackData.getAlbumName());
+                                binding.songName.setText(trackData.getName());
+                            });
+                            return SpotifyAPI.fetchImageFromURLAsync(trackData.getAlbumImageURLString());
+                        }).thenAccept(bitmap -> requireActivity().runOnUiThread(() -> binding.musicAlbumView.setImageBitmap(bitmap)));
+            }
         });
     }
 
