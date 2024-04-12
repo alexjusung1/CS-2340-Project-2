@@ -115,8 +115,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
-
         TextView moveButton = findViewById(R.id.moveSignUp);
         moveButton.setOnClickListener(new View.OnClickListener() {
             @Override
