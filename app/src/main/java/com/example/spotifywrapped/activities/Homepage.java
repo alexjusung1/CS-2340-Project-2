@@ -36,13 +36,7 @@ public class Homepage extends AppCompatActivity {
 
         binding.recommendation.setOnClickListener(v -> startActivity(new Intent(Homepage.this, recommendations.class)));
 
-        if (!SpotifyAuth.isLoggedOut()) {
-            SpotifyDataHolder.getCurrentUserData()
-                    .thenApply(userData -> {
-                        runOnUiThread(() -> binding.username.setText(userData.getUsername()));
-                        return userData.getProfileImageAsync();
-                    }).thenAccept(bitmap -> runOnUiThread(() -> binding.userImage.setImageBitmap(bitmap)));
-        }
+        this.setUsernameAndPFP();
 
         getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
             @Override
@@ -50,5 +44,20 @@ public class Homepage extends AppCompatActivity {
                 Toast.makeText(Homepage.this, "Back press is disabled in this screen", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void setUsernameAndPFP() {
+        if (!SpotifyAuth.isLoggedOut()) {
+            SpotifyDataHolder.getCurrentUserData()
+                    .thenApply(userData -> {
+                        runOnUiThread(() -> binding.username.setText(userData.getUsername()));
+                        return userData.getProfileImageAsync();
+                    }).thenAccept(bitmap -> runOnUiThread(() -> binding.userImage.setImageBitmap(bitmap)));
+        }
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.setUsernameAndPFP();
     }
 }
