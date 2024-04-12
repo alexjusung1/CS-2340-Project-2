@@ -24,8 +24,12 @@ public class Top10Artists extends AppCompatActivity {
 
         TimeRangeViewModel viewModel = new ViewModelProvider(this).get(TimeRangeViewModel.class);
 
+        Bundle passedData = getIntent().getExtras();
+        boolean isCurrent = passedData.getBoolean("isCurrent", true);
+        int pastPosition = passedData.getInt("pastPosition", 0);
+
         ViewPager2 vp = findViewById(R.id.viewPager);
-        vp.setAdapter(new PagerAdapterArtist(this));
+        vp.setAdapter(new PagerAdapterArtist(this, isCurrent, pastPosition));
 
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         Spinner dropdown = findViewById(R.id.dropdownMenu);

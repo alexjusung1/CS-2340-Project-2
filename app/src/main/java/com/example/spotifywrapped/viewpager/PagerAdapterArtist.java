@@ -9,9 +9,14 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import com.example.spotifywrapped.data.TimeRange;
 
 public class PagerAdapterArtist extends FragmentStateAdapter {
+    boolean isCurrent;
+    int pastPosition;
 
-    public PagerAdapterArtist(@NonNull FragmentActivity fragmentActivity) {
+    public PagerAdapterArtist(@NonNull FragmentActivity fragmentActivity,
+                              boolean isCurrent, int pastPosition) {
         super(fragmentActivity);
+        this.isCurrent = isCurrent;
+        this.pastPosition = pastPosition;
     }
 
     @NonNull
@@ -21,6 +26,8 @@ public class PagerAdapterArtist extends FragmentStateAdapter {
 
         Bundle args = new Bundle();
         args.putInt("position", position);
+        args.putBoolean("isCurrent", isCurrent);
+        args.putInt("summaryPosition", pastPosition);
         fragment.setArguments(args);
 
         return fragment;

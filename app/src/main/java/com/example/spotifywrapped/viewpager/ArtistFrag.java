@@ -11,7 +11,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.spotifywrapped.activities.TimeRangeViewModel;
+import com.example.spotifywrapped.data.ArtistData;
 import com.example.spotifywrapped.databinding.ArtistFragBinding;
+import com.example.spotifywrapped.utils.FirestoreDataHolder;
 import com.example.spotifywrapped.utils.SpotifyAPI;
 import com.example.spotifywrapped.utils.SpotifyDataHolder;
 
@@ -40,16 +42,29 @@ public class ArtistFrag extends Fragment {
                 .get(TimeRangeViewModel.class);
 
         viewModel.getTimeRangeObserver()
-                .observe(getViewLifecycleOwner(), timeRange -> CompletableFuture.supplyAsync(() ->
-                                SpotifyDataHolder.getCurrentTopArtistAsync(timeRange, pos))
-                        .thenApply(artistData -> {
-                            requireActivity().runOnUiThread(() -> {
-                                binding.artistName.setText(artistData.getName());
-                                binding.followerNumber.setText(String.format("%d Followers", artistData.getFollowerCount()));
-                            });
-                            return SpotifyAPI.fetchImageFromURLAsync(artistData.getArtistImageURLString());
-                        }).thenAccept(bitmap -> requireActivity().runOnUiThread(() -> binding.musicAlbumView.setImageBitmap(bitmap)))
-                );
+                .observe(getViewLifecycleOwner(), timeRange -> {
+                    if (requireArguments().getBoolean("isCurrent")) {
+                        CompletableFuture.supplyAsync(() ->
+                                        SpotifyDataHolder.getCurrentTopArtistAsync(timeRange, pos))
+                                .thenApply(artistData -> {
+                                    requireActivity().runOnUiThread(() -> {
+                                        binding.artistName.setText(artistData.getName());
+                                        binding.followerNumber.setText(String.format("%d Followers", artistData.getFollowerCount()));
+                                    });
+                                    return SpotifyAPI.fetchImageFromURLAsync(artistData.getArtistImageURLString());
+                                }).thenAccept(bitmap -> requireActivity().runOnUiThread(() -> binding.musicAlbumView.setImageBitmap(bitmap)));
+                    } else {
+                        FirestoreDataHolder.getPastSummary(requireArguments().getInt("summaryPosition"))
+                                .thenApply(summary -> summary.getTopArtist(timeRange, pos))
+                                .thenApply(artistData -> {
+                                    requireActivity().runOnUiThread(() -> {
+                                        binding.artistName.setText(artistData.getName());
+                                        binding.followerNumber.setText(String.format("%d Followers", artistData.getFollowerCount()));
+                                    });
+                                    return SpotifyAPI.fetchImageFromURLAsync(artistData.getArtistImageURLString());
+                                }).thenAccept(bitmap -> requireActivity().runOnUiThread(() -> binding.musicAlbumView.setImageBitmap(bitmap)));
+                    }
+                });
 
     }
 

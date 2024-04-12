@@ -66,6 +66,15 @@ public class SpotifyDataHolder {
         }
     }
 
+    public static void updateCurrentSummaryNameAsync(String newName) {
+        currentSummaryLock.lock();
+        try {
+            currentSummary.setSummaryName(newName);
+        } finally {
+            currentSummaryLock.unlock();
+        }
+    }
+
     public static ArtistData getCurrentTopArtistAsync(TimeRange timeRange, int position) {
         currentSummaryLock.lock();
         try {

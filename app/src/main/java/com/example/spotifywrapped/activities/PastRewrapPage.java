@@ -1,6 +1,5 @@
 package com.example.spotifywrapped.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,16 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.spotifywrapped.R;
-import com.example.spotifywrapped.data.PastYears;
-import com.example.spotifywrapped.data.RewrappedSummary;
 import com.example.spotifywrapped.databinding.PastRewrapsFragmentBinding;
 import com.example.spotifywrapped.recyclerview.PastRewrapAdapter;
 import com.example.spotifywrapped.utils.FirestoreDataHolder;
 import com.google.android.material.appbar.MaterialToolbar;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class PastRewrapPage extends AppCompatActivity {

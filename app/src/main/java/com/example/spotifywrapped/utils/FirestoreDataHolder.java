@@ -8,12 +8,14 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 public class FirestoreDataHolder {
     private static List<RewrappedSummary> summaryList;
@@ -24,10 +26,11 @@ public class FirestoreDataHolder {
         summaryListLock.lock();
         try {
             QuerySnapshot snapshot = Tasks.await(firestoreUpdate.retrieveDatabaseInfo());
-            summaryList = new ArrayList<>();
+            RewrappedSummary[] temp = new RewrappedSummary[snapshot.size()];
             for (QueryDocumentSnapshot documentSnapshot: snapshot) {
-                summaryList.add(documentSnapshot.toObject(RewrappedSummary.class));
+                temp[Integer.parseInt(documentSnapshot.getId()) - 1] = documentSnapshot.toObject(RewrappedSummary.class);
             }
+            summaryList = Arrays.stream(temp).collect(Collectors.toList());
             isReady.signalAll();
         } catch (RuntimeException e) {
             Log.e("FirestoreDataHolder", "error while parsing");
@@ -48,6 +51,16 @@ public class FirestoreDataHolder {
                 throw new RuntimeException(e);
             } finally {
                 summaryListLock.unlock();
+            }
+        });
+    }
+
+    public static CompletableFuture<RewrappedSummary> getPastSummary(int position) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return getPastSummaries().get().get(position);
+            } catch (ExecutionException | InterruptedException e) {
+                throw new RuntimeException(e);
             }
         });
     }

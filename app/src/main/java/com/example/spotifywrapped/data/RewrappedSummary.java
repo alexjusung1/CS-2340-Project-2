@@ -22,6 +22,10 @@ public class RewrappedSummary {
         return summaryName;
     }
 
+    public void setSummaryName(String summaryName) {
+        this.summaryName = summaryName;
+    }
+
     public void updateTopArtists(TimeRange timeRange, List<ArtistData> topArtists) {
         topTenArtists.put(timeRange.getValue(), topArtists);
     }
