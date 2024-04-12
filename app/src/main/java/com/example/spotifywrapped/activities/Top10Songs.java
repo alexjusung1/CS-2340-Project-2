@@ -1,7 +1,10 @@
 package com.example.spotifywrapped.activities;
 
 import android.content.Intent;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +35,7 @@ public class Top10Songs extends AppCompatActivity {
     MediaPlayer mediaPlayer;
     String audioURLString;
     Uri audioURI;
+    TimeRangeViewModel vm;
 
     MenuItem playButton;
 
@@ -43,7 +47,7 @@ public class Top10Songs extends AppCompatActivity {
         ViewPager2 vp = findViewById(R.id.viewPager);
         vp.setAdapter(new PagerAdapterTrack(this));
 
-        TimeRangeViewModel vm  = new ViewModelProvider(this).get(TimeRangeViewModel.class);
+        vm = new ViewModelProvider(this).get(TimeRangeViewModel.class);
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
 
         Spinner dropdown = findViewById(R.id.dropdownMenu);
@@ -51,42 +55,74 @@ public class Top10Songs extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, TimeRange.descriptions);
         dropdown.setAdapter(adapter);
 
-
         playButton = topAppBar.getMenu().findItem(R.id.play_button);
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (mediaPlayer != null) {
+                    mediaPlayer.release();
+                }
                 vm.setCurrentTimeRange(TimeRange.values()[position]);
 
                 // when you change the time range, a new media player is created with the new url.
-                CompletableFuture.supplyAsync(() -> {
-                    return SpotifyDataHolder.getCurrentTopTrackAsync(vm.getTimeRangeObserver().getValue(), position);
-
-                }).thenAccept(trackData -> {
-                    audioURLString = trackData.getAlbumImageUrlString();
-                    audioURI = Uri.parse(audioURLString);
-                    mediaPlayer = MediaPlayer.create(getApplicationContext(), audioURI);
-                    mediaPlayer.setVolume(1, 1);
-                    mediaPlayer.start();
-                });
+                initializeMediaPlayer(position);
             }
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
 
+        vp.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                if (mediaPlayer != null) {
+                    mediaPlayer.release();
+                }
+                initializeMediaPlayer(position);
             }
         });
 
         playButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem item) {
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.pause();
-                } else {
-                    mediaPlayer.start();
+                Log.d("Aditya", "play button has been clicked");
+                if (!(mediaPlayer == null)) {
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.pause();
+                    } else {
+                        mediaPlayer.start();
+                    }
+
                 }
                 return true;
             }
         });
         topAppBar.setOnClickListener(v -> finish());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mediaPlayer.release();
+    }
+
+    private void initializeMediaPlayer(int position) {
+        CompletableFuture.supplyAsync(() -> {
+            return SpotifyDataHolder.getCurrentTopTrackAsync(vm.getTimeRangeObserver().getValue(),
+                    position);
+        }).thenAccept(trackData -> {
+            audioURLString = trackData.getAudioURL();
+            Log.d("Aditya", audioURLString);
+            audioURI = Uri.parse(audioURLString);
+            mediaPlayer = MediaPlayer.create(getApplicationContext(), audioURI);
+            mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .build());
+
+
+            mediaPlayer.setVolume(1, 1);
+            // mediaPlayer.start();
+        });
     }
 }
