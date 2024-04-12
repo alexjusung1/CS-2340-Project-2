@@ -7,7 +7,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.spotifywrapped.FirestoreUpdate;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.JsonObject;
@@ -21,7 +20,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -88,6 +86,13 @@ public class SpotifyAuth {
         authorizationCode = response.getQueryParameter("code");
         Log.d(TAG, "Authorization Code: " + authorizationCode);
 
+        // Firebase Stuff
+        FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+        FirebaseAuth fAuth = FirebaseAuth.getInstance();
+        String userID = fAuth.getUid();
+        FirestoreUpdate firestoreUpdate = new FirestoreUpdate(fStore, userID);
+        firestoreUpdate.updateFireStore(codeVerifier, authorizationCode);
+
         CompletableFuture.runAsync(SpotifyAuth::getAccessTokenAsync);
     }
 
@@ -142,6 +147,9 @@ public class SpotifyAuth {
             } catch (IOException e) {
                 Log.e(TAG, "Error while getting access token");
                 e.printStackTrace();
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+                e.printStackTrace();
             }
         } finally {
             changeTokenLock.unlock();
@@ -152,6 +160,7 @@ public class SpotifyAuth {
         if (isLoggedOut()) return;
         changeTokenLock.lock();
         try {
+            Log.d(TAG, "Refreshing Access Token");
             RequestBody formBody = new FormBody.Builder()
                     .addEncoded("grant_type", "refresh_token")
                     .addEncoded("refresh_token", refreshToken)
@@ -188,13 +197,6 @@ public class SpotifyAuth {
         int timeout = tokenBody.get("expires_in").getAsInt();
 
         refreshTime = Instant.now().plusSeconds(timeout);
-
-        // Firebase Stuff
-        FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-        FirebaseAuth fAuth = FirebaseAuth.getInstance();
-        String userID = fAuth.getUid();
-        FirestoreUpdate firestoreUpdate = new FirestoreUpdate(fStore, userID);
-        firestoreUpdate.updateFireStore(codeVerifier, authorizationCode);
     }
 
     private static String genCodeVerifier() {

@@ -3,25 +3,19 @@ package com.example.spotifywrapped.data;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-import com.example.spotifywrapped.utils.SpotifyAPI;
-import com.google.firebase.firestore.Exclude;
-import com.google.firebase.firestore.IgnoreExtraProperties;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-@IgnoreExtraProperties
 public class ArtistData {
     private String name;
     private int followerCount;
-    private URL artistImageURL;
-    @Exclude private Bitmap cachedArtistImage;
-    private final Lock imageLock = new ReentrantLock();
-    int popularity;
+    private String artistImageURLString;
+
+    public ArtistData() {
+    }
 
     public ArtistData(JsonObject jsonObject) {
         name = jsonObject.get("name")
@@ -33,32 +27,21 @@ public class ArtistData {
                 .getAsInt();
 
         JsonArray pictures = jsonObject.get("images").getAsJsonArray();
-        try {
-            artistImageURL = new URL(pictures.get(0).getAsJsonObject().get("url").getAsString());
-        } catch (MalformedURLException e) {
-            Log.e("ArtistData", "URL is invalid");
-            artistImageURL = null;
-            e.printStackTrace();
-        }
+        artistImageURLString = pictures.get(0).getAsJsonObject().get("url").getAsString();
     }
 
+    // Getter for 'name' attribute
     public String getName() {
         return name;
     }
 
-    public Bitmap getArtistImageAsync() {
-        imageLock.lock();
-        try {
-            if (cachedArtistImage == null) {
-                cachedArtistImage = SpotifyAPI.fetchImageFromURLAsync(artistImageURL);
-            }
-            return cachedArtistImage;
-        } finally {
-            imageLock.unlock();
-        }
+    // Getter for 'followerCount' attribute
+    public int getFollowerCount() {
+        return followerCount;
     }
 
-    public String getFollowerCount() {
-        return followerCount + " Followers";
+    // Getter for 'artistImageURL' attribute
+    public String getArtistImageURLString() {
+        return artistImageURLString;
     }
 }

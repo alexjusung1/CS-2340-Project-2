@@ -1,18 +1,35 @@
-package com.example.spotifywrapped;
+package com.example.spotifywrapped.utils;
 
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.example.spotifywrapped.data.ArtistData;
 import com.example.spotifywrapped.data.RewrappedSummary;
+import com.example.spotifywrapped.data.TimeRange;
+import com.example.spotifywrapped.data.TrackData;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import org.checkerframework.checker.units.qual.A;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class FirestoreUpdate {
 
@@ -25,7 +42,9 @@ public class FirestoreUpdate {
         this.fStore = fStore;
         this.userID = userID;
     }
+
     private static final String TAG = "FirestoreUpdate";
+
     public void updateFireStore(String codeVerifier, String authorizationCode) {
         DocumentReference documentReference = fStore.collection("users").document(userID);
         Map<String, Object> userSpotifyInfo = new HashMap<>();
@@ -42,5 +61,21 @@ public class FirestoreUpdate {
                 Log.e(TAG, "onFailure: Error updating user Spotify info for " + userID, e);
             }
         });
+    }
+
+    public Task<QuerySnapshot> retrieveDatabaseInfo() {
+        // Get a reference to the collection
+        CollectionReference collectionRef = fStore.collection("users")
+                .document(userID).collection("summaries");
+
+        // Retrieve the documents in the collection
+        return collectionRef.get();
+    }
+
+
+    public Task<Void> updateSpotifyFireStore(RewrappedSummary summary, int position) {
+        DocumentReference userDocumentRef = fStore.collection("users").document(userID)
+                .collection("summaries").document(String.valueOf(position));
+        return userDocumentRef.set(summary);
     }
 }

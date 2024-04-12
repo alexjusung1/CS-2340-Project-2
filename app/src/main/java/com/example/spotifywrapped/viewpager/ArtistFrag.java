@@ -15,6 +15,8 @@ import com.example.spotifywrapped.databinding.ArtistFragBinding;
 import com.example.spotifywrapped.utils.SpotifyAPI;
 import com.example.spotifywrapped.utils.SpotifyDataHolder;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.CompletableFuture;
 
 public class ArtistFrag extends Fragment {
@@ -38,22 +40,17 @@ public class ArtistFrag extends Fragment {
                 .get(TimeRangeViewModel.class);
 
         viewModel.getTimeRangeObserver()
-                .observe(getViewLifecycleOwner(), timeRange -> {
-                    CompletableFuture.supplyAsync(() ->
-                                    SpotifyDataHolder.getCurrentTopArtistAsync(timeRange, pos))
-                            .thenAccept(artistData -> {
-                                CompletableFuture.supplyAsync(artistData::getArtistImageAsync)
-                                        .thenAccept(bitmap -> {
-                                            requireActivity().runOnUiThread(() -> {
-                                                binding.musicAlbumView.setImageBitmap(bitmap);
-                                            });
-                                        });
-                                requireActivity().runOnUiThread(() -> {
-                                    binding.artistName.setText(artistData.getName());
-                                    binding.followerNumber.setText(artistData.getFollowerCount());
-                                });
+                .observe(getViewLifecycleOwner(), timeRange -> CompletableFuture.supplyAsync(() ->
+                                SpotifyDataHolder.getCurrentTopArtistAsync(timeRange, pos))
+                        .thenApply(artistData -> {
+                            requireActivity().runOnUiThread(() -> {
+                                binding.artistName.setText(artistData.getName());
+                                binding.followerNumber.setText(String.format("%d Followers", artistData.getFollowerCount()));
                             });
-                });
+                            return SpotifyAPI.fetchImageFromURLAsync(artistData.getArtistImageURLString());
+                        }).thenAccept(bitmap -> requireActivity().runOnUiThread(() -> binding.musicAlbumView.setImageBitmap(bitmap)))
+                );
+
     }
 
     @Override

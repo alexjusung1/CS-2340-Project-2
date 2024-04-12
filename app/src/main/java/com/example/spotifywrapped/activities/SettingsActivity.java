@@ -45,6 +45,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         TextView deleteAccountFirebase = findViewById(R.id.remove_account_firebase);
 
+
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         logOutFirebase.setOnClickListener(new View.OnClickListener() {
@@ -86,6 +87,7 @@ public class SettingsActivity extends AppCompatActivity {
                     });
             }
         });
+
         settingsBack.setOnClickListener(v -> finish());
     }
 }
