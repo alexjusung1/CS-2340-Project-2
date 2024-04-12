@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.spotifywrapped.data.TimeRange;
+import com.example.spotifywrapped.utils.FirestoreDataHolder;
 import com.example.spotifywrapped.utils.SpotifyDataHolder;
 import com.example.spotifywrapped.viewpager.PagerAdapterTrack;
 import com.example.spotifywrapped.R;
@@ -26,6 +27,8 @@ import androidx.lifecycle.ViewModelProvider;
 import android.media.MediaPlayer;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
 import android.net.Uri;
 import android.widget.Button;
 
@@ -38,6 +41,8 @@ public class Top10Songs extends AppCompatActivity {
     TimeRangeViewModel vm;
 
     MenuItem playButton;
+    boolean isCurrent;
+    int pastPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +50,8 @@ public class Top10Songs extends AppCompatActivity {
         setContentView(R.layout.rewrapped_template_songs);
 
         Bundle passedData = getIntent().getExtras();
-        boolean isCurrent = passedData.getBoolean("isCurrent", true);
-        int pastPosition = passedData.getInt("pastPosition", 0);
+        isCurrent = passedData.getBoolean("isCurrent", true);
+        pastPosition = passedData.getInt("pastPosition", 0);
 
         ViewPager2 vp = findViewById(R.id.viewPager);
         vp.setAdapter(new PagerAdapterTrack(this, isCurrent, pastPosition));
@@ -113,8 +118,16 @@ public class Top10Songs extends AppCompatActivity {
 
     private void initializeMediaPlayer(int position) {
         CompletableFuture.supplyAsync(() -> {
-            return SpotifyDataHolder.getCurrentTopTrackAsync(vm.getTimeRangeObserver().getValue(),
-                    position);
+            TimeRange currentTimeRange = vm.getTimeRangeObserver().getValue();
+            if (isCurrent) {
+                return SpotifyDataHolder.getCurrentTopTrackAsync(currentTimeRange, position);
+            } else {
+                try {
+                    return FirestoreDataHolder.getPastSummary(pastPosition).get().getTopTrack(currentTimeRange, position);
+                } catch (ExecutionException | InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }).thenAccept(trackData -> {
             audioURLString = trackData.getAudioURL();
             Log.d("Aditya", audioURLString);
