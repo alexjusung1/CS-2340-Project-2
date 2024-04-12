@@ -197,13 +197,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.647" />
 
         <TextView
             android:id="@+id/logout_account_firebase"
             android:layout_width="193dp"
             android:layout_height="44dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="12dp"
             android:background="@drawable/custom_button_with_border_1"
             android:gravity="center"
             android:text="@string/log_out_firebase"

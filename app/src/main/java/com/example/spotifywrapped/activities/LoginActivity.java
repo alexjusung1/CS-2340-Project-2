@@ -35,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
 
     FirebaseFirestore fStore;
+    TextView forgotPasswordFirebase;
     String userID;
 
     private static final String TAG = "LoginActivity";
@@ -49,6 +50,8 @@ public class LoginActivity extends AppCompatActivity {
         password = findViewById(R.id.editTextPassword);
         login = findViewById(R.id.buttonLogin);
         moveButton = findViewById(R.id.moveSignUp);
+
+        forgotPasswordFirebase = findViewById(R.id.forgotPassword_firebase);
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -92,11 +95,35 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        forgotPasswordFirebase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get the user's email address
+                String emailAddress = fAuth.getCurrentUser().getEmail();
+                // Send a password reset email
+                assert emailAddress != null;
+                fAuth.sendPasswordResetEmail(emailAddress)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(getApplicationContext(), "Password reset email sent successfully", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getApplicationContext(), "Error sending password reset email: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        });
+
+
         TextView moveButton = findViewById(R.id.moveSignUp);
         moveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, Homepage.class);
+                Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
                 startActivity(intent);
             }
         });

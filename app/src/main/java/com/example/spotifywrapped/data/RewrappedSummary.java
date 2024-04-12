@@ -6,8 +6,8 @@ import java.util.Map;
 
 public class RewrappedSummary {
     private String summaryName;
-    private Map<TimeRange, List<ArtistData>> topTenArtists;
-    private Map<TimeRange, List<TrackData>> topTenTracks;
+    private Map<String, List<ArtistData>> topTenArtists;
+    private Map<String, List<TrackData>> topTenTracks;
 
     public RewrappedSummary(String summaryName) {
         this.summaryName = summaryName;
@@ -23,11 +23,11 @@ public class RewrappedSummary {
     }
 
     public void updateTopArtists(TimeRange timeRange, List<ArtistData> topArtists) {
-        topTenArtists.put(timeRange, topArtists);
+        topTenArtists.put(timeRange.getValue(), topArtists);
     }
 
     public ArtistData getTopArtist(TimeRange timeRange, int position) {
-        return topTenArtists.get(timeRange).get(position);
+        return topTenArtists.get(timeRange.getValue()).get(position);
     }
 
     public TrackData getTopTrack(TimeRange timeRange, int position) {
@@ -35,11 +35,11 @@ public class RewrappedSummary {
     }
 
     public List<ArtistData> getTopArtists(TimeRange timeRange) {
-        return topTenArtists.get(timeRange);
+        return topTenArtists.get(timeRange.getValue());
     }
 
     public boolean hasArtistsFromTime(TimeRange timeRange) {
-        return topTenArtists.containsKey(timeRange);
+        return topTenArtists.containsKey(timeRange.getValue());
     }
 
     public boolean hasTracksFromTime(TimeRange timeRange) {
@@ -47,14 +47,14 @@ public class RewrappedSummary {
     }
 
     public void updateTopTracks(TimeRange timeRange, List<TrackData> topTracks) {
-        topTenTracks.put(timeRange, topTracks);
+        topTenTracks.put(timeRange.getValue(), topTracks);
     }
 
-    public Map<TimeRange, List<ArtistData>> getTopTenTracks() {
+    public Map<String, List<ArtistData>> getTopTenTracks() {
         return topTenArtists;
     }
 
-    public Map<TimeRange, List<TrackData>> getTopTenArtists() {
+    public Map<String, List<TrackData>> getTopTenArtists() {
         return topTenTracks;
     }
 }

@@ -8,12 +8,16 @@ public enum TimeRange {
     MEDIUM("medium_term", "Last 6 months"),
     LONG("long_term", "Last year");
 
-    private final String value;
-    private final String description;
+    private String value;
+    private String description;
 
     public static String[] descriptions = Arrays.stream(values())
             .map(TimeRange::getDescription)
             .toArray(String[]::new);
+
+    TimeRange() {
+        //
+    }
 
     TimeRange(String value, String description) {
         this.value = value;
