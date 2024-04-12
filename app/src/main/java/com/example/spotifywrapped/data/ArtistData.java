@@ -53,7 +53,11 @@ public class ArtistData {
                 cachedArtistImage = SpotifyAPI.fetchImageFromURLAsync(artistImageURL);
             }
             return cachedArtistImage;
-        } finally {
+        } catch (Exception e) {
+            Log.e("Artist Data", "Exception in fetching artist image bitmap.");
+            throw new RuntimeException();
+        }
+        finally {
             imageLock.unlock();
         }
     }
