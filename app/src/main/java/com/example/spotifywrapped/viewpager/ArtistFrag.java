@@ -43,12 +43,13 @@ public class ArtistFrag extends Fragment {
                         .thenApply(artistData -> {
                             requireActivity().runOnUiThread(() -> {
                                 binding.artistName.setText(artistData.getName());
-                                binding.followerNumber.setText(String.format("%d followers",
-                                        artistData.getFollowerCount()));
+                                binding.followerNumber.setText(String.format("%d Followers", artistData.getFollowerCount()));
                             });
                             return SpotifyAPI.fetchImageFromURLAsync(artistData.getArtistImageURL());
-                        }).thenAccept(bitmap -> requireActivity().runOnUiThread(() ->
-                                binding.musicAlbumView.setImageBitmap(bitmap))));
+                        })
+                        .thenAccept(bitmap -> requireActivity().runOnUiThread(() -> binding.musicAlbumView.setImageBitmap(bitmap)))
+                );
+
     }
 
     @Override
