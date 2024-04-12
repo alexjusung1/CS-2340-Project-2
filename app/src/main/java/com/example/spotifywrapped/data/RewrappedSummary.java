@@ -57,4 +57,5 @@ public class RewrappedSummary {
     public Map<String, List<TrackData>> getTopTenTracks() {
         return topTenTracks;
     }
+
 }

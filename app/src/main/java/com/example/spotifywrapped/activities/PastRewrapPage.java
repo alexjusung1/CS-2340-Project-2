@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.spotifywrapped.R;
 import com.example.spotifywrapped.data.PastYears;
+import com.example.spotifywrapped.data.RewrappedSummary;
 import com.example.spotifywrapped.databinding.PastRewrapsFragmentBinding;
 import com.example.spotifywrapped.recyclerview.PastRewrapAdapter;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -33,7 +34,6 @@ public class PastRewrapPage extends AppCompatActivity {
 
         recyclerView = binding.pastRewrapRecyclerview;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         pastYears = new ArrayList<>();
         // Add your artists to the list here
         // pastYears list will be more dynamic with the user's data in the long run
