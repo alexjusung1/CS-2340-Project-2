@@ -28,7 +28,7 @@ public class ConnectToSpotifyActivity extends AppCompatActivity {
             connect.setOnClickListener(v -> startActivity(SpotifyAuth.getAuthorizationIntent()));
         } else if (action.equals(Intent.ACTION_VIEW)) {
             SpotifyAuth.parseAuthorizationResponse(intent.getData());
-            CompletableFuture.runAsync(SpotifyDataHolder::updateUsernameAsync);
+            CompletableFuture.runAsync(SpotifyDataHolder::updateUserDataAsync);
 
             Intent intentRewrapInfo = new Intent(this, RewrapInfoPage.class);
             intentRewrapInfo.putExtra("isCurrent", true);

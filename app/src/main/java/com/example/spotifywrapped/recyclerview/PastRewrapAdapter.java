@@ -13,37 +13,42 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.spotifywrapped.activities.PastRewrapPage;
 import com.example.spotifywrapped.R;
 import com.example.spotifywrapped.activities.RewrapInfoPage;
-import com.example.spotifywrapped.data.PastYears;
+import com.example.spotifywrapped.data.RewrappedSummary;
 
 import java.util.List;
 
-public class PastRewrapAdapter extends RecyclerView.Adapter<PastRewrapAdapter.pastrewrapViewHolder> {
+public class PastRewrapAdapter extends RecyclerView.Adapter<PastRewrapAdapter.PastRewrapViewHolder> {
 
-    private List<PastYears> pastyearCountList;
+    private List<RewrappedSummary> pastyearCountList;
     private Context context;
     private PastRewrapPage parentPage;
 
-    public PastRewrapAdapter(Context context, List<PastYears> pastyearCountList, PastRewrapPage parentPage) {
+    public PastRewrapAdapter(Context context, List<RewrappedSummary> pastyearCountList, PastRewrapPage parentPage) {
         this.context = context;
         this.pastyearCountList = pastyearCountList;
         this.parentPage = parentPage;
     }
     @Override
-    public pastrewrapViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PastRewrapViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.past_rewraps_listitem, parent, false);
         TextView textView = view.findViewById(R.id.past_year);
+
+        PastRewrapViewHolder viewHolder = new PastRewrapViewHolder(view);
+
         textView.setOnClickListener(view1 -> {
             Intent intent = new Intent(context, RewrapInfoPage.class);
+            intent.putExtra("isCurrent", false);
+            intent.putExtra("pastPosition", viewHolder.getAdapterPosition());
             parentPage.startActivity(intent);
         });
 
-        return new pastrewrapViewHolder(view);
+        return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull pastrewrapViewHolder holder, int position) {
-        PastYears pastYears = pastyearCountList.get(position);
-        holder.pastYearTextView.setText(pastYears.getUser() + " - " + pastYears.getMonth_year());
+    public void onBindViewHolder(@NonNull PastRewrapViewHolder holder, int position) {
+        RewrappedSummary pastYears = pastyearCountList.get(position);
+        holder.pastYearTextView.setText(pastYears.getSummaryName());
     }
 
     @Override
@@ -51,15 +56,13 @@ public class PastRewrapAdapter extends RecyclerView.Adapter<PastRewrapAdapter.pa
         return pastyearCountList.size();
     }
 
-    public static class pastrewrapViewHolder extends RecyclerView.ViewHolder {
+    public static class PastRewrapViewHolder extends RecyclerView.ViewHolder {
         TextView pastYearTextView;
 
-        public pastrewrapViewHolder(@NonNull View itemView) {
+        public PastRewrapViewHolder(@NonNull View itemView) {
             super(itemView);
 
             pastYearTextView = itemView.findViewById(R.id.past_year);
         }
-
-
     }
 }

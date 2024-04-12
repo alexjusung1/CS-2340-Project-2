@@ -12,7 +12,7 @@ import java.net.URL;
 public class ArtistData {
     private String name;
     private int followerCount;
-    private URL artistImageURL;
+    private String artistImageURLString;
 
     public ArtistData() {
     }
@@ -27,13 +27,7 @@ public class ArtistData {
                 .getAsInt();
 
         JsonArray pictures = jsonObject.get("images").getAsJsonArray();
-        try {
-            artistImageURL = new URL(pictures.get(0).getAsJsonObject().get("url").getAsString());
-        } catch (MalformedURLException e) {
-            Log.e("ArtistData", "URL is invalid");
-            artistImageURL = null;
-            e.printStackTrace();
-        }
+        artistImageURLString = pictures.get(0).getAsJsonObject().get("url").getAsString();
     }
 
     // Getter for 'name' attribute
@@ -47,7 +41,7 @@ public class ArtistData {
     }
 
     // Getter for 'artistImageURL' attribute
-    public URL getArtistImageURL() {
-        return artistImageURL;
+    public String getArtistImageURLString() {
+        return artistImageURLString;
     }
 }

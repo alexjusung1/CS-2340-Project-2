@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +106,7 @@ public class SpotifyAPI {
                 String username = info.get("display_name").getAsString();
                 JsonObject image = info.get("images").getAsJsonArray().get(0).getAsJsonObject();
 
-                return new SpotifyUserData(username, new URL(image.get("url").getAsString()));
+                return new SpotifyUserData(username, image.get("url").getAsString());
             } catch (IOException e) {
                 Log.e(TAG, "Error while getting user data");
                 throw new RuntimeException(e);
@@ -113,7 +114,14 @@ public class SpotifyAPI {
         });
     }
 
-    public static Bitmap fetchImageFromURLAsync(URL url) {
+    public static Bitmap fetchImageFromURLAsync(String urlString) {
+        URL url;
+        try {
+            url = new URL(urlString);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+
         Request request = new Request.Builder()
                 .url(url)
                 .build();

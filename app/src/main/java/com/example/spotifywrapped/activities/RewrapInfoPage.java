@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.spotifywrapped.utils.FirestoreDataHolder;
 import com.example.spotifywrapped.utils.FirestoreUpdate;
 import com.example.spotifywrapped.R;
 import com.example.spotifywrapped.data.TimeRange;
@@ -36,7 +37,7 @@ public class RewrapInfoPage extends AppCompatActivity {
         Button topSongs = findViewById(R.id.top_song);
         rewrapName = findViewById(R.id.rewrap_name);
 
-        if (passedData != null && passedData.getBoolean("isCurrent")) {
+        if (passedData.getBoolean("isCurrent")) {
             CompletableFuture.runAsync(SpotifyDataHolder::prepareNewSummmaryAsync);
             CompletableFuture.supplyAsync(SpotifyDataHolder::getCurrentSummaryAsync)
                     .thenAccept(rewrappedSummary -> {
@@ -49,7 +50,7 @@ public class RewrapInfoPage extends AppCompatActivity {
 
         topArtist.setOnClickListener(v -> {
             Intent intent = new Intent(RewrapInfoPage.this, Top10Artists.class);
-            intent.putExtra("isCurrent", passedData != null && passedData.getBoolean("isCurrent"));
+            intent.putExtra("isCurrent", passedData.getBoolean("isCurrent"));
             startActivity(intent);
         });
 
@@ -70,11 +71,12 @@ public class RewrapInfoPage extends AppCompatActivity {
 
             CompletableFuture.allOf(fetchDataActions.stream().toArray(CompletableFuture<?>[]::new))
                     .thenRun(() -> {
-                        firestoreUpdate.updateSpotifyFireStore(SpotifyDataHolder.getCurrentSummaryAsync());
-                        runOnUiThread(() -> {
-                            Toast.makeText(RewrapInfoPage.this, "Successfully saved summary", Toast.LENGTH_SHORT).show();
-                        });
-                    });
+                        FirestoreDataHolder.addNewRewrappedSummaryAsync(firestoreUpdate, SpotifyDataHolder.getCurrentSummaryAsync());
+                    })
+                    .thenRun(() -> runOnUiThread(() -> Toast.makeText(
+                            RewrapInfoPage.this,
+                            "Successfully saved summary",
+                            Toast.LENGTH_SHORT).show()));
         });
     }
 

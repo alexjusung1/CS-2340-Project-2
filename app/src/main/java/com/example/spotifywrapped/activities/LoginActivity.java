@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.spotifywrapped.R;
+import com.example.spotifywrapped.utils.FirestoreDataHolder;
+import com.example.spotifywrapped.utils.FirestoreUpdate;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,6 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -82,6 +85,9 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            FirestoreUpdate firestoreUpdate = new FirestoreUpdate(FirebaseFirestore.getInstance(),
+                                    FirebaseAuth.getInstance().getUid());
+                            CompletableFuture.runAsync(() -> FirestoreDataHolder.initializeListAsync(firestoreUpdate));
                             Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(LoginActivity.this, Homepage.class);
                             startActivity(intent);

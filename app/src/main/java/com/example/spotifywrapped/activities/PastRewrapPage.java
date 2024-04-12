@@ -12,10 +12,12 @@ import com.example.spotifywrapped.data.PastYears;
 import com.example.spotifywrapped.data.RewrappedSummary;
 import com.example.spotifywrapped.databinding.PastRewrapsFragmentBinding;
 import com.example.spotifywrapped.recyclerview.PastRewrapAdapter;
+import com.example.spotifywrapped.utils.FirestoreDataHolder;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class PastRewrapPage extends AppCompatActivity {
@@ -23,7 +25,6 @@ public class PastRewrapPage extends AppCompatActivity {
     private PastRewrapsFragmentBinding binding;
     private RecyclerView recyclerView;
     private PastRewrapAdapter adapter;
-    private List<PastYears> pastYears;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,20 +35,17 @@ public class PastRewrapPage extends AppCompatActivity {
 
         recyclerView = binding.pastRewrapRecyclerview;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        pastYears = new ArrayList<>();
+
         // Add your artists to the list here
         // pastYears list will be more dynamic with the user's data in the long run
-        pastYears.add(new PastYears("chamilliyu ", "December 2021"));
-        pastYears.add(new PastYears("chamilliyu ", "November 2021"));
-        pastYears.add(new PastYears("chamilliyu ", "October 2021"));
-        pastYears.add(new PastYears("chamilliyu ", "September 2021"));
+        FirestoreDataHolder.getPastSummaries()
+                .thenAccept(pastSummaries -> runOnUiThread(() -> {
+                    adapter = new PastRewrapAdapter(this, pastSummaries, this);
+                    recyclerView.setAdapter(adapter);
+                }));
         // Add more artists if needed
 
-        adapter = new PastRewrapAdapter(this, pastYears, this);
-        recyclerView.setAdapter(adapter);
-
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
-
         topAppBar.setOnClickListener(v -> finish());
     }
 }

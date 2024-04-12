@@ -11,8 +11,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.spotifywrapped.activities.TimeRangeViewModel;
-import com.example.spotifywrapped.data.ArtistData;
-import com.example.spotifywrapped.data.TrackData;
 import com.example.spotifywrapped.databinding.TrackFragBinding;
 import com.example.spotifywrapped.utils.SpotifyAPI;
 import com.example.spotifywrapped.utils.SpotifyDataHolder;
@@ -41,7 +39,7 @@ public class TrackFrag extends Fragment {
         vm.getTimeRangeObserver().observe(getViewLifecycleOwner(), timeRange -> {
             CompletableFuture.supplyAsync(() -> SpotifyDataHolder.getCurrentTopTrackAsync(timeRange, pos))
                     .thenAccept(trackData -> {
-                        CompletableFuture.supplyAsync(() -> SpotifyAPI.fetchImageFromURLAsync(trackData.getAlbumImageURL()))
+                        CompletableFuture.supplyAsync(() -> SpotifyAPI.fetchImageFromURLAsync(trackData.getAlbumImageURLString()))
                                         .thenAccept(bitmap -> {
                                             requireActivity().runOnUiThread(() ->
                                                     binding.musicAlbumView.setImageBitmap(bitmap));

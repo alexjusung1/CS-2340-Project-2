@@ -11,6 +11,7 @@ import com.example.spotifywrapped.data.TimeRange;
 import com.example.spotifywrapped.data.TrackData;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -18,6 +19,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,21 +63,37 @@ public class FirestoreUpdate {
         });
     }
 
-    public void updateSpotifyFireStore(RewrappedSummary summary) {
-        String summaryID = "ID" + UUID.randomUUID().toString();
-        DocumentReference userDocumentRef = fStore.collection("users").document(userID).collection(summaryID).document();
-        userDocumentRef.set(summary)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d(TAG, "onSuccess: Top Spotify Info successfully updated for " + userID);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "onFailure: Error updating Top Spotify info for " + userID, e);
-                    }
-                });
+    public Task<QuerySnapshot> retrieveDatabaseInfo() {
+        // Get a reference to the collection
+        CollectionReference collectionRef = fStore.collection("users")
+                .document(userID).collection("summaries");
+
+        // Retrieve the documents in the collection
+        return collectionRef.get();
+//                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                        List<RewrappedSummary> stored = new ArrayList<>();
+//                        // Iterate through the documents
+//                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+//                            // Convert each document to a custom object or extract its data
+//                            stored.add(documentSnapshot.toObject(RewrappedSummary.class));
+//                        }
+//                        callback.recieveList(stored);
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.e(TAG, "Error getting documents: ", e);
+//                    }
+//                });
+    }
+
+
+    public Task<Void> updateSpotifyFireStore(RewrappedSummary summary, int position) {
+        DocumentReference userDocumentRef = fStore.collection("users").document(userID)
+                .collection("summaries").document(String.valueOf(position));
+        return userDocumentRef.set(summary);
     }
 }
