@@ -13,7 +13,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-@IgnoreExtraProperties
 public class SpotifyUserData {
     private String username;
     private URL profileImageURL;

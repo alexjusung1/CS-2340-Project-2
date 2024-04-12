@@ -11,8 +11,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.spotifywrapped.FirestoreUpdate;
 import com.example.spotifywrapped.R;
+import com.example.spotifywrapped.data.RewrappedSummary;
 import com.example.spotifywrapped.utils.SpotifyDataHolder;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.Firebase;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -58,6 +62,12 @@ public class RewrapInfoPage extends AppCompatActivity {
         topSongs.setOnClickListener(v -> startActivity(new Intent(RewrapInfoPage.this, Top10Songs.class)));
 
         saveBtn.setOnClickListener(v -> {
+            FirebaseAuth fAuth = FirebaseAuth.getInstance();
+            FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+            FirestoreUpdate firestoreUpdate = new FirestoreUpdate(fStore, fAuth.getUid());
+            CompletableFuture.supplyAsync(SpotifyDataHolder::getCurrentSummaryAsync)
+                    .thenAccept(firestoreUpdate::updateSpotifyFireStore);
+
         });
 
         // Load saved rewrap name

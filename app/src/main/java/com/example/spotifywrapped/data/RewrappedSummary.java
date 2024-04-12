@@ -15,6 +15,9 @@ public class RewrappedSummary {
         topTenTracks = new HashMap<>();
     }
 
+    public RewrappedSummary() {
+        this("apples");
+    }
     public String getSummaryName() {
         return summaryName;
     }
@@ -37,5 +40,13 @@ public class RewrappedSummary {
 
     public void updateTopTracks(TimeRange timeRange, List<TrackData> topTracks) {
         topTenTracks.put(timeRange, topTracks);
+    }
+
+    public Map<TimeRange, List<ArtistData>> getTopTenTracks() {
+        return topTenArtists;
+    }
+
+    public Map<TimeRange, List<TrackData>> getTopTenArtists() {
+        return topTenTracks;
     }
 }
