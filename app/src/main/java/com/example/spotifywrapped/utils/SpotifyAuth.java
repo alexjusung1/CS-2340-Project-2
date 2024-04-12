@@ -86,6 +86,13 @@ public class SpotifyAuth {
         authorizationCode = response.getQueryParameter("code");
         Log.d(TAG, "Authorization Code: " + authorizationCode);
 
+        // Firebase Stuff
+        FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+        FirebaseAuth fAuth = FirebaseAuth.getInstance();
+        String userID = fAuth.getUid();
+        FirestoreUpdate firestoreUpdate = new FirestoreUpdate(fStore, userID);
+        firestoreUpdate.updateFireStore(codeVerifier, authorizationCode);
+
         CompletableFuture.runAsync(SpotifyAuth::getAccessTokenAsync);
     }
 
@@ -190,13 +197,6 @@ public class SpotifyAuth {
         int timeout = tokenBody.get("expires_in").getAsInt();
 
         refreshTime = Instant.now().plusSeconds(timeout);
-
-        // Firebase Stuff
-        FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-        FirebaseAuth fAuth = FirebaseAuth.getInstance();
-        String userID = fAuth.getUid();
-        FirestoreUpdate firestoreUpdate = new FirestoreUpdate(fStore, userID);
-        firestoreUpdate.updateFireStore(codeVerifier, authorizationCode);
     }
 
     private static String genCodeVerifier() {

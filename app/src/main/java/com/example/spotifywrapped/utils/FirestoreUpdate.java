@@ -70,24 +70,6 @@ public class FirestoreUpdate {
 
         // Retrieve the documents in the collection
         return collectionRef.get();
-//                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                        List<RewrappedSummary> stored = new ArrayList<>();
-//                        // Iterate through the documents
-//                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-//                            // Convert each document to a custom object or extract its data
-//                            stored.add(documentSnapshot.toObject(RewrappedSummary.class));
-//                        }
-//                        callback.recieveList(stored);
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Log.e(TAG, "Error getting documents: ", e);
-//                    }
-//                });
     }
 
 
