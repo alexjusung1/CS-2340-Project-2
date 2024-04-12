@@ -1,7 +1,6 @@
 package com.example.spotifywrapped.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -9,7 +8,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.spotifywrapped.FirestoreUpdate;
+import com.example.spotifywrapped.utils.FirestoreUpdate;
 import com.example.spotifywrapped.R;
 import com.example.spotifywrapped.data.TimeRange;
 import com.example.spotifywrapped.utils.SpotifyDataHolder;
@@ -18,7 +17,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 

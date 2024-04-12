@@ -13,58 +13,35 @@ import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.spotifywrapped.R;
+import com.example.spotifywrapped.databinding.HomepageBinding;
 import com.example.spotifywrapped.utils.SpotifyAuth;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Homepage extends AppCompatActivity {
+    HomepageBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.homepage);
+        binding = HomepageBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
+        binding.rewrapinfo.setOnClickListener(v -> {
+            if (SpotifyAuth.isLoggedOut()) {
+                startActivity(new Intent(Homepage.this, ConnectToSpotifyActivity.class));
+            } else {
+                Intent intent = new Intent(Homepage.this, RewrapInfoPage.class);
+                intent.putExtra("isCurrent", true);
 
-        Button rewrapInfo = findViewById(R.id.rewrapinfo);
-        Button pastRewrap = findViewById(R.id.past_rewrap);
-        ImageView settings = findViewById(R.id.setting);
-        Button recommendations = findViewById(R.id.recommendation);
-        CircleImageView circleImageView = findViewById(R.id.user_image);
-//        change later
-
-        rewrapInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (SpotifyAuth.isLoggedOut()) {
-                    startActivity(new Intent(Homepage.this, ConnectToSpotifyActivity.class));
-                } else {
-                    Intent intent = new Intent(Homepage.this, RewrapInfoPage.class);
-                    intent.putExtra("isCurrent", true);
-
-                    startActivity(intent);
-                }
+                startActivity(intent);
             }
         });
 
-        pastRewrap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Homepage.this, PastRewrapPage.class));
-            }
-        });
+        binding.pastRewrap.setOnClickListener(v -> startActivity(new Intent(Homepage.this, PastRewrapPage.class)));
 
-        settings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Homepage.this, SettingsActivity.class));
-            }
-        });
+        binding.setting.setOnClickListener(v -> startActivity(new Intent(Homepage.this, SettingsActivity.class)));
 
-        recommendations.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Homepage.this, com.example.spotifywrapped.activities.recommendations.class));
-            }
-        });
+        binding.recommendation.setOnClickListener(v -> startActivity(new Intent(Homepage.this, recommendations.class)));
 
         getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
             @Override
@@ -72,5 +49,7 @@ public class Homepage extends AppCompatActivity {
                 Toast.makeText(Homepage.this, "Back press is disabled in this screen", Toast.LENGTH_SHORT).show();
             }
         });
+
+
     }
 }

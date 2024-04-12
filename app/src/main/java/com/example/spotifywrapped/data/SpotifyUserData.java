@@ -16,7 +16,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class SpotifyUserData {
     private String username;
     private URL profileImageURL;
-    @Exclude private Bitmap cachedProfileImage;
+    private Bitmap cachedProfileImage;
     private final Lock imageLock = new ReentrantLock();
 
     public SpotifyUserData(String username, URL profileImageURL) {
