@@ -67,7 +67,6 @@ public class RewrapInfoPage extends AppCompatActivity {
             FirestoreUpdate firestoreUpdate = new FirestoreUpdate(fStore, fAuth.getUid());
             CompletableFuture.supplyAsync(SpotifyDataHolder::getCurrentSummaryAsync)
                     .thenAccept(firestoreUpdate::updateSpotifyFireStore);
-
         });
 
         // Load saved rewrap name

@@ -42,8 +42,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="130dp"
         android:clickable="true"
         android:text="@string/moveSignUp"
         android:textColor="#990099"/>
+
+    <TextView
+        android:id="@+id/forgotPassword_firebase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:clickable="true"
+        android:layout_marginTop="15dp"
+        android:text="@string/forget_password"
+        android:textColor="@color/purple" />
+
 </LinearLayout>
