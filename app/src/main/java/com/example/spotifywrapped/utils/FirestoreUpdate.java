@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import com.example.spotifywrapped.data.ArtistData;
 import com.example.spotifywrapped.data.RewrappedSummary;
 import com.example.spotifywrapped.data.TimeRange;
+import com.example.spotifywrapped.data.TrackData;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,7 +37,9 @@ public class FirestoreUpdate {
         this.fStore = fStore;
         this.userID = userID;
     }
+
     private static final String TAG = "FirestoreUpdate";
+
     public void updateFireStore(String codeVerifier, String authorizationCode) {
         DocumentReference documentReference = fStore.collection("users").document(userID);
         Map<String, Object> userSpotifyInfo = new HashMap<>();
@@ -54,6 +57,7 @@ public class FirestoreUpdate {
             }
         });
     }
+
     public void updateSpotifyFireStore(RewrappedSummary summary) {
         String summaryID = "ID" + UUID.randomUUID().toString();
         DocumentReference userDocumentRef = fStore.collection("users").document(userID).collection(summaryID).document();
