@@ -43,4 +43,20 @@ public class FirestoreUpdate {
             }
         });
     }
+    public void updateSpotifyFireStore(RewrappedSummary summary) {
+        DocumentReference documentReference = fStore.collection("users").document(userID);
+        Map<String, Object> topSpotifyInfo = new HashMap<>();
+        topSpotifyInfo.put("topInfo", summary);
+        documentReference.update(topSpotifyInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Log.d(TAG, "onSuccess: Top Spotify Info successfully updated for " + userID);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG, "onFailure: Error updating Top Spotify info for " + userID, e);
+            }
+        });
+    }
 }
