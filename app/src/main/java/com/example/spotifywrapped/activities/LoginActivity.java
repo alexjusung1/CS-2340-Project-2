@@ -56,7 +56,6 @@ public class LoginActivity extends AppCompatActivity {
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
 
-
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,24 +98,23 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Get the user's email address
-                String emailAddress = fAuth.getCurrentUser().getEmail();
-                // Send a password reset email
-                assert emailAddress != null;
+                String emailAddress = email.getText().toString().trim();
+                // Check if email address is empty
+                if (TextUtils.isEmpty(emailAddress)) {
+                    Toast.makeText(LoginActivity.this, "Please enter your email address", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 fAuth.sendPasswordResetEmail(emailAddress)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Toast.makeText(getApplicationContext(), "Password reset email sent successfully", Toast.LENGTH_SHORT).show();
-                            }
-                        })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getApplicationContext(), "Error sending password reset email: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "Error! Please fill out the email section ", Toast.LENGTH_SHORT).show();
                             }
                         });
             }
         });
+
 
 
         TextView moveButton = findViewById(R.id.moveSignUp);
