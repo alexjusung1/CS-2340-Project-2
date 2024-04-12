@@ -49,7 +49,7 @@ public class TrackFrag extends Fragment {
                                             });
 
                             requireActivity().runOnUiThread(() -> {
-                                binding.artistName.setText(trackData.getName());
+                                binding.artistName.setText(trackData.getArtistName());
                                 binding.albumName.setText(trackData.getAlbumName());
                                 binding.songName.setText(trackData.getName());
                             });

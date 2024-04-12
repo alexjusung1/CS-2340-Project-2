@@ -54,6 +54,10 @@ public class TrackData {
         return name;
     }
 
+    public String getAudioURL() {
+        return audioURL;
+    }
+
     public String getAlbumImageUrlString() {
         return albumImageUrlString;
     }
