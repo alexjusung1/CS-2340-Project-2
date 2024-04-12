@@ -4,43 +4,48 @@ import android.util.Log;
 
 import com.example.spotifywrapped.data.ArtistData;
 import com.example.spotifywrapped.data.RewrappedSummary;
+import com.example.spotifywrapped.data.SpotifyUserData;
 import com.example.spotifywrapped.data.TimeRange;
 import com.example.spotifywrapped.data.TrackData;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class SpotifyDataHolder {
     private static volatile RewrappedSummary currentSummary;
     private static final Lock currentSummaryLock = new ReentrantLock();
-    private static volatile String username;
+    private static volatile SpotifyUserData userData;
 
-    private static final Lock usernameLock = new ReentrantLock();
+    private static final Lock userDataLock = new ReentrantLock();
+    private static final Condition isAvailable = userDataLock.newCondition();
 
-    public static void updateUsernameAsync() {
-        usernameLock.lock();
+    public static void updateUserDataAsync() {
+        userDataLock.lock();
         try {
-            username = SpotifyAPI.getUserData().get();
+            userData = SpotifyAPI.getUserData().get();
+            isAvailable.signalAll();
         } catch (ExecutionException | InterruptedException e) {
             Log.d("SpotifyDataHolder", "test");
             throw new RuntimeException(e);
         } finally {
-            usernameLock.unlock();
+            userDataLock.unlock();
         }
     }
 
-    public static CompletableFuture<String> getCurrentUsername() {
+    public static CompletableFuture<SpotifyUserData> getCurrentUserData() {
         return CompletableFuture.supplyAsync(() -> {
-            usernameLock.lock();
+            userDataLock.lock();
             try {
-                return username;
+                if (userData == null) isAvailable.await();
+                return userData;
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             } finally {
-                usernameLock.unlock();
+                userDataLock.unlock();
             }
         });
     }
@@ -50,7 +55,7 @@ public class SpotifyDataHolder {
         currentSummaryLock.lock();
         try {
             String defaultName = String.format("%s -- %s",
-                    getCurrentUsername().get(),
+                    getCurrentUserData().get().getUsername(),
                     LocalDate.now().toString());
             currentSummary = new RewrappedSummary(defaultName);
         } catch (ExecutionException | InterruptedException e) {

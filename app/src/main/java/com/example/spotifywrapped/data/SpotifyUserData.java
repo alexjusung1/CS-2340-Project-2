@@ -1,15 +1,10 @@
 package com.example.spotifywrapped.data;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import com.example.spotifywrapped.utils.SpotifyAPI;
-import com.google.firebase.firestore.Exclude;
-import com.google.firebase.firestore.IgnoreExtraProperties;
 
 import java.net.URL;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 

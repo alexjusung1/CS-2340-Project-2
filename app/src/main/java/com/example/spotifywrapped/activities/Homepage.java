@@ -2,21 +2,14 @@ package com.example.spotifywrapped.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
-import android.window.OnBackInvokedCallback;
 
 import androidx.activity.OnBackPressedCallback;
-import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.spotifywrapped.R;
 import com.example.spotifywrapped.databinding.HomepageBinding;
 import com.example.spotifywrapped.utils.SpotifyAuth;
-
-import de.hdodenhof.circleimageview.CircleImageView;
+import com.example.spotifywrapped.utils.SpotifyDataHolder;
 
 public class Homepage extends AppCompatActivity {
     HomepageBinding binding;
@@ -43,13 +36,19 @@ public class Homepage extends AppCompatActivity {
 
         binding.recommendation.setOnClickListener(v -> startActivity(new Intent(Homepage.this, recommendations.class)));
 
+        if (!SpotifyAuth.isLoggedOut()) {
+            SpotifyDataHolder.getCurrentUserData()
+                    .thenApply(userData -> {
+                        runOnUiThread(() -> binding.username.setText(userData.getUsername()));
+                        return userData.getProfileImageAsync();
+                    }).thenAccept(bitmap -> runOnUiThread(() -> binding.userImage.setImageBitmap(bitmap)));
+        }
+
         getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 Toast.makeText(Homepage.this, "Back press is disabled in this screen", Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
 }
