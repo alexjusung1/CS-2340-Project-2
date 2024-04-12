@@ -142,6 +142,9 @@ public class SpotifyAuth {
             } catch (IOException e) {
                 Log.e(TAG, "Error while getting access token");
                 e.printStackTrace();
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+                e.printStackTrace();
             }
         } finally {
             changeTokenLock.unlock();
@@ -152,6 +155,7 @@ public class SpotifyAuth {
         if (isLoggedOut()) return;
         changeTokenLock.lock();
         try {
+            Log.d(TAG, "Refreshing Access Token");
             RequestBody formBody = new FormBody.Builder()
                     .addEncoded("grant_type", "refresh_token")
                     .addEncoded("refresh_token", refreshToken)
