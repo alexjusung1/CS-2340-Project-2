@@ -15,12 +15,12 @@
             android:id="@+id/artistImageView"
             android:layout_width="88dp"
             android:layout_height="88dp"
-            android:layout_marginStart="36dp"
+            android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:contentDescription="@string/description"
-            android:src="@drawable/user_placeholder"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
             android:id="@+id/artistNameTextView"
@@ -31,7 +31,7 @@
             android:padding="5dp"
             android:textSize="17sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.419"
+            app:layout_constraintHorizontal_bias="0.272"
             app:layout_constraintStart_toEndOf="@+id/artistImageView"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -45,9 +45,10 @@
             android:textSize="17sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.336"
+            app:layout_constraintHorizontal_bias="0.221"
             app:layout_constraintStart_toEndOf="@+id/artistImageView"
-            app:layout_constraintTop_toBottomOf="@+id/artistNameTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/artistNameTextView"
+            app:layout_constraintVertical_bias="1.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
