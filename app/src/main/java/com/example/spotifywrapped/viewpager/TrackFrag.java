@@ -32,9 +32,8 @@ public class TrackFrag extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        int pos = requireArguments().getInt("position", -1) + 1;
-        binding.number.setText(String.format("#%d",
-                requireArguments().getInt("position", -1) + 1));
+        int pos = requireArguments().getInt("position", -1);
+        binding.number.setText(String.format("#%d", pos + 1));
 
         TimeRangeViewModel vm = new ViewModelProvider(requireActivity())
                 .get(TimeRangeViewModel.class);
@@ -49,7 +48,7 @@ public class TrackFrag extends Fragment {
                                             });
 
                             requireActivity().runOnUiThread(() -> {
-                                binding.artistName.setText(trackData.getName());
+                                binding.artistName.setText(trackData.getArtistName());
                                 binding.albumName.setText(trackData.getAlbumName());
                                 binding.songName.setText(trackData.getName());
                             });

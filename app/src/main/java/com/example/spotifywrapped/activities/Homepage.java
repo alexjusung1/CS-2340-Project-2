@@ -6,7 +6,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.window.OnBackInvokedCallback;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.spotifywrapped.R;
@@ -62,10 +65,12 @@ public class Homepage extends AppCompatActivity {
                 startActivity(new Intent(Homepage.this, com.example.spotifywrapped.activities.recommendations.class));
             }
         });
-    }
 
-    @Override
-    public void onBackPressed() {
-        Toast.makeText(this, "Back press is disabled in this screen", Toast.LENGTH_SHORT).show();
+        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Toast.makeText(Homepage.this, "Back press is disabled in this screen", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
