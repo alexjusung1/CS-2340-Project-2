@@ -1,7 +1,10 @@
 package com.example.spotifywrapped.activities;
 
 import android.content.Intent;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,12 +66,20 @@ public class Top10Songs extends AppCompatActivity {
                     return SpotifyDataHolder.getCurrentTopTrackAsync(vm.getTimeRangeObserver().getValue(), position);
 
                 }).thenAccept(trackData -> {
-                    audioURLString = trackData.getAlbumImageUrlString();
+                    audioURLString = trackData.getAudioURL();
+                    Log.d("Aditya", audioURLString);
                     audioURI = Uri.parse(audioURLString);
                     mediaPlayer = MediaPlayer.create(getApplicationContext(), audioURI);
+                    mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .setUsage(AudioAttributes.USAGE_MEDIA)
+                            .build());
+
+
                     mediaPlayer.setVolume(1, 1);
-                    mediaPlayer.start();
+                    // mediaPlayer.start();
                 });
+
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -77,12 +88,17 @@ public class Top10Songs extends AppCompatActivity {
         });
 
         playButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem item) {
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.pause();
-                } else {
-                    mediaPlayer.start();
+                Log.d("Aditya", "play button has been clicked");
+                if (!(mediaPlayer == null)) {
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.pause();
+                    } else {
+                        mediaPlayer.start();
+                    }
+
                 }
                 return true;
             }
