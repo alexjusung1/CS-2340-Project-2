@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+@IgnoreExtraProperties
 public class ArtistData {
     private String name;
     private int followerCount;
