@@ -31,6 +31,7 @@ import java.util.concurrent.ExecutionException;
 
 import android.net.Uri;
 import android.widget.Button;
+import android.widget.Toast;
 
 
 public class Top10Songs extends AppCompatActivity {
@@ -43,11 +44,14 @@ public class Top10Songs extends AppCompatActivity {
     MenuItem playButton;
     boolean isCurrent;
     int pastPosition;
+    boolean hasAudioURL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rewrapped_template_songs);
+
+        vm = new ViewModelProvider(this).get(TimeRangeViewModel.class);
 
         Bundle passedData = getIntent().getExtras();
         isCurrent = passedData.getBoolean("isCurrent", true);
@@ -56,7 +60,6 @@ public class Top10Songs extends AppCompatActivity {
         ViewPager2 vp = findViewById(R.id.viewPager);
         vp.setAdapter(new PagerAdapterTrack(this, isCurrent, pastPosition));
 
-        vm = new ViewModelProvider(this).get(TimeRangeViewModel.class);
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
 
         Spinner dropdown = findViewById(R.id.dropdownMenu);
@@ -67,9 +70,6 @@ public class Top10Songs extends AppCompatActivity {
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (mediaPlayer != null) {
-                    mediaPlayer.release();
-                }
                 vm.setCurrentTimeRange(TimeRange.values()[position]);
 
                 // when you change the time range, a new media player is created with the new url.
@@ -82,28 +82,26 @@ public class Top10Songs extends AppCompatActivity {
         vp.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
-                if (mediaPlayer != null) {
-                    mediaPlayer.release();
-                }
                 initializeMediaPlayer(position);
             }
         });
 
-        playButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-
-            @Override
-            public boolean onMenuItemClick(@NonNull MenuItem item) {
-                Log.d("Aditya", "play button has been clicked");
-                if (!(mediaPlayer == null)) {
-                    if (mediaPlayer.isPlaying()) {
-                        mediaPlayer.pause();
-                    } else {
-                        mediaPlayer.start();
-                    }
-
-                }
+        playButton.setOnMenuItemClickListener(item -> {
+            Log.d("Aditya", "play button has been clicked");
+            if (!hasAudioURL) {
+                Toast.makeText(Top10Songs.this, "No preview for this track...", Toast.LENGTH_SHORT).show();
                 return true;
             }
+
+            if (mediaPlayer != null) {
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.pause();
+                } else {
+                    mediaPlayer.start();
+                }
+
+            }
+            return true;
         });
         topAppBar.setOnClickListener(v -> finish());
     }
@@ -129,8 +127,18 @@ public class Top10Songs extends AppCompatActivity {
                 }
             }
         }).thenAccept(trackData -> {
+            if (mediaPlayer != null) {
+                mediaPlayer.release();
+            }
+
             audioURLString = trackData.getAudioURL();
+            if (audioURLString == null) {
+                hasAudioURL = false;
+                return;
+            }
+
             Log.d("Aditya", audioURLString);
+            hasAudioURL = true;
             audioURI = Uri.parse(audioURLString);
             mediaPlayer = MediaPlayer.create(getApplicationContext(), audioURI);
             mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()

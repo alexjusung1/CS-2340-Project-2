@@ -4,8 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.example.spotifywrapped.data.SpotifyUserData;
 import com.example.spotifywrapped.data.TimeRange;
 import com.example.spotifywrapped.data.ArtistData;
@@ -15,9 +13,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
-import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,8 +21,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -83,7 +77,7 @@ public class SpotifyAPI {
                 .build();
 
             try (Response response = reqClient.newCall(request).execute()) {
-                return parseTracksAndRun(response.body().charStream());
+                return parseTracks(response.body().charStream());
             } catch (IOException e) {
                 Log.e(TAG, "Error while getting top tracks");
                 throw new RuntimeException(e);
@@ -166,7 +160,7 @@ public class SpotifyAPI {
         return topArtists;
     }
 
-    private static List<TrackData> parseTracksAndRun(Reader jsonReader) {
+    private static List<TrackData> parseTracks(Reader jsonReader) {
         List<TrackData> topTracks = new ArrayList<>();
 
         JsonObject body = JsonParser.parseReader(jsonReader).getAsJsonObject();
