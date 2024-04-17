@@ -1,6 +1,7 @@
 package com.example.spotifywrapped.utils;
 
 import android.util.Log;
+import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,6 +13,7 @@ import com.example.spotifywrapped.data.TrackData;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -30,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 public class FirestoreUpdate {
 
@@ -77,5 +80,15 @@ public class FirestoreUpdate {
         DocumentReference userDocumentRef = fStore.collection("users").document(userID)
                 .collection("summaries").document(String.valueOf(position));
         return userDocumentRef.set(summary);
+    }
+
+    public Pair<String, String> retrieveSpotifyAuthDataAsync() throws ExecutionException, InterruptedException {
+        DocumentReference documentRef = fStore.collection("users").document(userID);
+        DocumentSnapshot snapshot = Tasks.await(documentRef.get());
+
+        String codeVerifier = snapshot.getString("codeVerifier");
+        String authorizationCode = snapshot.getString("authorizationCode");
+
+        return new Pair<>(codeVerifier, authorizationCode);
     }
 }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Base64;
 import android.util.Log;
+import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
@@ -20,6 +21,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -121,6 +123,20 @@ public class SpotifyAuth {
     public static void logout() {
         authorizationCode = null;
         refreshTime = null;
+    }
+
+    public static void initializeLoginAsync(FirestoreUpdate firestoreUpdate) {
+        changeTokenLock.lock();
+        try {
+            Pair<String, String> savedLoginInfo = firestoreUpdate.retrieveSpotifyAuthDataAsync();
+            authorizationCode = savedLoginInfo.first;
+            codeVerifier = savedLoginInfo.second;
+            getAccessTokenAsync();
+        } catch (ExecutionException | InterruptedException e) {
+            Log.e("SpotifyAuth", "Error while loading past login info");
+        } finally {
+            changeTokenLock.unlock();
+        }
     }
 
     private static void getAccessTokenAsync() {

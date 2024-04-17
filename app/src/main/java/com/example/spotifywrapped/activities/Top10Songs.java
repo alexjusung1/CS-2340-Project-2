@@ -73,7 +73,7 @@ public class Top10Songs extends AppCompatActivity {
                 vm.setCurrentTimeRange(TimeRange.values()[position]);
 
                 // when you change the time range, a new media player is created with the new url.
-                initializeMediaPlayer(position);
+                initializeMediaPlayer(vp.getCurrentItem());
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
