@@ -4,34 +4,21 @@ import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-import com.example.spotifywrapped.data.ArtistData;
 import com.example.spotifywrapped.data.RewrappedSummary;
-import com.example.spotifywrapped.data.TimeRange;
-import com.example.spotifywrapped.data.TrackData;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
-import org.checkerframework.checker.units.qual.A;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 public class FirestoreUpdate {
@@ -75,20 +62,32 @@ public class FirestoreUpdate {
         return collectionRef.get();
     }
 
-
-    public Task<Void> updateSpotifyFireStore(RewrappedSummary summary, int position) {
+    public Task<Void> updateRewrappedSummary(RewrappedSummary summary, int position) {
         DocumentReference userDocumentRef = fStore.collection("users").document(userID)
                 .collection("summaries").document(String.valueOf(position));
         return userDocumentRef.set(summary);
     }
 
-    public Pair<String, String> retrieveSpotifyAuthDataAsync() throws ExecutionException, InterruptedException {
+    public Pair<String, String> retrieveSpotifyAuthAsync() throws ExecutionException, InterruptedException {
         DocumentReference documentRef = fStore.collection("users").document(userID);
         DocumentSnapshot snapshot = Tasks.await(documentRef.get());
 
         String codeVerifier = snapshot.getString("codeVerifier");
-        String authorizationCode = snapshot.getString("authorizationCode");
+        String refreshToken = snapshot.getString("refreshToken");
 
-        return new Pair<>(codeVerifier, authorizationCode);
+        return new Pair<>(codeVerifier, refreshToken);
+    }
+
+    public void updateRefreshTokenAsync(String codeVerifier, String refreshToken) {
+        DocumentReference documentRef = fStore.collection("users").document(userID);
+        Map<String, String> newContents = new HashMap<>();
+        newContents.put("codeVerifier", codeVerifier);
+        newContents.put("refreshToken", refreshToken);
+        try {
+            Tasks.await(documentRef.set(newContents, SetOptions.merge()));
+        } catch (ExecutionException | InterruptedException e) {
+            Log.e(TAG, "Error while updating refresh token");
+            throw new RuntimeException(e);
+        }
     }
 }

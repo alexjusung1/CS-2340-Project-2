@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                             FirestoreUpdate firestoreUpdate = new FirestoreUpdate(FirebaseFirestore.getInstance(),
                                     FirebaseAuth.getInstance().getUid());
                             CompletableFuture.runAsync(() -> FirestoreDataHolder.initializeListAsync(firestoreUpdate));
-//                            CompletableFuture.runAsync(() -> SpotifyAuth.initializeLoginAsync(firestoreUpdate));
+                            CompletableFuture.runAsync(() -> SpotifyAuth.initializeLoginAsync(firestoreUpdate));
                             Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(LoginActivity.this, Homepage.class);
                             startActivity(intent);

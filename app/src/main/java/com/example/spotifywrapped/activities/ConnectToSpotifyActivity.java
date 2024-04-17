@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.spotifywrapped.R;
 import com.example.spotifywrapped.utils.SpotifyAuth;
 import com.example.spotifywrapped.utils.SpotifyDataHolder;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -28,7 +30,6 @@ public class ConnectToSpotifyActivity extends AppCompatActivity {
             connect.setOnClickListener(v -> startActivity(SpotifyAuth.getAuthorizationIntent()));
         } else if (action.equals(Intent.ACTION_VIEW)) {
             SpotifyAuth.parseAuthorizationResponse(intent.getData());
-            CompletableFuture.runAsync(SpotifyDataHolder::updateUserDataAsync);
 
             Intent intentRewrapInfo = new Intent(this, RewrapInfoPage.class);
             intentRewrapInfo.putExtra("isCurrent", true);

@@ -11,6 +11,8 @@ import com.example.spotifywrapped.databinding.HomepageBinding;
 import com.example.spotifywrapped.utils.SpotifyAuth;
 import com.example.spotifywrapped.utils.SpotifyDataHolder;
 
+import java.util.concurrent.CompletableFuture;
+
 public class Homepage extends AppCompatActivity {
     HomepageBinding binding;
     @Override
