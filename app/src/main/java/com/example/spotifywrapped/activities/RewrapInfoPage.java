@@ -17,6 +17,7 @@ import com.example.spotifywrapped.utils.FirestoreUpdate;
 import com.example.spotifywrapped.R;
 import com.example.spotifywrapped.data.TimeRange;
 import com.example.spotifywrapped.utils.SpotifyDataHolder;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,8 +40,8 @@ public class RewrapInfoPage extends AppCompatActivity {
         isCurrent = passedData.getBoolean("isCurrent", true);
         pastPosition = passedData.getInt("pastPosition", 0);
 
-        ImageView btnBack = findViewById(R.id.back);
-        ImageView saveBtn = findViewById(R.id.save_button);
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+
         Button topArtist = findViewById(R.id.top_artist);
         Button topSongs = findViewById(R.id.top_song);
         rewrapName = findViewById(R.id.rewrap_name);
@@ -81,26 +82,11 @@ public class RewrapInfoPage extends AppCompatActivity {
             }
         });
 
-        btnBack.setOnClickListener(v -> finish());
-
-        topArtist.setOnClickListener(v -> {
-            Intent intent = new Intent(RewrapInfoPage.this, Top10Artists.class);
-            intent.putExtra("isCurrent", isCurrent);
-            intent.putExtra("pastPosition", pastPosition);
-            startActivity(intent);
-        });
-
-        topSongs.setOnClickListener(v -> {
-            Intent intent = new Intent(RewrapInfoPage.this, Top10Songs.class);
-            intent.putExtra("isCurrent", isCurrent);
-            intent.putExtra("pastPosition", pastPosition);
-            startActivity(intent);
-        });
-
-        saveBtn.setOnClickListener(v -> {
+        toolbar.setNavigationOnClickListener(v -> finish());
+        toolbar.getMenu().findItem(R.id.save).setOnMenuItemClickListener(v -> {
             if (!isCurrent) {
                 Toast.makeText(this, "Does not support saving past summaries", Toast.LENGTH_SHORT).show();
-                return;
+                return true;
             }
             FirebaseAuth fAuth = FirebaseAuth.getInstance();
             FirebaseFirestore fStore = FirebaseFirestore.getInstance();
@@ -122,8 +108,22 @@ public class RewrapInfoPage extends AppCompatActivity {
                             RewrapInfoPage.this,
                             "Successfully saved summary",
                             Toast.LENGTH_SHORT).show()));
+            return true;
+        });
+
+        topArtist.setOnClickListener(v -> {
+            Intent intent = new Intent(RewrapInfoPage.this, Top10Artists.class);
+            intent.putExtra("isCurrent", isCurrent);
+            intent.putExtra("pastPosition", pastPosition);
+            startActivity(intent);
+        });
+
+        topSongs.setOnClickListener(v -> {
+            Intent intent = new Intent(RewrapInfoPage.this, Top10Songs.class);
+            intent.putExtra("isCurrent", isCurrent);
+            intent.putExtra("pastPosition", pastPosition);
+            startActivity(intent);
         });
     }
-
 }
 

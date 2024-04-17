@@ -103,7 +103,7 @@ public class Top10Songs extends AppCompatActivity {
             }
             return true;
         });
-        topAppBar.setOnClickListener(v -> finish());
+        topAppBar.setNavigationOnClickListener(v -> finish());
     }
 
     @Override

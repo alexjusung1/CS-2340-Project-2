@@ -46,5 +46,6 @@
     <string name="play_button">Play_Button</string>
     <string name="volume">Volume</string>
     <string name="forget_password">Forget Password?</string>
+    <string name="save">Save</string>
 
 </resources>
