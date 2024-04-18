@@ -13,6 +13,7 @@ public class ArtistData {
     private String name;
     private int followerCount;
     private String artistImageURLString;
+    private String artistID;
 
     public ArtistData() {
     }
@@ -25,7 +26,7 @@ public class ArtistData {
                 .getAsJsonObject()
                 .get("total")
                 .getAsInt();
-
+        artistID = jsonObject.get("id").getAsString();
         JsonArray pictures = jsonObject.get("images").getAsJsonArray();
         artistImageURLString = pictures.get(0).getAsJsonObject().get("url").getAsString();
     }
@@ -35,6 +36,7 @@ public class ArtistData {
         return name;
     }
 
+    public String getArtistID() {return artistID;}
     // Getter for 'followerCount' attribute
     public int getFollowerCount() {
         return followerCount;

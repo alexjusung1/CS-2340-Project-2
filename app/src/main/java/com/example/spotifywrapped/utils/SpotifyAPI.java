@@ -35,6 +35,7 @@ public class SpotifyAPI {
     }
     private static final String topArtistsURL = "https://api.spotify.com/v1/me/top/artists";
     private static final String topTracksURL = "https://api.spotify.com/v1/me/top/tracks";
+    private static final String recommendationsURL = "https://api.spotify.com/v1/recommendations";
     private static final String selfURI = "https://api.spotify.com/v1/me";
 
     private static final String TAG = "SpotifyAPI";
@@ -75,6 +76,36 @@ public class SpotifyAPI {
                 .url(query)
                 .addHeader("Authorization", "Bearer " + accessToken)
                 .build();
+
+            try (Response response = reqClient.newCall(request).execute()) {
+                return parseTracks(response.body().charStream());
+            } catch (IOException e) {
+                Log.e(TAG, "Error while getting top tracks");
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    public static CompletableFuture<List<TrackData>> getRecommendations(List<ArtistData> artists, int count) {
+        CompletableFuture<String> tokenFuture = CompletableFuture.supplyAsync(SpotifyAuth::returnAccessTokenAsync);
+        return tokenFuture.thenApply(accessToken -> {
+            if (artists.size() == 0) {
+                throw new IllegalArgumentException("Need artists passed in for recommendation");
+            }
+            String query = recommendationsURL
+                    .concat("?limit=" + count)
+                    .concat("&seed_artists=");
+            for (int i = 0; i < artists.size(); i++) {
+                if (i != 0) {
+                    query.concat(",");
+                }
+                query.concat(artists.get(i).getArtistID());
+            }
+
+            Request request = new Request.Builder()
+                    .url(query)
+                    .addHeader("Authorization", "Bearer " + accessToken)
+                    .build();
 
             try (Response response = reqClient.newCall(request).execute()) {
                 return parseTracks(response.body().charStream());
