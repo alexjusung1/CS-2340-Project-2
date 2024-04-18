@@ -5,42 +5,44 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/back"
-        android:layout_width="57dp"
-        android:layout_height="44dp"
-        android:src="@drawable/baseline_arrow_back_24"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.045"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.023" />
-
+        app:menu="@menu/rewrap_info_top_app_bar"
+        app:navigationIcon="@drawable/baseline_arrow_back_24" />
 
     <Button
         android:id="@+id/top_artist"
         style="@style/Widget.MaterialComponents.Button.Icon"
-        android:layout_width="372dp"
+        android:layout_width="0dp"
         android:layout_height="261dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/gradient_button_3"
         android:gravity="start|bottom"
         android:text="@string/top_artists"
         android:textSize="30dp"
         android:textStyle="bold"
         app:backgroundTint="@null"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/top_song"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.487"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.282" />
+        app:layout_constraintTop_toBottomOf="@+id/rewrap_name"
+        app:layout_constraintVertical_bias="0.5" />
 
     <Button
         android:id="@+id/top_song"
         style="@style/Widget.MaterialComponents.Button.Icon"
-        android:layout_width="372dp"
+        android:layout_width="0dp"
         android:layout_height="261dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/gradient_button_1"
         android:gravity="start|bottom"
         android:text="@string/top_songs"
@@ -54,21 +56,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.906" />
 
-    <ImageView
-        android:id="@+id/save_button"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/baseline_save_24" />
-
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/rewrap_name"
-        android:layout_width="372dp"
+        android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginTop="68dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:gravity="center"
         android:hint="@string/rewrap_name"
         android:textSize="25dp"

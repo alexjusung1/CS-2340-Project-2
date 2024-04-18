@@ -11,6 +11,8 @@ import com.example.spotifywrapped.databinding.HomepageBinding;
 import com.example.spotifywrapped.utils.SpotifyAuth;
 import com.example.spotifywrapped.utils.SpotifyDataHolder;
 
+import java.util.concurrent.CompletableFuture;
+
 public class Homepage extends AppCompatActivity {
     HomepageBinding binding;
     @Override
@@ -36,7 +38,11 @@ public class Homepage extends AppCompatActivity {
 
         binding.recommendation.setOnClickListener(v -> startActivity(new Intent(Homepage.this, recommendations.class)));
 
-        this.setUsernameAndPFP();
+        SpotifyDataHolder.getCurrentUserData()
+                .thenApply(userData -> {
+                    runOnUiThread(() -> binding.username.setText(userData.getUsername()));
+                    return userData.getProfileImageAsync();
+                }).thenAccept(bitmap -> runOnUiThread(() -> binding.userImage.setImageBitmap(bitmap)));
 
         getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
             @Override
@@ -44,20 +50,5 @@ public class Homepage extends AppCompatActivity {
                 Toast.makeText(Homepage.this, "Back press is disabled in this screen", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private void setUsernameAndPFP() {
-        if (!SpotifyAuth.isLoggedOut()) {
-            SpotifyDataHolder.getCurrentUserData()
-                    .thenApply(userData -> {
-                        runOnUiThread(() -> binding.username.setText(userData.getUsername()));
-                        return userData.getProfileImageAsync();
-                    }).thenAccept(bitmap -> runOnUiThread(() -> binding.userImage.setImageBitmap(bitmap)));
-        }
-    }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        this.setUsernameAndPFP();
     }
 }

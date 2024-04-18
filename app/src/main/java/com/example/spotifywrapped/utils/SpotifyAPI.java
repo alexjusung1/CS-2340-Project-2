@@ -4,8 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.example.spotifywrapped.data.SpotifyUserData;
 import com.example.spotifywrapped.data.TimeRange;
 import com.example.spotifywrapped.data.ArtistData;
@@ -15,9 +13,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
-import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,8 +21,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -41,6 +35,7 @@ public class SpotifyAPI {
     }
     private static final String topArtistsURL = "https://api.spotify.com/v1/me/top/artists";
     private static final String topTracksURL = "https://api.spotify.com/v1/me/top/tracks";
+    private static final String relatedArtistsURL = "https://api.spotify.com/v1/artists/";
     private static final String selfURI = "https://api.spotify.com/v1/me";
 
     private static final String TAG = "SpotifyAPI";
@@ -83,9 +78,33 @@ public class SpotifyAPI {
                 .build();
 
             try (Response response = reqClient.newCall(request).execute()) {
-                return parseTracksAndRun(response.body().charStream());
+                return parseTracks(response.body().charStream());
             } catch (IOException e) {
                 Log.e(TAG, "Error while getting top tracks");
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    public static CompletableFuture<List<ArtistData>> getRecommendations(List<ArtistData> artists, int count) {
+        CompletableFuture<String> tokenFuture = CompletableFuture.supplyAsync(SpotifyAuth::returnAccessTokenAsync);
+        return tokenFuture.thenApply(accessToken -> {
+            if (artists.size() == 0) {
+                throw new IllegalArgumentException("0 artists passed in for recommendation");
+            }
+            String query = relatedArtistsURL
+                    .concat(artists.get(0).getArtistID())
+                    .concat("/related-artists");
+
+            Request request = new Request.Builder()
+                    .url(query)
+                    .addHeader("Authorization", "Bearer " + accessToken)
+                    .build();
+
+            try (Response response = reqClient.newCall(request).execute()) {
+                return parseRelatedArtists(response.body().charStream(), artists);
+            } catch (IOException e) {
+                Log.e(TAG, "Error while getting recommended artists");
                 throw new RuntimeException(e);
             }
         });
@@ -166,7 +185,25 @@ public class SpotifyAPI {
         return topArtists;
     }
 
-    private static List<TrackData> parseTracksAndRun(Reader jsonReader) {
+    private static List<ArtistData> parseRelatedArtists(Reader jsonReader, List<ArtistData> currArtists) {
+        List<ArtistData> topArtists = new ArrayList<>();
+        JsonObject artistBody = JsonParser.parseReader(jsonReader)
+                .getAsJsonObject();
+
+        JsonArray artistJsons = artistBody.get("artists").getAsJsonArray();
+        OVR: for (int i = 0; i < artistJsons.size(); i++) {
+            ArtistData a = new ArtistData(artistJsons.get(i).getAsJsonObject());
+            for (int j = 1; j < currArtists.size(); j++) {
+                if (currArtists.get(i).equals(a)) {
+                    continue OVR;
+                }
+            }
+            topArtists.add(a);
+        }
+        return topArtists;
+    }
+
+    private static List<TrackData> parseTracks(Reader jsonReader) {
         List<TrackData> topTracks = new ArrayList<>();
 
         JsonObject body = JsonParser.parseReader(jsonReader).getAsJsonObject();

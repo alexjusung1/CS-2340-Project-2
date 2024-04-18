@@ -84,7 +84,8 @@ public class SpotifyDataHolder {
             }
             return currentSummary.getTopArtist(timeRange, position);
         } catch (ExecutionException | InterruptedException e) {
-            Log.e("SpotifyDataHolder", "Failed getting top artists");throw new RuntimeException(e);
+            Log.e("SpotifyDataHolder", "Failed getting top artists");
+            throw new RuntimeException(e);
         } finally {
             currentSummaryLock.unlock();
         }
@@ -99,14 +100,9 @@ public class SpotifyDataHolder {
             }
 
             return currentSummary.getTopTrack(timeRange, position);
-        } catch (ExecutionException e) {
-            Log.e("SpotifyDataHolder", "Execution Error in getting top tracks");
-            // e.printStackTrace();
-            throw new RuntimeException();
-        } catch (InterruptedException e) {
-            Log.e("SpotifyDataHolder", "Interrupted Error in getting top tracks");
-            // e.printStackTrace();
-            throw new RuntimeException();
+        } catch (ExecutionException | InterruptedException e) {
+            Log.e("SpotifyDataHolder", "Failed getting top tracks");
+            throw new RuntimeException(e);
         } finally {
             currentSummaryLock.unlock();
         }
