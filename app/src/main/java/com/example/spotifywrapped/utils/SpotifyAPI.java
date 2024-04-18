@@ -12,6 +12,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.net.MalformedURLException;
@@ -78,7 +80,7 @@ public class SpotifyAPI {
                 .build();
 
             try (Response response = reqClient.newCall(request).execute()) {
-                return parseTracks(response.body().charStream());
+                return parseTracksAndRun(response.body().charStream());
             } catch (IOException e) {
                 Log.e(TAG, "Error while getting top tracks");
                 throw new RuntimeException(e);
@@ -86,9 +88,17 @@ public class SpotifyAPI {
         });
     }
 
-    public static CompletableFuture<List<ArtistData>> getRecommendations(List<ArtistData> artists, int count) {
+    public static CompletableFuture<List<ArtistData>> getRecommendations() {
         CompletableFuture<String> tokenFuture = CompletableFuture.supplyAsync(SpotifyAuth::returnAccessTokenAsync);
         return tokenFuture.thenApply(accessToken -> {
+            //List<ArtistData> artists = SpotifyDataHolder.getCurrentSummaryAsync().getTopArtists(TimeRange.SHORT);
+            List<ArtistData> artists = new ArrayList<ArtistData>();
+            try {
+                artists = getTopArtists(TimeRange.SHORT, 10).get();
+            } catch (Exception e) {
+                Log.e("REC", "Error getting top artists for recommendations");
+                throw new RuntimeException();
+            }
             if (artists.size() == 0) {
                 throw new IllegalArgumentException("0 artists passed in for recommendation");
             }
@@ -185,6 +195,24 @@ public class SpotifyAPI {
         return topArtists;
     }
 
+    private static List<ArtistData> parseRelatedArtists(Reader jsonReader, List<ArtistData> currArtists) {
+        List<ArtistData> topArtists = new ArrayList<>();
+        JsonObject artistBody = JsonParser.parseReader(jsonReader)
+                .getAsJsonObject();
+
+        JsonArray artistJsons = artistBody.get("artists").getAsJsonArray();
+        OVR: for (int i = 0; i < artistJsons.size(); i++) {
+            ArtistData a = new ArtistData(artistJsons.get(i).getAsJsonObject());
+            for (int j = 1; j < currArtists.size(); j++) {
+                if (currArtists.get(i).equals(a)) {
+                    continue OVR;
+                }
+            }
+            topArtists.add(a);
+        }
+        return topArtists;
+    }
+
     private static List<TrackData> parseTracksAndRun(Reader jsonReader) {
         List<TrackData> topTracks = new ArrayList<>();
 
@@ -197,4 +225,5 @@ public class SpotifyAPI {
         }
         return topTracks;
     }
+
 }

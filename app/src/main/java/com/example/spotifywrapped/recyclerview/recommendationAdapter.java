@@ -1,6 +1,8 @@
 package com.example.spotifywrapped.recyclerview;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +14,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.spotifywrapped.R;
 import com.example.spotifywrapped.data.Artist;
+import com.example.spotifywrapped.data.ArtistData;
+import com.example.spotifywrapped.data.TimeRange;
+import com.example.spotifywrapped.utils.SpotifyAPI;
+import com.example.spotifywrapped.utils.SpotifyDataHolder;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class recommendationAdapter extends RecyclerView.Adapter<recommendationAdapter.recommendationsViewHolder> {
-    private List<Artist> artistList;
+    private List<ArtistData> artistList;
     private Context context;
+    private Activity activity;
 
-    public recommendationAdapter(Context context, List<Artist> artistList) {
+    public recommendationAdapter(Context context, List<ArtistData> artistList, Activity activity) {
         this.context = context;
         this.artistList = artistList;
+        this.activity = activity;
     }
     @Override
     public recommendationsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -30,12 +39,20 @@ public class recommendationAdapter extends RecyclerView.Adapter<recommendationAd
     }
     @Override
     public void onBindViewHolder(@NonNull recommendationsViewHolder holder, int position) {
-        Artist artist = artistList.get(position);
+        if (artistList.size() <= position) {
+            return;
+        }
+        ArtistData artist = artistList.get(position);
         holder.artistNameTextView.setText(artist.getName());
-        holder.genreTextView.setText(artist.getGenre());
+        holder.genreTextView.setText(Integer.toString(artist.getFollowerCount()) + " Followers");
+        CompletableFuture.supplyAsync(() -> {
+            return SpotifyAPI.fetchImageFromURLAsync(artist.getArtistImageURLString());
+        }).thenAccept((bm) -> {activity.runOnUiThread(() ->{holder.artistImageView.setImageBitmap(bm);});});
+
         //new DownloadImageView(holder.artistImageView).execute(artist.getImageUrl());
     }
 
+    public void setArtistList(List<ArtistData> l) {artistList = l;}
     @Override
     public int getItemCount() {
         return artistList.size();
