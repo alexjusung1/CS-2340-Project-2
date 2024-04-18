@@ -39,6 +39,6 @@ public class PastRewrapPage extends AppCompatActivity {
         // Add more artists if needed
 
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
-        topAppBar.setNavigationOnClickListener(v -> finish());
+        topAppBar.setOnClickListener(v -> finish());
     }
 }

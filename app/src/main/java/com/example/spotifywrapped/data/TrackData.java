@@ -1,7 +1,5 @@
 package com.example.spotifywrapped.data;
 
-import android.util.Log;
-
 import com.google.firebase.firestore.IgnoreExtraProperties;
 import com.google.gson.JsonObject;
 
@@ -30,11 +28,7 @@ public class TrackData {
         // for this one, album images has 3 different resolutions. index 2 is 300x300
 
         artistName = primaryArtist.get("name").getAsString();
-        try {
-            audioURL = jsonObject.get("preview_url").getAsString();
-        } catch (RuntimeException e) {
-            audioURL = null;
-        }
+        audioURL = jsonObject.get("preview_url").getAsString();
     }
 
     public String getName() {

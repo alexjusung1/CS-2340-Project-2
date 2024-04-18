@@ -47,6 +47,6 @@ public class Top10Artists extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        topAppBar.setNavigationOnClickListener(v -> finish());
+        topAppBar.setOnClickListener(v -> finish());
     }
 }
