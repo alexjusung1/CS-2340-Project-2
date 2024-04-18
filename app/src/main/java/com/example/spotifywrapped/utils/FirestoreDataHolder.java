@@ -7,8 +7,8 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -69,7 +69,7 @@ public class FirestoreDataHolder {
         summaryListLock.lock();
         try {
             summaryList.add(summary);
-            Tasks.await(firestoreUpdate.updateSpotifyFireStore(summary, summaryList.size()));
+            Tasks.await(firestoreUpdate.updateRewrappedSummary(summary, summaryList.size()));
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
