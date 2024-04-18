@@ -46,4 +46,13 @@ public class ArtistData {
     public String getArtistImageURLString() {
         return artistImageURLString;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ArtistData)) {
+            return false;
+        }
+        ArtistData a = (ArtistData) o;
+        return a.getArtistID().equals(artistID);
+    }
 }
