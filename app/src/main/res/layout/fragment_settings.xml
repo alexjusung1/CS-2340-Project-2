@@ -9,112 +9,39 @@
 
     <ImageView
         android:id="@+id/backSettings"
-        android:layout_width="56dp"
-        android:layout_height="40dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:contentDescription="@string/setting"
         android:src="@drawable/baseline_arrow_back_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.043"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.01"
-        android:contentDescription="@string/setting" />
+        app:layout_constraintVertical_bias="0.02" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="56dp"
-        android:orientation="horizontal"
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="102dp"
+        android:layout_height="32dp"
+        android:text="@string/settings"
+        android:textAlignment="center"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
-            android:text="@string/change_username" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
-            android:padding="10dp"
-            android:hint="@string/change_username_hint">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="260dp"
-                android:layout_height="wrap_content" />
-
-            <ImageView
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:paddingTop="5dp"
-                android:src="@drawable/baseline_save_24"
-                android:contentDescription="@string/notification" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
-            android:text="@string/change_password" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textField"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
-            android:padding="10dp"
-            android:hint="@string/change_password_hint"
-            app:endIconMode="password_toggle">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="260dp"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword" />
-
-            <ImageView
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:paddingTop="5dp"
-                android:contentDescription="@string/notification"
-                android:src="@drawable/baseline_save_24" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-    </LinearLayout>
+        app:layout_constraintHorizontal_bias="0.375"
+        app:layout_constraintStart_toEndOf="@+id/backSettings"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="409dp"
         android:layout_height="226dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="64dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/textView2"
@@ -122,6 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/linked_spotify_account"
+            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/constraintLayout_1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.094"
@@ -140,8 +68,8 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/user_image"
-                android:layout_width="118dp"
-                android:layout_height="118dp"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
                 android:layout_marginStart="16dp"
                 android:contentDescription="@string/spotify_account_image_description"
                 android:src="@drawable/user_placeholder"
@@ -153,13 +81,14 @@
 
             <TextView
                 android:id="@+id/textView10"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="36dp"
-                android:layout_marginEnd="92dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="80dp"
                 android:text="@string/sample_username"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.857"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toEndOf="@+id/user_image"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -168,7 +97,7 @@
                 android:layout_width="193dp"
                 android:layout_height="44dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="4dp"
                 android:background="@drawable/custom_button_with_border_1"
                 android:gravity="center"
                 android:text="@string/log_out_spotify"
@@ -177,21 +106,22 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView10"
-                app:layout_constraintVertical_bias="0.055" />
+                app:layout_constraintVertical_bias="0.35" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout_2"
-        android:layout_width="355dp"
-        android:layout_height="159dp"
+        android:layout_width="362dp"
+        android:layout_height="378dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintVertical_bias="0.354">
 
         <TextView
             android:id="@+id/remove_account_firebase"
@@ -205,24 +135,48 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/logout_account_firebase"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.647" />
+            app:layout_constraintVertical_bias="0.553" />
 
         <TextView
             android:id="@+id/logout_account_firebase"
             android:layout_width="193dp"
             android:layout_height="44dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="168dp"
             android:background="@drawable/custom_button_with_border_1"
             android:gravity="center"
             android:text="@string/log_out_firebase"
             android:textColor="@color/white"
             android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/copyright"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:layout_width="266dp"
+            android:layout_height="182dp"
+            android:contentDescription="@string/connect_to_spotify"
+            android:src="@drawable/logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="196dp" />
+
+        <TextView
+            android:id="@+id/copyright"
+            android:layout_width="213dp"
+            android:layout_height="33dp"
+            android:text="@string/copyright"
+            android:textAlignment="center"
+            android:textStyle="italic"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.503"
             app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
