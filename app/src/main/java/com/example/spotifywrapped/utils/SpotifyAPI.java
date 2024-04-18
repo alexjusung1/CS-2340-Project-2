@@ -185,25 +185,7 @@ public class SpotifyAPI {
         return topArtists;
     }
 
-    private static List<ArtistData> parseRelatedArtists(Reader jsonReader, List<ArtistData> currArtists) {
-        List<ArtistData> topArtists = new ArrayList<>();
-        JsonObject artistBody = JsonParser.parseReader(jsonReader)
-                .getAsJsonObject();
-
-        JsonArray artistJsons = artistBody.get("artists").getAsJsonArray();
-        OVR: for (int i = 0; i < artistJsons.size(); i++) {
-            ArtistData a = new ArtistData(artistJsons.get(i).getAsJsonObject());
-            for (int j = 1; j < currArtists.size(); j++) {
-                if (currArtists.get(i).equals(a)) {
-                    continue OVR;
-                }
-            }
-            topArtists.add(a);
-        }
-        return topArtists;
-    }
-
-    private static List<TrackData> parseTracks(Reader jsonReader) {
+    private static List<TrackData> parseTracksAndRun(Reader jsonReader) {
         List<TrackData> topTracks = new ArrayList<>();
 
         JsonObject body = JsonParser.parseReader(jsonReader).getAsJsonObject();
