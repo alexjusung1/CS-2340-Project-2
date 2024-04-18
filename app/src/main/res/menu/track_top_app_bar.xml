@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/play_button"
+        android:icon="@drawable/baseline_play_arrow_24"
+        android:title="@string/play_button"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/volume"
+        android:icon="@drawable/baseline_volume_up_24"
+        android:title="@string/volume"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/notification"
+        android:icon="@drawable/round_notifications_active_24"
+        android:title="@string/notification"
+        app:showAsAction="ifRoom" />
+</menu>

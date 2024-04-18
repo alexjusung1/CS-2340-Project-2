@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
-            app:menu="@menu/artist_top_app_bar"
+            app:menu="@menu/notification_top_app_bar"
             app:navigationIcon="@drawable/baseline_arrow_back_24" />
 
     </com.google.android.material.appbar.AppBarLayout>

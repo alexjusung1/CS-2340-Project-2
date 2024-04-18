@@ -9,6 +9,7 @@
 
     <EditText
         android:id="@+id/editTextEmail"
+        android:fontFamily="@font/gotham"
         android:layout_width="270dp"
         android:layout_height="54dp"
         android:layout_marginTop="240dp"
@@ -19,6 +20,7 @@
 
     <EditText
         android:id="@+id/editTextPassword"
+        android:fontFamily="@font/gotham"
         android:layout_width="270dp"
         android:layout_height="56dp"
         android:layout_marginTop="15dp"
@@ -29,6 +31,7 @@
 
     <EditText
         android:id="@+id/confirmTextPassword"
+        android:fontFamily="@font/gotham"
         android:layout_width="270dp"
         android:layout_height="56dp"
         android:layout_marginTop="15dp"
@@ -40,6 +43,7 @@
 
     <Button
         android:id="@+id/buttonSignUp"
+        android:fontFamily="@font/gotham"
         android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
@@ -50,6 +54,7 @@
 
     <TextView
         android:id="@+id/moveLogin"
+        android:fontFamily="@font/gotham"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

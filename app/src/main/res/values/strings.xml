@@ -32,7 +32,6 @@
     <string name="moveLogin">Already have an account? Login Here</string>
     <string name="email">Email</string>
     <string name="setting">Setting</string>
-    <string name="settings">Settings</string>
     <string name="notification">Notification</string>
     <string name="artist_name">Artist Name</string>
     <string name="genre">Genre</string>
@@ -47,5 +46,6 @@
     <string name="play_button">Play_Button</string>
     <string name="volume">Volume</string>
     <string name="forget_password">Forget Password?</string>
-    <string name="copyright">© 2024 Spotify ReWrapped</string>
+    <string name="copyright">©2024 Spotify Rewrapped</string>
+
 </resources>

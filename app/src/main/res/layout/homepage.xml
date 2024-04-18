@@ -20,6 +20,7 @@
 
     <TextView
         android:id="@+id/username"
+        android:fontFamily="@font/gotham"
         android:layout_width="163dp"
         android:layout_height="28dp"
         android:layout_marginStart="8dp"
@@ -58,6 +59,7 @@
         android:layout_height="200dp"
         android:background="@drawable/gradient_button_2"
         android:gravity="start|bottom"
+        android:fontFamily="@font/gotham"
         android:text="@string/cur_rewrap"
         android:textSize="30sp"
         android:textStyle="bold"
@@ -77,6 +79,7 @@
         android:background="@drawable/gradient_button_1"
         android:gravity="start|bottom"
         android:text="@string/past_rewrap"
+        android:fontFamily="@font/gotham"
         android:textSize="30sp"
         android:textStyle="bold"
         app:backgroundTint="@null"
@@ -90,6 +93,7 @@
         android:id="@+id/recommendation"
         android:layout_width="369dp"
         android:layout_height="200dp"
+        android:fontFamily="@font/gotham"
         android:layout_gravity="center"
         android:background="@drawable/gradient_button_3"
         android:gravity="start|bottom"

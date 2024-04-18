@@ -24,6 +24,7 @@
 
         <TextView
             android:id="@+id/artistNameTextView"
+            android:fontFamily="@font/gotham"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -40,6 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:fontFamily="@font/gotham"
             android:hint="@string/genre"
             android:padding="5dp"
             android:textSize="17sp"

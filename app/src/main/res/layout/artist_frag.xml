@@ -7,6 +7,7 @@
 
     <TextView
         android:id="@+id/number"
+        android:fontFamily="@font/gotham"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/number"
@@ -19,6 +20,7 @@
 
     <TextView
         android:id="@+id/artist_name"
+        android:fontFamily="@font/gotham"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/artist_name"
@@ -45,6 +47,7 @@
 
     <TextView
         android:id="@+id/follower_number"
+        android:fontFamily="@font/gotham"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/stream_number"
