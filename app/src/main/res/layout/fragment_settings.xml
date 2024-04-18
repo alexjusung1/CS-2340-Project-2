@@ -160,9 +160,9 @@
             android:layout_height="182dp"
             android:contentDescription="@string/connect_to_spotify"
             android:src="@drawable/logo"
+            app:layout_constraintBottom_toBottomOf="@+id/copyright"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="196dp" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/copyright"
