@@ -48,4 +48,5 @@
     <string name="volume">Volume</string>
     <string name="forget_password">Forget Password?</string>
     <string name="copyright">© 2024 Spotify ReWrapped</string>
+    <string name="save">Save</string>
 </resources>
