@@ -14,13 +14,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.spotifywrapped.R;
+import com.example.spotifywrapped.data.SpotifyUserData;
 import com.example.spotifywrapped.utils.SpotifyAuth;
+import com.example.spotifywrapped.utils.SpotifyDataHolder;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.concurrent.CompletableFuture;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * A simple {@link AppCompatActivity} subclass.
@@ -45,6 +51,20 @@ public class SettingsActivity extends AppCompatActivity {
 
         TextView deleteAccountFirebase = findViewById(R.id.remove_account_firebase);
 
+        TextView username = findViewById(R.id.username);
+        CircleImageView userImage = findViewById(R.id.user_image);
+
+        TextView spotifyLogOut = findViewById(R.id.SpotifyLogOutButton);
+
+        SpotifyDataHolder.getCurrentUserData()
+                .thenApplyAsync(spotifyUserData -> {
+                    runOnUiThread(() -> {
+                        username.setText(spotifyUserData.getUsername());
+                    });
+                    return spotifyUserData.getProfileImageAsync();
+                }).thenAccept(bitmap -> runOnUiThread(() -> {
+                    userImage.setImageBitmap(bitmap);
+                }));
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();

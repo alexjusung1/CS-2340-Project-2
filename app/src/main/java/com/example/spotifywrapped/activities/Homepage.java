@@ -39,7 +39,7 @@ public class Homepage extends AppCompatActivity {
         binding.recommendation.setOnClickListener(v -> startActivity(new Intent(Homepage.this, recommendations.class)));
 
         SpotifyDataHolder.getCurrentUserData()
-                .thenApply(userData -> {
+                .thenApplyAsync(userData -> {
                     runOnUiThread(() -> binding.username.setText(userData.getUsername()));
                     return userData.getProfileImageAsync();
                 }).thenAccept(bitmap -> runOnUiThread(() -> binding.userImage.setImageBitmap(bitmap)));
