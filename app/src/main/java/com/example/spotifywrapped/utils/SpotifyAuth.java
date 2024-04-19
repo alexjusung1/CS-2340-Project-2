@@ -55,7 +55,6 @@ public class SpotifyAuth {
 
     // Whether the access token is valid; used to wait until available
     private static volatile boolean accessTokenValid;
-    private static volatile boolean isLoggedIn;
     private static final Lock changeTokenLock = new ReentrantLock();
     private static final Condition tokenValidCondition = changeTokenLock.newCondition();
 
@@ -96,10 +95,7 @@ public class SpotifyAuth {
     public static String returnAccessTokenAsync() {
         changeTokenLock.lock();
         try {
-            if (!accessTokenValid) {
-                tokenValidCondition.await();
-                if (isLoggedOut()) return null;
-            }
+            if (!accessTokenValid) tokenValidCondition.await();
 
             if (Instant.now().compareTo(refreshTime) >= 0) {
                 refreshAccessTokenAsync();
@@ -114,24 +110,35 @@ public class SpotifyAuth {
     }
 
     public static boolean isLoggedOut() {
-        return !isLoggedIn;
+        return !accessTokenValid;
     }
 
-    public static void logoutAsync() {
-        refreshTime = null;
-        isLoggedIn = false;
-        accessTokenValid = false;
-
+    public static void logoutAsync(FirestoreUpdate firestoreUpdate) {
         changeTokenLock.lock();
         try {
-            tokenValidCondition.signalAll();
+            accessTokenValid = false;
+            codeVerifier = null;
+            accessToken = null;
         } finally {
             changeTokenLock.unlock();
         }
-        // TODO: invalidate SpotifyDataHolder values
+        SpotifyDataHolder.invalidateDataAsync();
+        firestoreUpdate.removeSpotifyAccountAsync();
     }
 
-    public static void initializeLoginAsync(FirestoreUpdate firestoreUpdate) {
+    public static void waitUntilLoginAsync() {
+        changeTokenLock.lock();
+        try {
+            tokenValidCondition.await();
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Error while waiting login");
+            throw new RuntimeException(e);
+        } finally {
+            changeTokenLock.unlock();
+        }
+    }
+
+    public static boolean initializeLoginAsync(FirestoreUpdate firestoreUpdate) {
         changeTokenLock.lock();
         try {
             Pair<String, String> savedLoginInfo = firestoreUpdate.retrieveSpotifyAuthAsync();
@@ -140,9 +147,12 @@ public class SpotifyAuth {
             if (codeVerifier != null && refreshToken != null) {
                 refreshAccessTokenAsync();
                 CompletableFuture.runAsync(SpotifyDataHolder::updateUserDataAsync);
+                return true;
             }
+            return false;
         } catch (ExecutionException | InterruptedException e) {
             Log.e("SpotifyAuth", "Error while loading past login info");
+            return false;
         } finally {
             changeTokenLock.unlock();
         }
@@ -166,7 +176,6 @@ public class SpotifyAuth {
 
             try (Response response = authClient.newCall(request).execute()) {
                 parseTokenResponse(response.body().charStream());
-                isLoggedIn = true;
                 accessTokenValid = true;
                 tokenValidCondition.signalAll();
             } catch (IOException e) {
@@ -196,7 +205,6 @@ public class SpotifyAuth {
 
             try (Response response = authClient.newCall(request).execute()) {
                 parseTokenResponse(response.body().charStream());
-                isLoggedIn = true;
                 accessTokenValid = true;
                 tokenValidCondition.signalAll();
             } catch (IOException e) {

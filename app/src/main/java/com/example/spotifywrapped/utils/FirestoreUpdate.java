@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
@@ -87,6 +88,19 @@ public class FirestoreUpdate {
             Tasks.await(documentRef.set(newContents, SetOptions.merge()));
         } catch (ExecutionException | InterruptedException e) {
             Log.e(TAG, "Error while updating refresh token");
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void removeSpotifyAccountAsync() {
+        DocumentReference documentRef = fStore.collection("users").document(userID);
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("codeVerifier", FieldValue.delete());
+        updates.put("refreshToken", FieldValue.delete());
+        try {
+            Tasks.await(documentRef.update(updates));
+        } catch (ExecutionException | InterruptedException e) {
+            Log.e(TAG, "Error while removing Spotify account");
             throw new RuntimeException(e);
         }
     }

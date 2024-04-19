@@ -54,7 +54,7 @@ public class recommendations extends AppCompatActivity {
 
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
 
-        topAppBar.setOnClickListener(new View.OnClickListener() {
+        topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(recommendations.this, Homepage.class));

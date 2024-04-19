@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.spotifywrapped.R;
 import com.example.spotifywrapped.data.SpotifyUserData;
+import com.example.spotifywrapped.utils.FirestoreUpdate;
 import com.example.spotifywrapped.utils.SpotifyAuth;
 import com.example.spotifywrapped.utils.SpotifyDataHolder;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -55,6 +56,16 @@ public class SettingsActivity extends AppCompatActivity {
         CircleImageView userImage = findViewById(R.id.user_image);
 
         TextView spotifyLogOut = findViewById(R.id.SpotifyLogOutButton);
+        spotifyLogOut.setOnClickListener(view -> {
+            if (SpotifyAuth.isLoggedOut()) {
+                return;
+            }
+
+            CompletableFuture.runAsync(() -> SpotifyAuth.logoutAsync(
+                    new FirestoreUpdate(FirebaseFirestore.getInstance(), FirebaseAuth.getInstance().getUid())));
+            username.setText(R.string.sample_username);
+            userImage.setImageResource(R.drawable.user_placeholder);
+        });
 
         SpotifyDataHolder.getCurrentUserData()
                 .thenApplyAsync(spotifyUserData -> {

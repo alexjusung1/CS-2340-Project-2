@@ -117,4 +117,14 @@ public class SpotifyDataHolder {
             currentSummaryLock.unlock();
         }
     }
+
+    public static void invalidateDataAsync() {
+        currentSummaryLock.lock();
+        try {
+            currentSummary = null;
+            userData = null;
+        } finally {
+            currentSummaryLock.unlock();
+        }
+    }
 }
